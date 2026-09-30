@@ -190,7 +190,9 @@ alter table config_negocio
   add column if not exists premio_texto text default '',
   add column if not exists msg_recordatorio text default '',
   add column if not exists msg_espera text default '',
-  add column if not exists msg_reactivar text default '';
+  add column if not exists msg_reactivar text default '',
+  add column if not exists mostrar_paso_productos boolean default false,
+  add column if not exists texto_paso_productos text default '';
 alter table servicios add column if not exists categoria text default '';
 alter table resenas add column if not exists nombre text default '';
 
@@ -262,8 +264,12 @@ drop policy if exists "admin full waitlist" on waitlist;
 create policy "admin full waitlist" on waitlist for all using (auth.role() = 'authenticated');
 drop policy if exists "admin full productos" on productos;
 create policy "admin full productos" on productos for all using (auth.role() = 'authenticated');
+drop policy if exists "lectura publica productos" on productos;
+create policy "lectura publica productos" on productos for select using (true);
 drop policy if exists "admin full ventas" on ventas_producto;
 create policy "admin full ventas" on ventas_producto for all using (auth.role() = 'authenticated');
+drop policy if exists "insert publico ventas" on ventas_producto;
+create policy "insert publico ventas" on ventas_producto for insert with check (true);
 drop policy if exists "admin full gastos" on gastos;
 create policy "admin full gastos" on gastos for all using (auth.role() = 'authenticated');
 
@@ -1620,7 +1626,18 @@ function seccionUbicacion(){
 /* ============================================================
    APP DE RESERVA (referencia: Black Box)
    ============================================================ */
-function nuevaReserva(){ const l = leerLocal(); return {items:[], estilo:null, sorprende:false, fecha:null, hora:null, nombre:l.nombre||"", telefono:l.telefono||""}; }
+function nuevaReserva(){ const l = leerLocal(); return {items:[], estilo:null, sorprende:false, fecha:null, hora:null, nombre:l.nombre||"", telefono:l.telefono||"", productos:[]}; }
+function productosActivos(){ return (S.productos||[]).filter(p=> p.activo); }
+function pasoProductosActivo(){ return !!(S.config.mostrar_paso_productos && productosActivos().length); }
+function pasosReserva(){
+  const p = ["servicio"];
+  if(S.estilos.length) p.push("estilo");
+  p.push("horario");
+  if(pasoProductosActivo()) p.push("productos");
+  p.push("datos");
+  return p;
+}
+function sumaProductos(lista){ return (lista||[]).reduce((a,it)=> a + it.cantidad * Number(it.producto.precio||0), 0); }
 function sumaDuracion(items){ return items.reduce((a,it)=> a + (Number(it.servicio.duracion_minutos)||0), 0); }
 function sumaPrecio(items){ return items.reduce((a,it)=> a + (Number(it.servicio.precio)||0), 0); }
 function iniciarReserva(o={}){
@@ -1634,21 +1651,30 @@ function iniciarReserva(o={}){
 function renderWizard(app){
   if(!S.booking) S.booking = nuevaReserva();
   const b = S.booking;
+  const pasos = pasosReserva(), total = pasos.length;
   if(!b.items.length) S.wizardStep = 1;
-  const st = S.wizardStep, entra = st !== S.lastStep; S.lastStep = st;
-  if(st === 3 && Date.now() - S.citasAt > 45000){ cargarCitasRango(true).then(()=>{ if(S.route === "agendar" && S.wizardStep === 3){ S.lastStep = 3; renderWizard(app); } }); }
-  const T = [["¿Qué te vas a hacer?","Toca un servicio para agregarlo. Puedes repetirlo o combinar varios."],["Elige tu estilo","Aplica para toda la visita"],["Fecha y hora","Disponibilidad en tiempo real"],["Tus datos","Solo falta confirmar tu cita"]][st-1];
+  if(S.wizardStep > total) S.wizardStep = total;
+  const st = S.wizardStep, key = pasos[st-1], entra = st !== S.lastStep; S.lastStep = st;
+  if(key === "horario" && Date.now() - S.citasAt > 45000){ cargarCitasRango(true).then(()=>{ if(S.route === "agendar" && pasos[S.wizardStep-1] === "horario"){ S.lastStep = S.wizardStep; renderWizard(app); } }); }
+  const TXT = {
+    servicio:["¿Qué te vas a hacer?","Toca un servicio para agregarlo. Puedes repetirlo o combinar varios."],
+    estilo:["Elige tu estilo","Aplica para toda la visita"],
+    horario:["Fecha y hora","Disponibilidad en tiempo real"],
+    productos:[S.config.texto_paso_productos || "¿Te interesa alguno de nuestros productos?", "Súmalo a tu cita si quieres — es completamente opcional."],
+    datos:["Tus datos","Solo falta confirmar tu cita"],
+  }[key];
   const prevScroll = $("#wDates") ? $("#wDates").scrollLeft : null;
-  const dur = sumaDuracion(b.items), precio = sumaPrecio(b.items);
+  const dur = sumaDuracion(b.items), precioServ = sumaPrecio(b.items), precioProd = sumaProductos(b.productos), precio = precioServ + precioProd;
+  const pasoServicio = pasos.indexOf("servicio")+1, pasoEstilo = pasos.indexOf("estilo")+1, pasoHorario = pasos.indexOf("horario")+1;
 
   let body = "";
-  if(st === 1){
+  if(key === "servicio"){
     const conteo = {}; b.items.forEach(it=> conteo[it.servicio.id] = (conteo[it.servicio.id]||0) + 1);
     body = S.servicios.length ? `<div class="tiles ${entra?"stg":""}" style="grid-template-columns:repeat(2,1fr)">${S.servicios.map((s,i)=> tileHtml(s, false, i, "", conteo[s.id]||0)).join("")}</div>
       <div class="cart-box" id="cartBox">${cartHtml(b.items)}</div>`
       : `<div class="adm-empty">Aún no hay servicios disponibles.</div>`;
   }
-  if(st === 2){
+  if(key === "estilo"){
     body = `<div class="style-grid ${entra?"stg":""}">${S.estilos.map((e,i)=>`
       <button class="style-card ${b.estilo && b.estilo.id === e.id ? "on" : ""}" data-west="${e.id}" style="--i:${i}">
         ${e.foto_url ? `<img src="${esc(e.foto_url)}" alt="${esc(e.nombre)}" loading="lazy">` : `<div class="ph-empty">${IC.scissors}</div>`}
@@ -1660,7 +1686,7 @@ function renderWizard(app){
         <div class="any-in">${IC.scissors}<b>Que decida el barbero</b><span>Te recomienda algo según tu cabello</span></div>
       </button></div>`;
   }
-  if(st === 3){
+  if(key === "horario"){
     const dias = diasVentana();
     if(!b.fecha || !dias.some(d=> d.iso === b.fecha && d.disponible)) b.fecha = (dias.find(d=> d.disponible) || {}).iso || null;
     const slots = b.fecha ? calcularSlots(b.fecha, dur) : [];
@@ -1677,7 +1703,19 @@ function renderWizard(app){
            ${b.fecha ? `<div style="margin-top:14px"><button class="pill pill-white pill-sm" data-wait="${b.fecha}">Anotarme en lista de espera</button></div>` : ""}</div>`}
     </div>`;
   }
-  if(st === 4){
+  if(key === "productos"){
+    const activos = productosActivos();
+    body = `<div class="${entra?"stg":""}">${activos.map((p,i)=>{
+        const it = b.productos.find(x=> x.producto.id === p.id), qty = it ? it.cantidad : 0;
+        return `<div class="prod-row" style="--i:${i};animation:rise .5s var(--ease) both">
+          <div class="thumb" style="${p.foto_url?`background-image:url('${esc(p.foto_url)}')`:""}">${p.foto_url?"":IC.image}</div>
+          <div class="pi"><b>${esc(p.nombre)}</b><span>${money(p.precio)}</span></div>
+          <div class="stepper"><button data-pstep="-1" data-pid="${p.id}" ${qty?"":"disabled"}>−</button><span data-pqty="${p.id}">${qty}</span><button data-pstep="1" data-pid="${p.id}">+</button></div>
+        </div>`; }).join("")}
+      ${precioProd ? `<div class="cart-total" style="margin-top:6px"><span>${b.productos.reduce((a,x)=>a+x.cantidad,0)} producto${b.productos.reduce((a,x)=>a+x.cantidad,0)===1?"":"s"}</span><b>${money(precioProd)}</b></div>` : ""}
+    </div>`;
+  }
+  if(key === "datos"){
     const l = leerLocal();
     body = `<div class="${entra?"stg":""}">
       <div class="field" style="--i:0"><label for="fNombre">Nombre completo</label><input id="fNombre" autocomplete="name" value="${esc(b.nombre)}" placeholder="Ej. Carlos Pérez"></div>
@@ -1685,9 +1723,10 @@ function renderWizard(app){
       ${S.config.referidos_activo && !l.telefono ? `<div class="field" style="--i:2"><label for="fRef">Código de referido (opcional)</label><input id="fRef" autocapitalize="characters" placeholder="Si alguien te invitó"></div>` : ""}
       <div class="sum-card" style="--i:3">
         ${b.items.map(it=> `<div class="sum-row"><span>${esc(it.servicio.nombre)}${it.etiqueta?` <i style="color:var(--text-3);font-style:normal">· ${esc(it.etiqueta)}</i>`:""}</span><b>${money(it.servicio.precio)}</b></div>`).join("")}
-        <div class="sum-row"><span>Estilo</span><b>${b.estilo ? esc(b.estilo.nombre) : "El barbero decide"}<button data-wgo="2">Cambiar</button></b></div>
-        <div class="sum-row"><span>Fecha</span><b>${fmtFechaLarga(b.fecha)}<button data-wgo="3">Cambiar</button></b></div>
+        <div class="sum-row"><span>Estilo</span><b>${b.estilo ? esc(b.estilo.nombre) : "El barbero decide"}${pasoEstilo?`<button data-wgo="${pasoEstilo}">Cambiar</button>`:""}</b></div>
+        <div class="sum-row"><span>Fecha</span><b>${fmtFechaLarga(b.fecha)}<button data-wgo="${pasoHorario}">Cambiar</button></b></div>
         <div class="sum-row"><span>Hora</span><b>${b.hora} – ${addMin(b.hora, dur)}</b></div>
+        ${b.productos.filter(x=>x.cantidad>0).map(it=> `<div class="sum-row"><span>${esc(it.producto.nombre)} ×${it.cantidad}</span><b>${money(it.producto.precio*it.cantidad)}</b></div>`).join("")}
         <div class="sum-row total"><span>Total</span><b>${money(precio)}</b></div>
       </div>
     </div>`;
@@ -1695,15 +1734,16 @@ function renderWizard(app){
 
   // barra inferior
   let info = "", ok = false, txt = "Continuar";
-  if(st === 1){ ok = b.items.length > 0; info = ok ? `<b>${b.items.length} ${b.items.length===1?"servicio":"servicios"}</b><span>${durTxt(dur)} · ${money(precio)}</span>` : `<b>Agrega al menos un servicio</b>`; }
-  if(st === 2){ ok = !!(b.estilo || b.sorprende); info = b.estilo ? `<b>${esc(b.estilo.nombre)}</b><span>${b.items.length} servicio${b.items.length===1?"":"s"}</span>` : b.sorprende ? `<b>El barbero decide</b><span>${b.items.length} servicio${b.items.length===1?"":"s"}</span>` : `<b>Elige un estilo</b>`; }
-  if(st === 3){ ok = !!b.hora; info = b.hora ? `<b>${fmtFecha(b.fecha)}</b><span>${b.hora} – ${addMin(b.hora, dur)}</span>` : `<b>Elige una hora</b>`; }
-  if(st === 4){ ok = true; txt = "Confirmar cita"; info = `<b>${money(precio)}</b><span>${b.items.length} servicio${b.items.length===1?"":"s"}</span>`; }
+  if(key === "servicio"){ ok = b.items.length > 0; info = ok ? `<b>${b.items.length} ${b.items.length===1?"servicio":"servicios"}</b><span>${durTxt(dur)} · ${money(precioServ)}</span>` : `<b>Agrega al menos un servicio</b>`; }
+  if(key === "estilo"){ ok = !!(b.estilo || b.sorprende); info = b.estilo ? `<b>${esc(b.estilo.nombre)}</b><span>${b.items.length} servicio${b.items.length===1?"":"s"}</span>` : b.sorprende ? `<b>El barbero decide</b><span>${b.items.length} servicio${b.items.length===1?"":"s"}</span>` : `<b>Elige un estilo</b>`; }
+  if(key === "horario"){ ok = !!b.hora; info = b.hora ? `<b>${fmtFecha(b.fecha)}</b><span>${b.hora} – ${addMin(b.hora, dur)}</span>` : `<b>Elige una hora</b>`; }
+  if(key === "productos"){ ok = true; txt = precioProd ? "Continuar" : "Omitir"; info = precioProd ? `<b>${money(precioProd)} agregado</b><span>en productos</span>` : `<b>Sin productos</b><span>puedes continuar sin agregar</span>`; }
+  if(key === "datos"){ ok = true; txt = "Confirmar cita"; info = `<b>${money(precio)}</b><span>${b.items.length} servicio${b.items.length===1?"":"s"}${precioProd?` + productos`:""}</span>`; }
 
   app.innerHTML = `<div class="appv ${entra?"enter":""}">
       <div class="app-top"><button class="circ" id="wBack" aria-label="Atrás">${IC.arrowL}</button>
-        <div class="app-steps">${[1,2,3,4].map(n=>`<i class="${n<st?"done":n===st?(entra?"now":"done"):""}"></i>`).join("")}</div><span class="app-count">${st}/4</span></div>
-      <h1 class="app-title">${T[0]}</h1><p class="app-sub">${T[1]}</p>
+        <div class="app-steps">${pasos.map((_,i)=>`<i class="${i+1<st?"done":i+1===st?(entra?"now":"done"):""}"></i>`).join("")}</div><span class="app-count">${st}/${total}</span></div>
+      <h1 class="app-title">${titulo(TXT[0])}</h1><p class="app-sub">${esc(TXT[1])}</p>
       <div id="wBody">${body}</div>
     </div>
     <div class="fbar" id="wBar"><div class="fbar-i ${ok?"":"muted"}">${info}</div><button class="pill pill-white" id="wNext" ${ok?"":"disabled"}>${txt} ${IC.arrowR}</button></div>`;
@@ -1714,14 +1754,13 @@ function renderWizard(app){
 
   $("#wBack").onclick = ()=>{ if(st === 1) return go("inicio"); S.wizardStep = st - 1; renderWizard(app); window.scrollTo(0,0); };
   $("#wNext").onclick = ()=>{
-    if(st === 4) return confirmarCita();
+    if(key === "datos") return confirmarCita();
     let sig = st + 1;
-    if(st === 2 && b.items.length === 1 && b.fecha && b.hora && calcularSlots(b.fecha, dur).some(s=> s.hora === b.hora && !s.ocupado)) sig = 4;
-    if(st === 2 && !S.estilos.length) sig = 3;
+    if(key === "estilo" && b.items.length === 1 && b.fecha && b.hora && calcularSlots(b.fecha, dur).some(s=> s.hora === b.hora && !s.ocupado)) sig = pasos.indexOf("datos")+1;
     S.wizardStep = sig; renderWizard(app); window.scrollTo(0,0);
   };
   $("#wBody").onclick = e=>{
-    const t = e.target.closest("[data-tile],[data-rm],[data-west],[data-wdate],[data-whora],[data-wscroll],[data-wait],[data-wgo]"); if(!t) return;
+    const t = e.target.closest("[data-tile],[data-rm],[data-west],[data-wdate],[data-whora],[data-wscroll],[data-wait],[data-wgo],[data-pstep]"); if(!t) return;
     if(t.dataset.tile){ const s = S.servicios.find(x=> String(x.id) === t.dataset.tile); b.items.push({clave:uid(), servicio:s, etiqueta:""}); b.hora = null; }
     else if(t.dataset.rm){ b.items = b.items.filter(it=> it.clave !== t.dataset.rm); b.hora = null; }
     else if(t.dataset.west){ if(t.dataset.west === "any"){ b.sorprende = true; b.estilo = null; } else { b.estilo = S.estilos.find(x=> String(x.id) === t.dataset.west); b.sorprende = false; } }
@@ -1729,17 +1768,24 @@ function renderWizard(app){
     else if(t.dataset.whora){ b.hora = t.dataset.whora; }
     else if(t.dataset.wscroll){ dates.scrollBy({left: Number(t.dataset.wscroll)*280, behavior: REDUCED ? "auto" : "smooth"}); return; }
     else if(t.dataset.wait){ return abrirEspera(t.dataset.wait); }
+    else if(t.dataset.pstep){
+      const pid = Number(t.dataset.pid), delta = Number(t.dataset.pstep);
+      let it = b.productos.find(x=> x.producto.id === pid);
+      if(!it){ it = {producto: productosActivos().find(p=> p.id === pid), cantidad:0}; b.productos.push(it); }
+      it.cantidad = Math.max(0, it.cantidad + delta);
+      b.productos = b.productos.filter(x=> x.cantidad > 0);
+    }
     else if(t.dataset.wgo){ S.wizardStep = Number(t.dataset.wgo); renderWizard(app); window.scrollTo(0,0); return; }
     renderWizard(app);
   };
-  if(st === 1){
-    $$("#cartBox [data-lbl]", app).forEach(inp=> inp.oninput = ()=>{ const it = b.items.find(x=> x.clave === inp.dataset.lbl); if(it) it.etiqueta = inp.value; const info2 = $("#wBar .fbar-i"); });
+  if(key === "servicio"){
+    $$("#cartBox [data-lbl]", app).forEach(inp=> inp.oninput = ()=>{ const it = b.items.find(x=> x.clave === inp.dataset.lbl); if(it) it.etiqueta = inp.value; });
   }
-  if(st === 4){
+  if(key === "datos"){
     $("#fNombre").oninput = e=> b.nombre = e.target.value;
     $("#fTel").oninput = e=> b.telefono = e.target.value;
   }
-  if(st === 2 && !S.estilos.length && !b.sorprende){ b.sorprende = true; renderWizard(app); }
+  if(key === "estilo" && !S.estilos.length && !b.sorprende){ b.sorprende = true; renderWizard(app); }
 }
 function cartHtml(items){
   if(!items.length) return `<div class="cart-empty">Aún no has agregado ningún servicio. Toca uno arriba.</div>`;
@@ -1793,10 +1839,11 @@ async function confirmarCita(){
 async function procederConfirmar(cliente, ref){
   const b = S.booking, btn = $("#wNext"); if(btn){ btn.disabled = true; btn.innerHTML = "Confirmando…"; }
   const dur = sumaDuracion(b.items);
+  const volverAHorario = ()=>{ b.hora = null; S.wizardStep = pasosReserva().indexOf("horario")+1; S.lastStep = 0; renderWizard($("#app")); };
   try{
     await cargarCitasRango(true);
     if(!calcularSlots(b.fecha, dur).some(s=> s.hora === b.hora && !s.ocupado)){
-      toast("Ese horario acaba de ocuparse. Elige otro."); b.hora = null; S.wizardStep = 3; return renderWizard($("#app"));
+      toast("Ese horario acaba de ocuparse. Elige otro."); return volverAHorario();
     }
     if(b.estilo) await sb.from("clientes").update({estilo_preferido_id: b.estilo.id}).eq("id", cliente.id);
     const {data:visita, error:errV} = await sb.from("visitas").insert({cliente_id: cliente.id, fecha: b.fecha}).select().single();
@@ -1808,9 +1855,14 @@ async function procederConfirmar(cliente, ref){
       cursor = fin; return fila;
     });
     const {data:citas, error} = await sb.from("citas").insert(filas).select();
-    if(error){ toast("Ese horario ya no está disponible. Elige otro."); b.hora = null; S.citasAt = 0; S.wizardStep = 3; return renderWizard($("#app")); }
+    if(error){ toast("Ese horario ya no está disponible. Elige otro."); S.citasAt = 0; return volverAHorario(); }
+    const productos = b.productos.filter(x=> x.cantidad > 0);
+    if(productos.length){
+      await sb.from("ventas_producto").insert(productos.map(it=> ({producto_id: it.producto.id, visita_id: visita.id, cliente_id: cliente.id, cantidad: it.cantidad, precio_unit: it.producto.precio, fecha: b.fecha})));
+      for(const it of productos){ if(it.producto.stock != null) await sb.from("productos").update({stock: Math.max(0, it.producto.stock - it.cantidad)}).eq("id", it.producto.id); }
+    }
     guardarLocal({nombre: b.nombre, telefono: soloDigitos(b.telefono)});
-    S.lastCita = {visita, cliente, estilo: b.estilo, items: b.items, fecha: b.fecha, hora_inicio: b.hora, hora_fin: cursor, citaId: citas[0].id};
+    S.lastCita = {visita, cliente, estilo: b.estilo, items: b.items, productos, fecha: b.fecha, hora_inicio: b.hora, hora_fin: cursor, citaId: citas[0].id};
     S.booking = null; S.citasAt = 0; S.quick.hora = null;
     go("confirmacion", {replace:true});
   }catch(e){
@@ -1842,7 +1894,7 @@ function renderConfirmacion(app){
   const c = S.lastCita; if(!c) return go("inicio", {replace:true});
   const cfg = S.config;
   const nombresTxt = c.items.map(it=> it.servicio.nombre + (it.etiqueta?` (${it.etiqueta})`:"")).join(", ");
-  const total = sumaPrecio(c.items);
+  const total = sumaPrecio(c.items) + sumaProductos(c.productos);
   const waTxt = `Hola, soy ${c.cliente.nombre}. Acabo de agendar ${nombresTxt} el ${fmtFechaLarga(c.fecha)} a las ${hhmm(c.hora_inicio)}.`;
   const wa = waLink(cfg.whatsapp, waTxt);
   const acts = [
@@ -1861,6 +1913,7 @@ function renderConfirmacion(app){
         <div><span>Fecha</span><b>${fmtFecha(c.fecha)}</b></div>
         <div><span>Hora</span><b>${hhmm(c.hora_inicio)} – ${hhmm(c.hora_fin)}</b></div>
         <div><span>Estilo</span><b>${c.estilo ? esc(c.estilo.nombre) : "A criterio del barbero"}</b></div>
+        ${c.productos && c.productos.length ? `<div><span>Productos</span><b>${esc(c.productos.map(it=> it.producto.nombre + " ×" + it.cantidad).join(", "))}</b></div>` : ""}
         <div><span>Total</span><b class="big">${money(total)}</b></div>
       </div>
       <div class="tk-cut"></div>
@@ -2776,12 +2829,16 @@ function tabAjustes(box){
       <div class="field"><label>Premio</label><input id="ajPr" value="${v("premio_texto")}" placeholder="Ej. Corte gratis"></div>
       <div class="sw-row" style="border:0"><div>Códigos de referido</div><label class="sw"><input type="checkbox" id="ajRef" ${c.referidos_activo?"checked":""}><span></span></label></div>
     </div>
+    <div class="fcard"><h3>Productos al agendar</h3><p>Agrega un paso opcional al final de la reserva para que el cliente pueda sumar productos. Si no tienes productos activos, este paso no aparece aunque lo actives.</p>
+      <div class="sw-row" style="border:0"><div>Mostrar este paso<small>${productosActivos().length ? productosActivos().length + " producto(s) activo(s)" : "No tienes productos activos todavía — ve a la pestaña Productos"}</small></div><label class="sw"><input type="checkbox" id="ajPasoProd" ${c.mostrar_paso_productos?"checked":""}><span></span></label></div>
+      <div class="field" style="margin-top:14px"><label>Pregunta que ve el cliente</label><input id="ajTxtProd" value="${v("texto_paso_productos")}" placeholder="¿Te interesa alguno de nuestros productos?"></div>
+    </div>
     <div class="qr-card"><img src="${qrUrl(link)}" alt="QR para agendar"><div><b>QR para agendar</b><p>Para tu vitrina, tarjetas o redes: abre directo la reserva.</p><a class="pill pill-ghost pill-sm" href="${qrUrl(link, 900)}" target="_blank" rel="noopener">Abrir para imprimir</a></div></div>
     <div class="save-bar"><button class="pill pill-white" id="ajOk">Guardar ajustes</button></div>`;
   $("#ajOk").onclick = async ()=>{
     const base = {nombre: $("#ajNom").value.trim() || "Imperio Store Barber", direccion: $("#ajDir").value.trim(), maps_link: $("#ajMaps").value.trim(), whatsapp: soloDigitos($("#ajWa").value),
       fidelidad_activa: $("#ajFid").checked, puntos_por_visita: Math.max(1, Number($("#ajPV").value)||1), puntos_para_premio: Math.max(1, Number($("#ajPP").value)||10), referidos_activo: $("#ajRef").checked};
-    const extra = {msg_recordatorio: $("#ajMR").value.trim(), msg_espera: $("#ajME").value.trim(), msg_reactivar: $("#ajMX").value.trim(), premio_texto: $("#ajPr").value.trim()};
+    const extra = {msg_recordatorio: $("#ajMR").value.trim(), msg_espera: $("#ajME").value.trim(), msg_reactivar: $("#ajMX").value.trim(), premio_texto: $("#ajPr").value.trim(), mostrar_paso_productos: $("#ajPasoProd").checked, texto_paso_productos: $("#ajTxtProd").value.trim()};
     let {error} = await sb.from("config_negocio").update({...base, ...extra}).eq("id", 1);
     if(error) ({error} = await sb.from("config_negocio").update(base).eq("id", 1));
     if(error) return toast("No se pudo guardar");
