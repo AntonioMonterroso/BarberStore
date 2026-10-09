@@ -11,295 +11,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2.39.7"></script>
 
-<!--
--- ==========================================================================================
--- IMPERIO STORE BARBER — BASE DE DATOS (SUPABASE)
--- Copia TODO este bloque (hasta el separador final) en el SQL Editor de Supabase y dale Run.
--- Es seguro volver a ejecutarlo cuantas veces quieras: si algo ya existe, lo deja igual.
--- ==========================================================================================
-
-create extension if not exists "pgcrypto";
-
-create table if not exists config_negocio (
-  id int primary key default 1,
-  nombre text default 'Imperio Store Barber',
-  direccion text default '',
-  maps_link text default '',
-  whatsapp text default '',
-  fidelidad_activa boolean default false,
-  puntos_por_visita int default 1,
-  puntos_para_premio int default 10,
-  referidos_activo boolean default true,
-  constraint single_row check (id = 1)
-);
-insert into config_negocio (id) values (1) on conflict (id) do nothing;
-
-create table if not exists horarios (
-  id serial primary key,
-  dia_semana int not null unique,           -- 0=domingo ... 6=sábado
-  activo boolean default false,
-  hora_inicio time default '09:00',
-  hora_fin time default '18:00',
-  intervalo_minutos int default 30
-);
-insert into horarios (dia_semana, activo) values (0,false),(1,true),(2,true),(3,true),(4,true),(5,true),(6,true)
-  on conflict (dia_semana) do nothing;
-
-create table if not exists bloqueos (
-  id serial primary key,
-  fecha date not null,
-  hora_inicio time,
-  hora_fin time,
-  todo_el_dia boolean default true,
-  motivo text
-);
-
-create table if not exists servicios (
-  id serial primary key,
-  nombre text not null,
-  descripcion text default '',
-  precio numeric(10,2) not null default 0,
-  duracion_minutos int not null default 30,
-  foto_url text default '',
-  activo boolean default true,
-  orden int default 0,
-  categoria text default ''
-);
-
-create table if not exists estilos_corte (
-  id serial primary key,
-  nombre text not null,
-  categoria text default '',
-  foto_url text default '',
-  activo boolean default true,
-  orden int default 0
-);
-
-create table if not exists clientes (
-  id uuid primary key default gen_random_uuid(),
-  nombre text not null,
-  telefono text not null unique,
-  estilo_preferido_id int references estilos_corte(id) on delete set null,
-  notas text default '',
-  puntos_actuales int default 0,
-  codigo_referido text unique,
-  referido_por uuid references clientes(id),
-  creado_en timestamptz default now()
-);
-
-create table if not exists visitas (
-  id uuid primary key default gen_random_uuid(),
-  cliente_id uuid references clientes(id),
-  fecha date not null,
-  anticipo_monto numeric(10,2) default 0,
-  anticipo_recibido boolean default false,
-  recibo_enviado boolean default false,
-  creado_en timestamptz default now()
-);
-
-create table if not exists citas (
-  id uuid primary key default gen_random_uuid(),
-  cliente_id uuid references clientes(id),
-  servicio_id int references servicios(id),
-  estilo_id int references estilos_corte(id) on delete set null,
-  visita_id uuid references visitas(id),
-  etiqueta text default '',
-  fecha date not null,
-  hora_inicio time not null,
-  hora_fin time not null,
-  estado text default 'confirmada',          -- confirmada | completada | cancelada | no_asistio
-  notas text default '',
-  creado_en timestamptz default now()
-);
-alter table citas add column if not exists visita_id uuid references visitas(id);
-alter table citas add column if not exists etiqueta text default '';
-
-create table if not exists waitlist (
-  id uuid primary key default gen_random_uuid(),
-  cliente_id uuid references clientes(id),
-  fecha_deseada date not null,
-  hora_desde time,
-  hora_hasta time,
-  estado text default 'esperando',           -- esperando | notificado | tomado | expirado
-  creado_en timestamptz default now()
-);
-
-create table if not exists resenas (
-  id uuid primary key default gen_random_uuid(),
-  cita_id uuid references citas(id) on delete set null,
-  calificacion int check (calificacion between 1 and 5),
-  comentario text default '',
-  nombre text default '',
-  creado_en timestamptz default now()
-);
-
-create table if not exists productos (
-  id serial primary key,
-  nombre text not null,
-  precio numeric(10,2) not null default 0,
-  foto_url text default '',
-  stock int,                      -- vacío (null) = no se controla inventario
-  activo boolean default true,
-  orden int default 0
-);
-
-create table if not exists ventas_producto (
-  id uuid primary key default gen_random_uuid(),
-  producto_id int references productos(id),
-  visita_id uuid references visitas(id),     -- null = venta de mostrador, sin cita
-  cliente_id uuid references clientes(id),   -- null = cliente ocasional
-  cantidad int not null default 1,
-  precio_unit numeric(10,2) not null default 0,
-  fecha date not null default current_date,
-  creado_en timestamptz default now()
-);
-
-create table if not exists gastos (
-  id uuid primary key default gen_random_uuid(),
-  concepto text not null,
-  categoria text default '',
-  monto numeric(10,2) not null default 0,
-  fecha date not null default current_date,
-  notas text default '',
-  creado_en timestamptz default now()
-);
-
--- columnas de la landing page configurable (por si vienes de una versión anterior)
-alter table config_negocio
-  add column if not exists hero_eyebrow text default '',
-  add column if not exists hero_titulo text default '',
-  add column if not exists hero_subtitulo text default '',
-  add column if not exists hero_imagen_url text default '',
-  add column if not exists hero_recorte boolean default false,
-  add column if not exists barbero_nombre text default '',
-  add column if not exists barbero_titulo text default '',
-  add column if not exists barbero_frase text default '',
-  add column if not exists barbero_bio text default '',
-  add column if not exists barbero_foto_url text default '',
-  add column if not exists anios_experiencia text default '',
-  add column if not exists clientes_atendidos text default '',
-  add column if not exists maps_embed_url text default '',
-  add column if not exists instagram text default '',
-  add column if not exists facebook text default '',
-  add column if not exists tiktok text default '',
-  add column if not exists mostrar_galeria boolean default true,
-  add column if not exists mostrar_resenas boolean default true,
-  add column if not exists frase_cierre text default '',
-  add column if not exists premio_texto text default '',
-  add column if not exists msg_recordatorio text default '',
-  add column if not exists msg_espera text default '',
-  add column if not exists msg_reactivar text default '',
-  add column if not exists mostrar_paso_productos boolean default false,
-  add column if not exists texto_paso_productos text default '';
-alter table servicios add column if not exists categoria text default '';
-alter table resenas add column if not exists nombre text default '';
-
--- seguridad: activa RLS en todas las tablas (no hace nada si ya estaba activo)
-alter table config_negocio enable row level security;
-alter table horarios enable row level security;
-alter table bloqueos enable row level security;
-alter table servicios enable row level security;
-alter table estilos_corte enable row level security;
-alter table clientes enable row level security;
-alter table visitas enable row level security;
-alter table citas enable row level security;
-alter table waitlist enable row level security;
-alter table resenas enable row level security;
-alter table productos enable row level security;
-alter table ventas_producto enable row level security;
-alter table gastos enable row level security;
-
--- políticas: se borran y se vuelven a crear, así nunca falla por "ya existe"
-drop policy if exists "lectura publica config" on config_negocio;
-create policy "lectura publica config" on config_negocio for select using (true);
-drop policy if exists "lectura publica horarios" on horarios;
-create policy "lectura publica horarios" on horarios for select using (true);
-drop policy if exists "lectura publica bloqueos" on bloqueos;
-create policy "lectura publica bloqueos" on bloqueos for select using (true);
-drop policy if exists "lectura publica servicios" on servicios;
-create policy "lectura publica servicios" on servicios for select using (true);
-drop policy if exists "lectura publica estilos" on estilos_corte;
-create policy "lectura publica estilos" on estilos_corte for select using (true);
-drop policy if exists "lectura publica citas" on citas;
-create policy "lectura publica citas" on citas for select using (true);
-drop policy if exists "lectura publica resenas" on resenas;
-create policy "lectura publica resenas" on resenas for select using (true);
-drop policy if exists "insert publico clientes" on clientes;
-create policy "insert publico clientes" on clientes for insert with check (true);
-drop policy if exists "select publico clientes" on clientes;
-create policy "select publico clientes" on clientes for select using (true);
-drop policy if exists "update publico clientes" on clientes;
-create policy "update publico clientes" on clientes for update using (true);
-drop policy if exists "insert publico visitas" on visitas;
-create policy "insert publico visitas" on visitas for insert with check (true);
-drop policy if exists "select publico visitas" on visitas;
-create policy "select publico visitas" on visitas for select using (true);
-drop policy if exists "admin update visitas" on visitas;
-create policy "admin update visitas" on visitas for update using (auth.role() = 'authenticated');
-drop policy if exists "insert publico citas" on citas;
-create policy "insert publico citas" on citas for insert with check (true);
-drop policy if exists "update publico citas" on citas;
-create policy "update publico citas" on citas for update using (true);
-drop policy if exists "insert publico waitlist" on waitlist;
-create policy "insert publico waitlist" on waitlist for insert with check (true);
-drop policy if exists "select publico waitlist" on waitlist;
-create policy "select publico waitlist" on waitlist for select using (true);
-drop policy if exists "insert publico resenas" on resenas;
-create policy "insert publico resenas" on resenas for insert with check (true);
-drop policy if exists "admin full resenas" on resenas;
-create policy "admin full resenas" on resenas for all using (auth.role() = 'authenticated');
-drop policy if exists "admin full config" on config_negocio;
-create policy "admin full config" on config_negocio for all using (auth.role() = 'authenticated');
-drop policy if exists "admin full horarios" on horarios;
-create policy "admin full horarios" on horarios for all using (auth.role() = 'authenticated');
-drop policy if exists "admin full bloqueos" on bloqueos;
-create policy "admin full bloqueos" on bloqueos for all using (auth.role() = 'authenticated');
-drop policy if exists "admin full servicios" on servicios;
-create policy "admin full servicios" on servicios for all using (auth.role() = 'authenticated');
-drop policy if exists "admin full estilos" on estilos_corte;
-create policy "admin full estilos" on estilos_corte for all using (auth.role() = 'authenticated');
-drop policy if exists "admin full waitlist" on waitlist;
-create policy "admin full waitlist" on waitlist for all using (auth.role() = 'authenticated');
-drop policy if exists "admin full productos" on productos;
-create policy "admin full productos" on productos for all using (auth.role() = 'authenticated');
-drop policy if exists "lectura publica productos" on productos;
-create policy "lectura publica productos" on productos for select using (true);
-drop policy if exists "admin full ventas" on ventas_producto;
-create policy "admin full ventas" on ventas_producto for all using (auth.role() = 'authenticated');
-drop policy if exists "insert publico ventas" on ventas_producto;
-create policy "insert publico ventas" on ventas_producto for insert with check (true);
-drop policy if exists "admin full gastos" on gastos;
-create policy "admin full gastos" on gastos for all using (auth.role() = 'authenticated');
-
--- fotos: bucket público "imagenes" (el panel sube aquí fotos de servicios, estilos y portada)
-insert into storage.buckets (id, name, public) values ('imagenes','imagenes', true)
-  on conflict (id) do nothing;
-drop policy if exists "imagenes lectura publica" on storage.objects;
-create policy "imagenes lectura publica" on storage.objects for select using (bucket_id = 'imagenes');
-drop policy if exists "imagenes admin sube" on storage.objects;
-create policy "imagenes admin sube" on storage.objects for insert with check (bucket_id = 'imagenes' and auth.role() = 'authenticated');
-drop policy if exists "imagenes admin borra" on storage.objects;
-create policy "imagenes admin borra" on storage.objects for delete using (bucket_id = 'imagenes' and auth.role() = 'authenticated');
-
--- blindaje contra citas duplicadas: rechaza dos citas que se traslapen, aunque dos
--- clientes confirmen el mismo horario al mismo segundo. Al insertar varios servicios
--- en una sola visita, cada uno ocupa su propio tramo consecutivo, así que nunca chocan
--- entre sí. (Si esto falla, es porque ya existen citas traslapadas: corrígelas y reintenta.)
-alter table citas drop constraint if exists citas_sin_traslape;
-alter table citas add constraint citas_sin_traslape
-  exclude using gist (tsrange(fecha + hora_inicio, fecha + hora_fin) with &&)
-  where (estado in ('confirmada','completada'));
-
--- Por último: crea tu usuario del panel en Authentication > Users (correo + contraseña).
-
--- NOTA: "Mis citas" busca por número de teléfono sin contraseña (mínima fricción para el cliente).
--- Quien conozca el teléfono de un cliente podría ver o cancelar su cita. Es el mismo riesgo que
--- aceptan la mayoría de sistemas de barbería; cerrarlo del todo requiere verificación por código
--- de WhatsApp desde un backend.
--- ==========================================================================================
--->
+<!-- Base de datos: ver supabase/schema.sql y supabase/seguridad.sql -->
 <style>
 :root{
   --bg:#101012; --bg-2:#161619; --card:#1c1c20; --card-2:#26262b; --card-3:#323238;
@@ -1055,7 +769,9 @@ function waLink(num, text){
 function qrUrl(data, size=260){ return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&margin=0&data=${encodeURIComponent(data)}`; }
 function urlBase(){ return location.origin + location.pathname; }
 function genCodigo(nombre){ const b = String(nombre||"CLI").normalize("NFD").replace(/[^A-Za-z]/g,"").toUpperCase().slice(0,4) || "CLI"; return b + Math.floor(1000 + Math.random()*9000); }
-function guardarLocal(o){ try{ localStorage.setItem("imperio_cliente", JSON.stringify(o)); }catch(e){} }
+function guardarLocal(o){ try{ localStorage.setItem("imperio_cliente", JSON.stringify({...leerLocal(), ...o})); }catch(e){} }
+function tokenPara(tel){ const l = leerLocal(); return l.token && l.tokenTel === soloDigitos(tel) ? l.token : null; }
+function guardarToken(tel, token){ if(token) guardarLocal({token, tokenTel: soloDigitos(tel)}); }
 function leerLocal(){ try{ return JSON.parse(localStorage.getItem("imperio_cliente")||"null") || {}; }catch(e){ return {}; } }
 
 const sv = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
@@ -1131,7 +847,7 @@ async function cargarDatosBase(){
       sb.from("servicios").select("*").eq("activo",true).order("orden"),
       sb.from("estilos_corte").select("*").eq("activo",true).order("orden"),
       sb.from("horarios").select("*").order("dia_semana"),
-      sb.from("bloqueos").select("*").gte("fecha", isoDate(new Date())),
+      sb.from("bloqueos").select("id,fecha,hora_inicio,hora_fin,todo_el_dia").gte("fecha", isoDate(new Date())),
     ]);
     S.config = cfg.data || {nombre:"Imperio Store Barber"};
     S.servicios = serv.data || [];
@@ -1144,8 +860,7 @@ async function cargarDatosBase(){
     S.productos = prod || [];
   }catch(e){ S.productos = S.productos || []; }
   try{
-    let r = await sb.from("resenas").select("calificacion,comentario,nombre,creado_en,citas(clientes(nombre))").order("creado_en",{ascending:false});
-    if(r.error) r = await sb.from("resenas").select("calificacion,comentario,creado_en,citas(clientes(nombre))").order("creado_en",{ascending:false});
+    const r = await sb.rpc("resenas_publicas");
     const todas = r.data || [];
     S.totalResenas = todas.length;
     S.promedio = todas.length ? (todas.reduce((a,x)=>a + x.calificacion, 0) / todas.length).toFixed(1) : null;
@@ -1158,7 +873,7 @@ async function cargarDatosBase(){
 async function cargarCitasRango(force){
   if(!force && Date.now() - S.citasAt < 45000) return;
   const hoy = new Date(), fin = new Date(); fin.setDate(hoy.getDate() + VENTANA_DIAS + 1);
-  const {data} = await sb.from("citas").select("fecha,hora_inicio,hora_fin,estado").gte("fecha", isoDate(hoy)).lte("fecha", isoDate(fin)).neq("estado","cancelada");
+  const {data} = await sb.rpc("horarios_ocupados", {p_desde: isoDate(hoy), p_hasta: isoDate(fin)});
   S.citasMap = {};
   (data||[]).forEach(c=>{ (S.citasMap[c.fecha] = S.citasMap[c.fecha] || []).push({hora_inicio:hhmm(c.hora_inicio), hora_fin:hhmm(c.hora_fin), estado:c.estado}); });
   S.citasAt = Date.now();
@@ -1817,57 +1532,48 @@ async function confirmarCita(){
   const ref = $("#fRef") ? $("#fRef").value.trim() : "";
   if(b.nombre.length < 2){ toast("Escribe tu nombre"); return $("#fNombre").focus(); }
   if(soloDigitos(b.telefono).length < 8){ toast("Revisa tu número de WhatsApp"); return $("#fTel").focus(); }
-  btn.disabled = true; btn.innerHTML = "Confirmando…";
-  try{
-    const cliente = await obtenerCliente(b.nombre, b.telefono, ref);
-    const {data:choques} = await sb.from("citas").select("hora_inicio, servicios(nombre)").eq("cliente_id", cliente.id).eq("fecha", b.fecha).eq("estado","confirmada");
-    if(choques && choques.length){
-      const primero = choques[0];
-      openSheet(`<h3>Ya tienes una cita ese día</h3><p class="sub">El ${fmtFechaLarga(b.fecha)} a las ${hhmm(primero.hora_inicio)} ya tienes agendado ${esc((primero.servicios||{}).nombre || "un servicio")}${choques.length>1?` (y ${choques.length-1} más)`:""}. ¿Quieres agendar esta también?</p>
-        <div class="sh-actions"><button class="pill pill-ghost" id="dbNo">Cancelar</button><button class="pill pill-white" id="dbSi">Sí, agendar otra</button></div>`, sh=>{
-        $("#dbNo",sh).onclick = ()=>{ closeSheet(); btn.disabled = false; btn.innerHTML = `Confirmar cita ${IC.arrowR}`; };
-        $("#dbSi",sh).onclick = ()=>{ closeSheet(); procederConfirmar(cliente, ref); };
-      });
-      return;
-    }
-    await procederConfirmar(cliente, ref);
-  }catch(e){
-    console.error(e); toast("No pudimos confirmar. Revisa tu conexión e intenta de nuevo.");
-    btn.disabled = false; btn.innerHTML = `Confirmar cita ${IC.arrowR}`;
-  }
+  await procederConfirmar(ref, false);
 }
-async function procederConfirmar(cliente, ref){
+async function procederConfirmar(ref, forzar){
   const b = S.booking, btn = $("#wNext"); if(btn){ btn.disabled = true; btn.innerHTML = "Confirmando…"; }
-  const dur = sumaDuracion(b.items);
+  const reactivar = ()=>{ if(btn){ btn.disabled = false; btn.innerHTML = `Confirmar cita ${IC.arrowR}`; } };
   const volverAHorario = ()=>{ b.hora = null; S.wizardStep = pasosReserva().indexOf("horario")+1; S.lastStep = 0; renderWizard($("#app")); };
   try{
     await cargarCitasRango(true);
-    if(!calcularSlots(b.fecha, dur).some(s=> s.hora === b.hora && !s.ocupado)){
+    if(!calcularSlots(b.fecha, sumaDuracion(b.items)).some(s=> s.hora === b.hora && !s.ocupado)){
       toast("Ese horario acaba de ocuparse. Elige otro."); return volverAHorario();
     }
-    if(b.estilo) await sb.from("clientes").update({estilo_preferido_id: b.estilo.id}).eq("id", cliente.id);
-    const {data:visita, error:errV} = await sb.from("visitas").insert({cliente_id: cliente.id, fecha: b.fecha}).select().single();
-    if(errV) throw errV;
-    let cursor = b.hora;
-    const filas = b.items.map(it=>{
-      const fin = addMin(cursor, it.servicio.duracion_minutos);
-      const fila = {cliente_id: cliente.id, servicio_id: it.servicio.id, estilo_id: b.estilo ? b.estilo.id : null, etiqueta: it.etiqueta || "", visita_id: visita.id, fecha: b.fecha, hora_inicio: cursor, hora_fin: fin, estado:"confirmada"};
-      cursor = fin; return fila;
-    });
-    const {data:citas, error} = await sb.from("citas").insert(filas).select();
-    if(error){ toast("Ese horario ya no está disponible. Elige otro."); S.citasAt = 0; return volverAHorario(); }
     const productos = b.productos.filter(x=> x.cantidad > 0);
-    if(productos.length){
-      await sb.from("ventas_producto").insert(productos.map(it=> ({producto_id: it.producto.id, visita_id: visita.id, cliente_id: cliente.id, cantidad: it.cantidad, precio_unit: it.producto.precio, fecha: b.fecha})));
-      for(const it of productos){ if(it.producto.stock != null) await sb.from("productos").update({stock: Math.max(0, it.producto.stock - it.cantidad)}).eq("id", it.producto.id); }
+    const {data:r, error} = await sb.rpc("reservar", {
+      p_nombre: b.nombre, p_telefono: soloDigitos(b.telefono), p_codigo_ref: ref || null, p_token: tokenPara(b.telefono),
+      p_estilo_id: b.estilo ? b.estilo.id : null, p_fecha: b.fecha, p_hora: b.hora,
+      p_items: b.items.map(it=> ({servicio_id: it.servicio.id, etiqueta: it.etiqueta || ""})),
+      p_productos: productos.map(it=> ({producto_id: it.producto.id, cantidad: it.cantidad})),
+      p_forzar: !!forzar
+    });
+    if(error) throw error;
+    if(r && r.conflicto){
+      const c = r.conflicto, n = Number(c.cantidad) || 1;
+      openSheet(`<h3>Ya tienes una cita ese día</h3><p class="sub">El ${fmtFechaLarga(b.fecha)} a las ${hhmm(c.hora_inicio)} ya tienes agendado ${esc(c.servicio || "un servicio")}${n>1?` (y ${n-1} más)`:""}. ¿Quieres agendar esta también?</p>
+        <div class="sh-actions"><button class="pill pill-ghost" id="dbNo">Cancelar</button><button class="pill pill-white" id="dbSi">Sí, agendar otra</button></div>`, sh=>{
+        $("#dbNo",sh).onclick = ()=>{ closeSheet(); reactivar(); };
+        $("#dbSi",sh).onclick = ()=>{ closeSheet(); procederConfirmar(ref, true); };
+      });
+      return;
     }
-    guardarLocal({nombre: b.nombre, telefono: soloDigitos(b.telefono)});
-    S.lastCita = {visita, cliente, estilo: b.estilo, items: b.items, productos, fecha: b.fecha, hora_inicio: b.hora, hora_fin: cursor, citaId: citas[0].id};
+    if(!r || r.error){
+      const e = r && r.error; S.citasAt = 0;
+      if(["ocupado","hora_pasada","fuera_de_horario","bloqueado","cerrado","fecha_invalida"].includes(e)){ toast("Ese horario ya no está disponible. Elige otro."); return volverAHorario(); }
+      if(e === "sin_stock" || e === "producto_invalido"){ toast("Un producto ya no está disponible. Revisa tu pedido."); return reactivar(); }
+      if(e === "limite_citas"){ toast("Tienes muchas citas pendientes. Escríbenos por WhatsApp."); return reactivar(); }
+      throw new Error(e || "reserva");
+    }
+    guardarLocal({nombre: b.nombre, telefono: soloDigitos(b.telefono)}); guardarToken(b.telefono, r.token);
+    S.lastCita = {visita:{id:r.visita_id}, cliente:r.cliente, estilo:b.estilo, items:b.items, productos, fecha:b.fecha, hora_inicio:b.hora, hora_fin:r.hora_fin, citaId:r.cita_id};
     S.booking = null; S.citasAt = 0; S.quick.hora = null;
     go("confirmacion", {replace:true});
   }catch(e){
-    console.error(e); toast("No pudimos confirmar. Revisa tu conexión e intenta de nuevo.");
-    if(btn){ btn.disabled = false; btn.innerHTML = `Confirmar cita ${IC.arrowR}`; }
+    console.error(e); toast("No pudimos confirmar. Revisa tu conexión e intenta de nuevo."); reactivar();
   }
 }
 
@@ -1938,11 +1644,10 @@ function abrirEspera(fecha){
       if(nom.length < 2 || soloDigitos(tel).length < 8) return toast("Completa tu nombre y WhatsApp");
       $("#wlOk",sh).disabled = true;
       try{
-        const cl = await obtenerCliente(nom, tel);
-        const {data:ya} = await sb.from("waitlist").select("id").eq("cliente_id", cl.id).eq("fecha_deseada", fecha).eq("estado","esperando").maybeSingle();
-        if(!ya) await sb.from("waitlist").insert({cliente_id: cl.id, fecha_deseada: fecha, estado:"esperando"});
-        guardarLocal({nombre: nom, telefono: soloDigitos(tel)});
-        closeSheet(); toast(ya ? "Ya estabas en la lista para ese día" : "Listo, te avisaremos por WhatsApp");
+        const {data:r, error} = await sb.rpc("anotar_espera", {p_nombre: nom, p_telefono: soloDigitos(tel), p_token: tokenPara(tel), p_fecha: fecha});
+        if(error) throw error;
+        guardarLocal({nombre: nom, telefono: soloDigitos(tel)}); guardarToken(tel, r.token);
+        closeSheet(); toast(r.ya ? "Ya estabas en la lista para ese día" : "Listo, te avisaremos por WhatsApp");
       }catch(e){ console.error(e); toast("No se pudo guardar, intenta de nuevo"); $("#wlOk",sh).disabled = false; }
     };
   });
@@ -2007,7 +1712,8 @@ function renderMisCitas(app){
   $$("[data-cancel]", app).forEach(b=> b.onclick = ()=>{
     const g = prox.find(x=> x.key === b.dataset.cancel);
     confirmar("¿Cancelar esta cita?", `${nombresGrupo(g)} · ${fmtFechaLarga(g.fecha)} a las ${hhmm(g.hora_inicio)}. El espacio se liberará para otro cliente.`, "Sí, cancelar", async ()=>{
-      await sb.from("citas").update({estado:"cancelada"}).in("id", g.ids);
+      const {error:errC} = await sb.rpc("cancelar_citas", {p_telefono: cl.telefono, p_token: tokenPara(cl.telefono), p_ids: g.ids});
+      if(errC){ console.error(errC); return toast("No se pudo cancelar. Intenta de nuevo o escríbenos."); }
       S.citasAt = 0; await buscarCliente(cl.telefono, true);
       const wa = waLink(S.config.whatsapp, `Hola, soy ${cl.nombre}. Cancelé mi cita del ${fmtFechaLarga(g.fecha)} a las ${hhmm(g.hora_inicio)}.`);
       setTimeout(()=> openSheet(`<h3>Cita cancelada</h3><p class="sub">Si quieres, avísale al barbero para que pueda ofrecer tu espacio.</p>
@@ -2018,16 +1724,20 @@ function renderMisCitas(app){
 async function buscarCliente(telefono, silencioso){
   const tel = soloDigitos(telefono);
   if(tel.length < 8){ if(!silencioso) toast("Escribe tu número completo"); return; }
-  const {data:cl} = await sb.from("clientes").select("*").eq("telefono", tel).maybeSingle();
-  if(!cl){ toast("No encontramos citas con ese número"); return; }
-  const [{data:citas}, {data:wl}] = await Promise.all([
-    sb.from("citas").select("*, servicios(nombre,precio), estilos_corte(nombre)").eq("cliente_id", cl.id).order("fecha",{ascending:false}),
-    sb.from("waitlist").select("*").eq("cliente_id", cl.id),
-  ]);
-  S.cliente = cl;
-  S.citasCliente = citas || [];
-  S.waitCliente = wl || [];
-  guardarLocal({nombre: cl.nombre, telefono: tel});
+  const {data, error} = await sb.rpc("mis_datos", {p_telefono: tel, p_token: tokenPara(tel)});
+  if(error){ console.error(error); if(!silencioso) toast("No pudimos consultar tus citas. Intenta de nuevo."); return; }
+  if(!data){
+    if(!silencioso){
+      const wa = waLink(S.config.whatsapp, "Hola, quiero consultar mi cita.");
+      openSheet(`<h3>No encontramos citas en este dispositivo</h3><p class="sub">Por tu seguridad, solo puedes ver y cancelar tus citas desde el dispositivo con el que agendaste. Si cambiaste de teléfono o de navegador, escríbenos y te ayudamos.</p>
+        <div class="sh-actions">${wa ? `<a class="pill pill-white" href="${wa}" target="_blank" rel="noopener">${IC.wa} Escribir por WhatsApp</a>` : ""}<button class="pill pill-ghost" data-reservar>Agendar cita</button></div>`);
+    }
+    return;
+  }
+  S.cliente = data.cliente;
+  S.citasCliente = data.citas || [];
+  S.waitCliente = data.waitlist || [];
+  guardarLocal({nombre: data.cliente.nombre, telefono: tel});
   if(S.route === "mis-citas") renderMisCitas($("#app"));
 }
 
@@ -2049,8 +1759,7 @@ function renderResena(app){
     if(!cal) return toast("Elige de 1 a 5 estrellas");
     $("#rOk").disabled = true;
     const row = {calificacion: cal, comentario: $("#rCom").value.trim().slice(0,600), nombre: $("#rNom").value.trim().slice(0,40)};
-    let {error} = await sb.from("resenas").insert(row);
-    if(error){ delete row.nombre; ({error} = await sb.from("resenas").insert(row)); }
+    const {error} = await sb.rpc("enviar_resena", {p_calificacion: row.calificacion, p_comentario: row.comentario, p_nombre: row.nombre});
     if(error){ $("#rOk").disabled = false; return toast("No se pudo enviar, intenta de nuevo"); }
     app.innerHTML = `<div class="appv center"><div class="ok-anim"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M24 41l11 11 21-23"/></svg></div>
       <h1 class="app-title">¡Gracias!</h1><p class="app-sub">Tu reseña fue enviada.</p><button class="pill pill-white" data-reservar>Agendar mi próximo corte ${IC.arrowR}</button></div>`;
