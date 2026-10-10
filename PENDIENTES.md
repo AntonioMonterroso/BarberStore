@@ -2,6 +2,9 @@
 
 Estado: ✅ hecho · 🔧 en curso · ⬜ pendiente. Orden = prioridad.
 
+## 0. Probar lo que llevamos
+- ✅ `demo.html`: toda la aplicación (cliente y panel) con datos de ejemplo en el navegador, sin Supabase. Instrucciones en `README.md`
+
 ## 1. Seguridad (Supabase)
 - 🔧 Cerrar RLS: el público ya no lee/modifica `clientes`, `citas`, `visitas`, `waitlist`, `resenas`, `ventas_producto` → `supabase/seguridad.sql`
 - 🔧 Operaciones públicas solo vía RPC (`reservar`, `mis_datos`, `cancelar_citas`, `anotar_espera`, `enviar_resena`, `horarios_ocupados`, `resenas_publicas`)
