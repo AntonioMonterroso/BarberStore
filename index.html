@@ -689,6 +689,23 @@ body[data-route=admin] #ftr,body[data-route=agendar] #ftr,body[data-route=confir
 .tk-note{margin:8px 0 0;font-size:11.5px;color:#5a5144}
 .tk-c{margin:4px 0;text-align:center;font-size:12px}
 .tk-folio{font-weight:700;letter-spacing:.2em}
+/* inicio: próximo horario, cómo funciona, reseñas */
+.next-slot{display:flex;align-items:center;justify-content:space-between;gap:14px;max-width:440px;padding:14px 16px;margin:0 0 22px;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line-2);animation:fadeUp .9s var(--ease) .9s both}
+.next-slot small{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--text-2)}
+.next-slot small i{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block}
+.next-slot b{display:block;font-size:18px;margin-top:3px;letter-spacing:-.01em}
+.steps{display:grid;grid-template-columns:1fr;gap:14px;list-style:none;margin:0;padding:0}
+.step-card{padding:26px;border-radius:22px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.step-card .n{display:block;font-family:var(--disp);font-size:56px;line-height:1;color:var(--copper-2);margin-bottom:12px}
+.step-card b{display:block;font-size:19px;margin-bottom:8px}
+.step-card p{margin:0;font-size:15px;line-height:1.6;color:var(--text-2)}
+.rv-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.rv-card{margin:0;padding:26px;border-radius:22px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);display:flex;flex-direction:column;gap:14px}
+.rv-card .st{color:var(--copper-2);letter-spacing:.15em;font-size:15px}
+.rv-card blockquote{margin:0;font-size:16px;line-height:1.6}
+.rv-card figcaption{margin-top:auto;font-size:13px;font-weight:700;color:var(--text-2)}
+.rv-sub{margin:12px 0 0;font-size:15px;color:var(--text-2)}
+@media (min-width:900px){.steps,.rv-grid{grid-template-columns:repeat(3,1fr)}}
 .tk-qr{width:132px;margin:14px auto 6px}
 .tk-qr svg{display:block;width:100%;height:auto}
 .chk-card{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;border-radius:20px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line-2);margin-bottom:14px}
@@ -1062,9 +1079,9 @@ function estadoHoy(){
   const bloq = S.bloqueos.some(b=> b.fecha === iso && b.todo_el_dia);
   if(!h || !h.activo || bloq) return {abierto:false, texto:"Cerrado hoy"};
   const m = toMin(ahoraHHMM()), a = toMin(h.hora_inicio), c = toMin(h.hora_fin);
-  const rango = hhmm(h.hora_inicio) + " – " + hhmm(h.hora_fin);
+  const rango = h12(h.hora_inicio) + " – " + h12(h.hora_fin);
   if(m >= a && m < c) return {abierto:true, texto:"Abierto ahora · " + rango};
-  return {abierto:false, texto: m < a ? "Abre hoy a las " + hhmm(h.hora_inicio) : "Cerrado ahora · " + rango};
+  return {abierto:false, texto: m < a ? "Abre hoy a las " + h12(h.hora_inicio) : "Cerrado ahora · " + rango};
 }
 
 /* ---------------- agrupar filas de citas en "visitas" ----------------
@@ -1221,6 +1238,9 @@ function renderInicio(app){
   const top = S.servicios.slice(0,5);
   const recorte = !!(c.hero_recorte && c.hero_imagen_url);
   const est = estadoHoy();
+  const waHero = waLink(c.whatsapp, "Hola, quiero agendar un corte.");
+  const sl = proximoHorario();
+  const slotHtml = sl ? `<div class="next-slot"><div><small><i></i>Próximo horario libre</small><b>${sl.iso === isoDate(new Date()) ? "Hoy" : esc(fmtFecha(sl.iso))} · ${h12(sl.hora)}</b></div><button class="pill pill-white pill-sm" data-reservar>Reservar</button></div>` : "";
   const fig = c.hero_imagen_url
     ? `<div class="hx-fig ${recorte ? "cut" : "photo"}"><div class="par"><img src="${esc(c.hero_imagen_url)}" alt="${esc(c.barbero_nombre||c.nombre||"")}" fetchpriority="high"></div></div>`
     : `<div class="hx-fig logo"><div class="par"><img src="${LOGO}" alt=""></div></div>`;
@@ -1238,9 +1258,11 @@ function renderInicio(app){
       <div class="hx-side">
         ${c.hero_imagen_url ? "" : `<img class="hx-logo-badge" src="${LOGO}" alt="">`}
         <p class="hx-sub">${esc(sub)}</p>
+        ${slotHtml}
         <div class="svc-list">${top.map((s,i)=> svcRow(s,i)).join("") || `<p class="hx-sub" style="margin:0">Pronto publicaremos nuestros servicios.</p>`}</div>
         <div class="hx-cta">
           <button class="pill pill-white" data-reservar>Agendar cita ${IC.arrowR}</button>
+          ${waHero ? `<a class="pill pill-ghost" href="${waHero}" target="_blank" rel="noopener">${IC.wa} WhatsApp</a>` : ""}
           ${S.servicios.length > top.length ? `<button class="link-btn" data-anchor="servicios">Ver los ${S.servicios.length} servicios</button>` : ""}
         </div>
       </div>
@@ -1277,6 +1299,10 @@ function renderInicio(app){
     <div class="tiles reveal" data-d="1" id="svcTiles"></div>
   </section>
 
+  ${seccionComoFunciona()}
+
+  ${seccionResenas()}
+
   ${seccionUbicacion()}
 
   <section class="final reveal">
@@ -1297,10 +1323,31 @@ function renderInicio(app){
   activarReveal(app);
 }
 
+function seccionComoFunciona(){
+  return `<section class="sec" id="como">
+    <div class="sec-head reveal"><span class="kicker">Cómo funciona</span><h2 class="h-xl">${titulo("Reserva en *tres pasos*")}</h2></div>
+    <ol class="steps reveal" data-d="1">
+      <li class="step-card"><span class="n">01</span><b>Elige tu servicio</b><p>Corte, barba o los dos. Puedes repetir un servicio si vienen varias personas.</p></li>
+      <li class="step-card"><span class="n">02</span><b>Elige fecha y hora</b><p>Ves el cupo de cada día en tiempo real. Si está lleno, te anotas en la lista de espera.</p></li>
+      <li class="step-card"><span class="n">03</span><b>Confirma y listo</b><p>Solo tu nombre y tu WhatsApp. Recibes tu ticket y puedes agregarlo a tu calendario.</p></li>
+    </ol>
+  </section>`;
+}
+function seccionResenas(){
+  const c = S.config; if(c.mostrar_resenas === false || !S.resenas.length) return "";
+  return `<section class="sec" id="resenas">
+    <div class="sec-head reveal"><span class="kicker">Reseñas</span><h2 class="h-xl">${titulo("Lo que dicen *los clientes*")}</h2>
+      ${S.promedio ? `<p class="rv-sub">${S.promedio} de 5 · ${S.totalResenas} reseñas</p>` : ""}</div>
+    <div class="rv-grid reveal" data-d="1">${S.resenas.slice(0,3).map(r=> `<figure class="rv-card">
+      <span class="st" role="img" aria-label="${r.calificacion} de 5 estrellas">${"★".repeat(r.calificacion)}<span style="color:var(--text-3)">${"★".repeat(Math.max(0, 5 - r.calificacion))}</span></span>
+      <blockquote>“${esc(r.comentario)}”</blockquote>
+      <figcaption>${esc(r.nombre || "Cliente")}</figcaption></figure>`).join("")}</div>
+  </section>`;
+}
 function svcRow(s,i){
   return `<button class="svc-row" data-serv="${s.id}" style="--i:${i}">
     <span class="nm">${esc(s.nombre)}<small>${durTxt(s.duracion_minutos)}</small></span>
-    <span class="rt"><span class="pr">${money(s.precio)}</span><span class="bk">Reservar ${IC.arrowR}</span></span>
+    <span class="rt"><span class="pr">${precioTxt(s)}</span><span class="bk">Reservar ${IC.arrowR}</span></span>
   </button>`;
 }
 
@@ -1465,7 +1512,7 @@ function seccionUbicacion(){
       <div class="side-cards">
         <div class="card reveal" data-d="1"><h4>Horario</h4><ul class="hours">
           ${[1,2,3,4,5,6,0].map(d=>{ const h = S.horarios.find(x=> x.dia_semana === d); const ab = h && h.activo;
-            return `<li class="${d===hoy?"today":""} ${ab?"":"closed"}"><b>${DIAS[d]}${d===hoy?" · hoy":""}</b><span>${ab ? hhmm(h.hora_inicio)+" – "+hhmm(h.hora_fin) : "Cerrado"}</span></li>`; }).join("")}
+            return `<li class="${d===hoy?"today":""} ${ab?"":"closed"}"><b>${DIAS[d]}${d===hoy?" · hoy":""}</b><span>${ab ? h12(h.hora_inicio)+" – "+h12(h.hora_fin) : "Cerrado"}</span></li>`; }).join("")}
         </ul></div>
         ${filas.length ? `<div class="card reveal" data-d="2"><h4>Contacto</h4>${filas.join("")}</div>` : ""}
       </div>
@@ -1720,7 +1767,7 @@ async function procederConfirmar(ref, forzar){
     if(error) throw error;
     if(r && r.conflicto){
       const c = r.conflicto, n = Number(c.cantidad) || 1;
-      openSheet(`<h3>Ya tienes una cita ese día</h3><p class="sub">El ${fmtFechaLarga(b.fecha)} a las ${hhmm(c.hora_inicio)} ya tienes agendado ${esc(c.servicio || "un servicio")}${n>1?` (y ${n-1} más)`:""}. ¿Quieres agendar esta también?</p>
+      openSheet(`<h3>Ya tienes una cita ese día</h3><p class="sub">El ${fmtFechaLarga(b.fecha)} a las ${h12(c.hora_inicio)} ya tienes agendado ${esc(c.servicio || "un servicio")}${n>1?` (y ${n-1} más)`:""}. ¿Quieres agendar esta también?</p>
         <div class="sh-actions"><button class="pill pill-ghost" id="dbNo">Cancelar</button><button class="pill pill-white" id="dbSi">Sí, agendar otra</button></div>`, sh=>{
         $("#dbNo",sh).onclick = ()=>{ closeSheet(); reactivar(); };
         $("#dbSi",sh).onclick = ()=>{ closeSheet(); procederConfirmar(ref, true); };
@@ -1831,7 +1878,7 @@ function renderConfirmacion(app){
   const c = S.lastCita; if(!c) return go("inicio", {replace:true});
   const cfg = S.config, d = datosTicketCita(c);
   const nombresTxt = c.items.map(it=> it.servicio.nombre + (it.etiqueta?` (${it.etiqueta})`:"")).join(", ");
-  const waTxt = `Hola, soy ${c.cliente.nombre}. Acabo de agendar ${nombresTxt} el ${fmtFechaLarga(c.fecha)} a las ${hhmm(c.hora_inicio)}.`;
+  const waTxt = `Hola, soy ${c.cliente.nombre}. Acabo de agendar ${nombresTxt} el ${fmtFechaLarga(c.fecha)} a las ${h12(c.hora_inicio)}.`;
   const wa = waLink(cfg.whatsapp, waTxt);
   const acts = [
     `<a class="act" href="${gcalLink(c, nombresTxt)}" target="_blank" rel="noopener" style="--i:0"><span class="act-ic">${IC.cal}</span><span><b>Google Calendar</b><small>Agregar a tu calendario</small></span>${IC.chevR}</a>`,
@@ -1924,7 +1971,7 @@ function renderMisCitas(app){
     <p class="sub-lbl">Próximas citas</p>
     ${prox.length ? prox.map((g,i)=>{ const d = parseIso(g.fecha); return `<div class="up-card" style="--i:${i}">
         <div class="up-date"><b>${d.getDate()}</b><span>${MES_C[d.getMonth()]}</span></div>
-        <div class="up-info"><b>${esc(nombresGrupo(g))}</b><span>${DIAS[d.getDay()]} · ${hhmm(g.hora_inicio)} – ${hhmm(g.hora_fin)}</span></div>
+        <div class="up-info"><b>${esc(nombresGrupo(g))}</b><span>${DIAS[d.getDay()]} · ${h12(g.hora_inicio)} – ${h12(g.hora_fin)}</span></div>
         <div class="up-act"><a class="circ" href="${gcalLink(g, nombresGrupo(g))}" target="_blank" rel="noopener" aria-label="Agregar al calendario">${IC.cal}</a><button class="circ" data-ticket="${g.key}" aria-label="Ver ticket">${IC.ticket}</button><button class="circ danger" data-cancel="${g.key}" aria-label="Cancelar cita">${IC.x}</button></div>
       </div>`; }).join("")
       : `<div class="note">No tienes citas próximas.</div><button class="pill pill-white pill-block" data-reservar style="margin-top:8px">Agendar una cita ${IC.arrowR}</button>`}
@@ -1956,11 +2003,11 @@ function renderMisCitas(app){
   });
   $$("[data-cancel]", app).forEach(b=> b.onclick = ()=>{
     const g = prox.find(x=> x.key === b.dataset.cancel);
-    confirmar("¿Cancelar esta cita?", `${nombresGrupo(g)} · ${fmtFechaLarga(g.fecha)} a las ${hhmm(g.hora_inicio)}. El espacio se liberará para otro cliente.`, "Sí, cancelar", async ()=>{
+    confirmar("¿Cancelar esta cita?", `${nombresGrupo(g)} · ${fmtFechaLarga(g.fecha)} a las ${h12(g.hora_inicio)}. El espacio se liberará para otro cliente.`, "Sí, cancelar", async ()=>{
       const {error:errC} = await sb.rpc("cancelar_citas", {p_telefono: cl.telefono, p_token: tokenPara(cl.telefono), p_ids: g.ids});
       if(errC){ console.error(errC); return toast("No se pudo cancelar. Intenta de nuevo o escríbenos."); }
       S.citasAt = 0; await buscarCliente(cl.telefono, true);
-      const wa = waLink(S.config.whatsapp, `Hola, soy ${cl.nombre}. Cancelé mi cita del ${fmtFechaLarga(g.fecha)} a las ${hhmm(g.hora_inicio)}.`);
+      const wa = waLink(S.config.whatsapp, `Hola, soy ${cl.nombre}. Cancelé mi cita del ${fmtFechaLarga(g.fecha)} a las ${h12(g.hora_inicio)}.`);
       setTimeout(()=> openSheet(`<h3>Cita cancelada</h3><p class="sub">Si quieres, avísale al barbero para que pueda ofrecer tu espacio.</p>
         <div class="sh-actions">${wa ? `<a class="pill pill-white" href="${wa}" target="_blank" rel="noopener">${IC.wa} Avisar</a>` : ""}<button class="pill pill-ghost" data-reservar>Reagendar</button></div>`), 420);
     });
@@ -2078,7 +2125,7 @@ async function citasDelDia(fecha){
 }
 function linkRecordatorio(g){
   const cl = g.cliente || {};
-  return waLink(cl.telefono, plantilla(S.config.msg_recordatorio || DEF_RECORD, {nombre: primerNombre(cl.nombre), servicio: nombresGrupo(g), fecha: fmtFechaLarga(g.fecha), hora: hhmm(g.hora_inicio), negocio: S.config.nombre || ""}));
+  return waLink(cl.telefono, plantilla(S.config.msg_recordatorio || DEF_RECORD, {nombre: primerNombre(cl.nombre), servicio: nombresGrupo(g), fecha: fmtFechaLarga(g.fecha), hora: h12(g.hora_inicio), negocio: S.config.nombre || ""}));
 }
 function ordHtml(g, i, opt={}){
   const cl = g.cliente || {}, [txt, cls] = ESTADOS[g.estado] || [g.estado, ""];
@@ -2120,7 +2167,7 @@ function cablearOrd(root, grupos){
     }
     if(b.dataset.act === "noshow"){ await sb.from("citas").update({estado:"no_asistio"}).in("id", g.ids); toast("Marcada como no asistió"); refrescarAdmin(); }
     if(b.dataset.act === "cancel"){
-      confirmar("¿Cancelar la cita?", `${(g.cliente||{}).nombre||"Cliente"} · ${fmtFechaLarga(g.fecha)} a las ${hhmm(g.hora_inicio)}.`, "Sí, cancelar", async ()=>{
+      confirmar("¿Cancelar la cita?", `${(g.cliente||{}).nombre||"Cliente"} · ${fmtFechaLarga(g.fecha)} a las ${h12(g.hora_inicio)}.`, "Sí, cancelar", async ()=>{
         await sb.from("citas").update({estado:"cancelada"}).in("id", g.ids); S.citasAt = 0;
         const {count} = await sb.from("waitlist").select("*", {count:"exact", head:true}).eq("fecha_deseada", g.fecha).eq("estado","esperando");
         refrescarAdmin();
@@ -2356,7 +2403,7 @@ async function hojaNuevaCita(pre={}){
       try{
         const cl = await obtenerCliente(nom, tel);
         const {data:choques} = await sb.from("citas").select("hora_inicio").eq("cliente_id", cl.id).eq("fecha", fecha).eq("estado","confirmada");
-        if(choques && choques.length && !window.confirm(`${nom} ya tiene una cita ese día a las ${hhmm(choques[0].hora_inicio)}. ¿Agendar esta también?`)){
+        if(choques && choques.length && !window.confirm(`${nom} ya tiene una cita ese día a las ${h12(choques[0].hora_inicio)}. ¿Agendar esta también?`)){
           $("#ncOk",sh).disabled = false; return;
         }
         let cursor = horaIni;
