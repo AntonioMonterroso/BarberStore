@@ -513,23 +513,54 @@ body[data-route=admin] #ftr,body[data-route=agendar] #ftr,body[data-route=confir
 .adm-main{background:var(--bg-2);border-radius:28px;padding:20px 16px;min-width:0}
 @media(min-width:700px){.adm{padding-left:20px;padding-right:20px}.adm-main{padding:30px}}
 .adm-side{display:none}
-@media(min-width:1150px){
-  .adm{grid-template-columns:minmax(0,1fr) 390px}
+.adm-nav{display:none}
+.adm-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.adm-kicker{display:block;font-size:12px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--copper-2);margin-bottom:6px}
+.adm-title{margin:0;font-family:var(--disp);font-weight:400;font-size:clamp(38px,6vw,56px);line-height:1;text-transform:uppercase;letter-spacing:.005em}
+.nav-brand{display:flex;align-items:center;gap:12px;padding:0 8px;margin-bottom:22px}
+.nav-brand img{width:42px}
+.nav-brand b{display:block;font-family:var(--disp);font-weight:400;font-size:22px;letter-spacing:.06em;line-height:1}
+.nav-brand span{display:block;font-size:10px;font-weight:700;letter-spacing:.28em;color:var(--text-2);margin-top:4px}
+.nav-list{display:flex;flex-direction:column;gap:2px}
+.nav-list button{min-height:44px;padding:0 14px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:15px;font-weight:600;color:var(--text-2);text-align:left;transition:background .25s,color .25s}
+.nav-list button:hover{background:var(--card);color:var(--cream)}
+.nav-list button.on{background:var(--cream);color:#111;font-weight:800}
+.nav-n{min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:var(--copper);color:#140d05;font-size:12px;font-weight:800;display:grid;place-items:center}
+.nav-foot{margin-top:auto;padding-top:22px;display:flex;flex-direction:column;gap:2px}
+.nav-foot button{min-height:44px;padding:0 14px;border-radius:12px;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--text-3);text-align:left}
+.nav-foot button:hover{background:var(--card);color:var(--cream)}
+.nav-foot svg{width:18px;height:18px}
+@media(min-width:900px){
+  .adm{grid-template-columns:248px minmax(0,1fr);max-width:1560px}
+  .adm-nav{display:flex;flex-direction:column;position:sticky;top:84px;align-self:start;max-height:calc(100svh - 104px);background:var(--bg-2);border-radius:28px;padding:22px 14px 16px}
+  .adm-top,.adm-tabs{display:none!important}
+}
+@media(min-width:1280px){
+  .adm{grid-template-columns:248px minmax(0,1fr) 380px}
   .adm-side{display:flex;flex-direction:column;position:sticky;top:84px;align-self:start;max-height:calc(100svh - 104px);background:var(--bg-2);border-radius:28px;padding:24px}
   .only-mobile{display:none!important}
 }
+.adm-card{background:var(--card);border-radius:22px;padding:20px;margin-bottom:16px;box-shadow:inset 0 0 0 1px var(--line)}
+.adm-card h3{margin:0 0 4px;font-size:18px;font-weight:800;letter-spacing:-.01em}
+.adm-card .side-sub{margin-bottom:12px}
+.adm-card .more{display:inline-flex;align-items:center;min-height:36px;margin-top:4px;font-size:13px;font-weight:800;color:var(--copper-2)}
+.rowc{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--card-2);margin-top:8px}
+.rowc>div{flex:1;min-width:0}
+.rowc b{display:block;font-size:15px}
+.rowc span{display:block;font-size:13px;color:var(--text-2);margin-top:2px}
+.next-card .nt .ap{display:inline;font-family:var(--ui);font-size:14px;font-weight:800;letter-spacing:.04em;margin:0 0 0 8px;color:#8a5a1f}
 .adm-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
 .adm-brand{display:flex;align-items:center;gap:12px;min-width:0}
 .adm-brand img{width:44px}
 .adm-brand b{display:block;font-size:17px;font-weight:800;letter-spacing:-.01em}
 .adm-brand span{display:block;font-size:13px;color:var(--text-2);margin-top:2px}
 .adm-top-r{display:flex;gap:8px}
-.adm-tabs{display:flex;gap:26px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 24px;padding:0 16px 4px}
+.adm-tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 20px;padding:0 16px 4px}
 .adm-tabs::-webkit-scrollbar{display:none}
 @media(min-width:700px){.adm-tabs{margin:0 -30px 26px;padding:0 30px 4px}}
-.adm-tabs button{font-weight:800;font-size:clamp(21px,2.3vw,28px);letter-spacing:-.03em;color:var(--text-3);white-space:nowrap;padding:4px 0;transition:color .3s}
-.adm-tabs button:hover{color:var(--text-2)}
-.adm-tabs button.on{color:var(--cream)}
+.adm-tabs button{flex:0 0 auto;min-height:44px;padding:0 18px;border-radius:999px;font-weight:700;font-size:14.5px;color:var(--text-2);white-space:nowrap;box-shadow:inset 0 0 0 1px var(--line-2);transition:background .25s,color .25s}
+.adm-tabs button:hover{color:var(--cream)}
+.adm-tabs button.on{background:var(--cream);color:#111;box-shadow:none;font-weight:800}
 #admBody{animation:rise .45s var(--ease) both}
 .adm-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
 .adm-bar .search{flex:1 1 260px;max-width:none}
@@ -2095,28 +2126,50 @@ async function renderAdmin(app){
   if(!session) return renderLogin(app);
   if(!S.agFecha) S.agFecha = isoDate(new Date());
   app.innerHTML = `<div class="adm">
+    <aside class="adm-nav" aria-label="Secciones del panel">
+      <div class="nav-brand"><img src="${LOGO}" alt=""><div><b>IMPERIO</b><span>PANEL DEL NEGOCIO</span></div></div>
+      <nav class="nav-list" id="admNav">${TABS.map(([k,l])=>`<button data-tab="${k}" class="${S.adminTab===k?"on":""}">${l}${k==="espera" ? `<i class="nav-n hidden" id="navEspera"></i>` : ""}</button>`).join("")}</nav>
+      <div class="nav-foot"><button data-go="inicio">${IC.eye} Ver mi página</button><button id="admOut2">${IC.out} Cerrar sesión</button></div>
+    </aside>
     <div class="adm-main">
       <div class="adm-top">
         <div class="adm-brand"><img src="${LOGO}" alt=""><div><b>Panel del negocio</b><span>${fmtFechaLarga(isoDate(new Date()))}</span></div></div>
         <div class="adm-top-r"><button class="circ" data-go="inicio" aria-label="Ver página" title="Ver página">${IC.eye}</button><button class="circ" id="admOut" aria-label="Cerrar sesión" title="Cerrar sesión">${IC.out}</button></div>
       </div>
       <nav class="adm-tabs" id="admTabs">${TABS.map(([k,l])=>`<button data-tab="${k}" class="${S.adminTab===k?"on":""}">${l}</button>`).join("")}</nav>
+      <div class="adm-head"><div><span class="adm-kicker" id="admKicker"></span><h1 class="adm-title" id="admTitle"></h1></div><button class="pill pill-copper" id="admNueva">+ Nueva cita</button></div>
       <div id="admBody"></div>
     </div>
     <aside class="adm-side" id="admSide"></aside>
   </div>`;
   $("#admTabs").onclick = e=>{ const b = e.target.closest("[data-tab]"); if(!b) return; irTab(b.dataset.tab); };
-  $("#admOut").onclick = async ()=>{ await sb.auth.signOut(); render(); };
+  $("#admNav").onclick = e=>{ const b = e.target.closest("[data-tab]"); if(!b) return; irTab(b.dataset.tab); };
+  $("#admOut").onclick = $("#admOut2").onclick = async ()=>{ await sb.auth.signOut(); render(); };
+  $("#admNueva").onclick = ()=> hojaNuevaCita({fecha: S.adminTab === "agenda" ? S.agFecha : isoDate(new Date())});
+  pintarCabecera();
   const on = $("#admTabs .on"); if(on) on.scrollIntoView({inline:"center", block:"nearest"});
   await refrescarAdmin();
 }
+function pintarCabecera(){
+  const t = $("#admTitle"); if(!t) return;
+  const nombre = (TABS.find(([k])=> k === S.adminTab) || ["", ""])[1];
+  t.textContent = nombre;
+  $("#admKicker").textContent = S.adminTab === "hoy" ? fmtFechaLarga(isoDate(new Date())) : (S.config.nombre || "Panel del negocio");
+  $("#admNueva").classList.toggle("hidden", S.adminTab === "ajustes");
+}
+async function pintarInsignias(){
+  const n = $("#navEspera"); if(!n) return;
+  const {count} = await sb.from("waitlist").select("*", {count:"exact", head:true}).gte("fecha_deseada", isoDate(new Date())).eq("estado", "esperando");
+  n.textContent = count || 0; n.classList.toggle("hidden", !count);
+}
 function irTab(k){
   S.adminTab = k;
-  $$("#admTabs button").forEach(x=> x.classList.toggle("on", x.dataset.tab === k));
+  $$("#admTabs button, #admNav button").forEach(x=> x.classList.toggle("on", x.dataset.tab === k));
+  pintarCabecera();
   const b = $(`#admTabs [data-tab="${k}"]`); if(b) b.scrollIntoView({inline:"center", block:"nearest", behavior:"smooth"});
   pintarTab();
 }
-async function refrescarAdmin(){ await Promise.all([pintarTab(), pintarLateral()]); }
+async function refrescarAdmin(){ await Promise.all([pintarTab(), pintarLateral(), pintarInsignias()]); }
 async function pintarTab(){
   const box = $("#admBody"); if(!box) return;
   box.style.animation = "none"; void box.offsetWidth; box.style.animation = "";
@@ -2168,7 +2221,7 @@ function ordHtml(g, i, opt={}){
       ${opt.full && cl.telefono ? `<span>${esc(cl.telefono)}</span>` : ""}
       ${g.notas ? `<span class="ord-note">${esc(g.notas)}</span>` : ""}
       <div class="ord-acts">${acciones}</div></div>
-    <div class="ord-r"><b>${hhmm(g.hora_inicio)}</b><span>${money(totalGrupo(g))}</span><span style="font-size:11px;letter-spacing:.08em">${folioDe(g.key)}</span></div>
+    <div class="ord-r"><b>${h12(g.hora_inicio)}</b><span>${money(totalGrupo(g))}</span><span style="font-size:11px;letter-spacing:.08em">${folioDe(g.key)}</span></div>
   </div>`;
 }
 function cablearOrd(root, grupos){
@@ -2254,7 +2307,7 @@ function prodStepperRow(p, qty){
 
 /* ---------------- columna lateral "Tu día" ---------------- */
 async function pintarLateral(){
-  const side = $("#admSide"); if(!side || window.innerWidth < 1150) return;
+  const side = $("#admSide"); if(!side || window.innerWidth < 1280) return;
   const hoy = isoDate(new Date()), citas = await citasDelDia(hoy);
   await calcularRiesgo();
   const grupos = agruparCitas(citas);
@@ -2326,18 +2379,26 @@ async function tabHoy(box){
   const next = grupos.find(g=> g.estado === "confirmada" && hhmm(g.hora_fin) > ahora);
   const enRiesgo = Object.values(S.churn||{}).filter(x=> x.riesgo).length;
   const tiles = [["Citas hoy", act.length], ["Ingresos estimados", money(total)], ["Clientes", cls.count || 0], ["En riesgo de perderse", enRiesgo]];
+  const {data: esp} = await sb.from("waitlist").select("*, clientes(nombre,telefono)").gte("fecha_deseada", hoy).eq("estado", "esperando").order("fecha_deseada").order("creado_en").limit(3);
+  const riesgoIds = Object.entries(S.churn||{}).filter(([,x])=> x.riesgo).sort((a,b)=> b[1].diasDesde - a[1].diasDesde).slice(0,3).map(([id])=> id);
+  let riesgoCl = [];
+  if(riesgoIds.length){ const {data: cs} = await sb.from("clientes").select("id,nombre,telefono").in("id", riesgoIds); riesgoCl = riesgoIds.map(id=> (cs||[]).find(c=> c.id === id)).filter(Boolean); }
+  const esperaHtml = (esp||[]).length ? `<section class="adm-card"><h3>Lista de espera</h3><p class="side-sub">Avisa al primero si se libera un espacio.</p>${esp.map(w=>{ const cl = w.clientes || {}; const msg = plantilla(S.config.msg_espera || DEF_ESPERA, {nombre: primerNombre(cl.nombre), fecha: fmtFechaLarga(w.fecha_deseada), negocio: S.config.nombre || ""});
+      return `<div class="rowc"><div><b>${esc(cl.nombre||"Cliente")}</b><span>Quiere el ${esc(fmtFechaLarga(w.fecha_deseada))}</span></div>${cl.telefono ? `<a class="mini c" href="${waLink(cl.telefono, msg)}" target="_blank" rel="noopener">${IC.wa} Avisar</a>` : ""}</div>`; }).join("")}<button class="more" data-ir="espera">Ver toda la lista →</button></section>` : "";
+  const riesgoHtml = riesgoCl.length ? `<section class="adm-card"><h3>Se están perdiendo</h3><p class="side-sub">Llevan más tiempo del habitual sin volver.</p>${riesgoCl.map(c=>{ const r = S.churn[c.id]; const msg = plantilla(S.config.msg_reactivar || DEF_REACTIVAR, {nombre: primerNombre(c.nombre), negocio: S.config.nombre || ""});
+      return `<div class="rowc"><div><b>${esc(c.nombre)}</b><span>Última visita hace ${r.diasDesde} días</span></div>${c.telefono ? `<a class="mini c" href="${waLink(c.telefono, msg)}" target="_blank" rel="noopener">${IC.wa} Reactivar</a>` : ""}</div>`; }).join("")}<button class="more" data-ir="clientes">Ver clientes →</button></section>` : "";
   box.innerHTML = `
     <div class="stat-tiles">${tiles.map(([l,v],i)=>`<div class="stile" style="--i:${i}"><span>${l}</span><b>${v}</b></div>`).join("")}</div>
     ${S.config.qr_llegada_activo ? checkinCardHtml() : ""}
     ${next ? `<div class="next-card">
-      <div class="nt"><small>SIGUIENTE</small>${hhmm(next.hora_inicio)}</div>
+      <div class="nt"><small>SIGUIENTE</small>${h12(next.hora_inicio).split(" ")[0]}<span class="ap">${h12(next.hora_inicio).split(" ").slice(1).join(" ")}</span></div>
       <div><b>${esc((next.cliente||{}).nombre || "Cliente")}</b><span>${esc(nombresGrupo(next))}</span>${next.notas ? `<span style="color:#8a5a1f;margin-top:6px">${esc(next.notas)}</span>` : ""}</div>
       <div class="acts">${(next.cliente||{}).telefono ? `<a class="pill pill-black pill-sm" href="${linkRecordatorio(next)}" target="_blank" rel="noopener">${IC.wa} Recordar</a>` : ""}<button class="pill pill-ghost pill-sm" style="color:#111;box-shadow:inset 0 0 0 1px #bbb" data-act="done" data-id="${next.key}">${IC.check} Marcar listo</button></div>
     </div>` : ""}
+    ${esperaHtml}${riesgoHtml}
     <div class="only-mobile"><h3 class="side-h" style="margin-top:8px">Tu día</h3><p class="side-sub">${act.length} ${act.length===1?"cita":"citas"} para hoy</p>
       <div class="side-list">${grupos.length ? grupos.map((g,i)=> ordHtml(g, i, {next: next && next.key === g.key})).join("") : `<div class="adm-empty">Sin citas para hoy.</div>`}</div></div>
     <div class="quick">
-      <button id="qkCita">${IC.plus}Nueva cita</button>
       <button id="qkVenta">${IC.qr}Vender producto</button>
       <button id="qkGasto">${IC.block}Registrar gasto</button>
       <button id="qkBloq">${IC.block}Bloquear un día</button>
@@ -2346,7 +2407,7 @@ async function tabHoy(box){
     </div>`;
   cablearOrd(box, grupos);
   if(S.config.qr_llegada_activo) cablearCheckin(box, grupos);
-  $("#qkCita").onclick = ()=> hojaNuevaCita({fecha: hoy});
+  $$("[data-ir]", box).forEach(b=> b.onclick = ()=> irTab(b.dataset.ir));
   $("#qkVenta").onclick = ()=> irTab("productos");
   $("#qkGasto").onclick = ()=> irTab("finanzas");
   $("#qkBloq").onclick = ()=> irTab("horario");
@@ -2968,7 +3029,7 @@ async function subirImagen(file){
   return sb.storage.from("imagenes").getPublicUrl(path).data.publicUrl;
 }
 
-window.addEventListener("resize", ()=>{ if(S.route === "admin" && window.innerWidth >= 1150 && $("#admSide") && !$("#admSide").innerHTML) pintarLateral(); });
+window.addEventListener("resize", ()=>{ if(S.route === "admin" && window.innerWidth >= 1280 && $("#admSide") && !$("#admSide").innerHTML) pintarLateral(); });
 
 /* ============================================================
    ARRANQUE

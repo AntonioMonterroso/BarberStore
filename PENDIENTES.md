@@ -45,7 +45,8 @@ Estado: ✅ hecho · 🔧 en curso · ⬜ pendiente. Orden = prioridad.
 - ✅ Paleta cálida nueva (negro cálido, cobre, hueso) y contraste AA en texto terciario
 - ✅ Página de inicio: tarjeta de próximo horario libre, botón de WhatsApp, sección "Cómo funciona", sección de reseñas reales, horarios en 12 h y "A cotizar"
 - ✅ Mis citas rediseñada: carga sola en el dispositivo de siempre, citas con "Hoy / Mañana / En N días", botones claros (ticket, calendario, cancelar), fidelidad sin degradados
-- ⬜ Pasar al sitio real el rediseño visual del panel del negocio
+- ✅ Panel rediseñado: barra lateral en escritorio y pestañas en píldoras en móvil, encabezado con "+ Nueva cita", insignia de la lista de espera y tarjetas de lista de espera y clientes que se están perdiendo en "Hoy"
+- ⬜ Pulir el resto de pestañas del panel (Agenda, Clientes, Servicios, Finanzas...) con el mismo lenguaje visual
 - ✅ Registro de llegada con QR: opcional (Ajustes), QR en el ticket, folio o escáner en "Hoy". El QR se genera en el navegador (sin servicios externos)
 
 ## 4. Negocio
