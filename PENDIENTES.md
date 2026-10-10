@@ -41,7 +41,8 @@ Estado: ✅ hecho · 🔧 en curso · ⬜ pendiente. Orden = prioridad.
 - ✅ Ticket de confirmación que se "imprime" línea por línea, con folio, código de barras decorativo, imprimir/guardar PDF y compartir; también desde "Mis citas"
 - ✅ Paleta cálida nueva (negro cálido, cobre, hueso) y contraste AA en texto terciario
 - ✅ Página de inicio: tarjeta de próximo horario libre, botón de WhatsApp, sección "Cómo funciona", sección de reseñas reales, horarios en 12 h y "A cotizar"
-- ⬜ Pasar al sitio real el resto del lienzo: rediseño visual de "Mis citas" y del panel
+- ✅ Mis citas rediseñada: carga sola en el dispositivo de siempre, citas con "Hoy / Mañana / En N días", botones claros (ticket, calendario, cancelar), fidelidad sin degradados
+- ⬜ Pasar al sitio real el rediseño visual del panel del negocio
 - ✅ Registro de llegada con QR: opcional (Ajustes), QR en el ticket, folio o escáner en "Hoy". El QR se genera en el navegador (sin servicios externos)
 
 ## 4. Negocio

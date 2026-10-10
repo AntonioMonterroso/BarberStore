@@ -438,14 +438,14 @@ body[data-route=admin] #ftr,body[data-route=agendar] #ftr,body[data-route=confir
 .ref-card b{display:block;font-family:var(--disp);font-size:28px;font-weight:400;letter-spacing:.08em;color:var(--copper-2);margin-top:2px}
 
 /* mis citas */
-.hello h1{font-weight:800;font-size:clamp(36px,9vw,48px);letter-spacing:-.04em;margin:0 0 6px}
+.hello h1{font-family:var(--disp);font-weight:400;font-size:clamp(40px,10vw,56px);line-height:1;text-transform:uppercase;letter-spacing:.01em;margin:0 0 8px}
 .hello p{margin:0 0 8px;color:var(--text-2)}
 .sub-lbl{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--text-3);margin:30px 0 12px}
-.last-card{display:flex;align-items:center;gap:14px;background:var(--cream);color:#111;border-radius:24px;padding:12px;animation:rise .6s var(--ease) both}
-.last-card .av{background:#111;color:var(--cream);width:56px;height:56px;border-radius:17px;font-size:20px}
-.last-card b{display:block;font-weight:800;font-size:16px}
-.last-card span{font-size:13px;color:#666}
-.last-card .pill{margin-left:auto}
+.last-card{display:flex;align-items:center;gap:14px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);color:var(--cream);border-radius:20px;padding:14px 16px;animation:rise .6s var(--ease) both}
+.last-card .av{background:var(--card-3);color:var(--cream);width:48px;height:48px;border-radius:50%;font-size:15px}
+.last-card b{display:block;font-weight:800;font-size:15.5px}
+.last-card span{font-size:13px;color:var(--text-2)}
+.last-card .pill{margin-left:auto;background:var(--cream);color:#111}
 .up-card{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:22px;padding:14px;margin-bottom:10px;animation:rise .6s var(--ease) both;animation-delay:calc(var(--i,0)*70ms)}
 .up-date{width:62px;height:72px;border-radius:17px;background:var(--card-2);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 auto}
 .up-date b{font-size:25px;font-weight:800;line-height:1}
@@ -453,14 +453,23 @@ body[data-route=admin] #ftr,body[data-route=agendar] #ftr,body[data-route=confir
 .up-info{min-width:0;flex:1}
 .up-info b{display:block;font-weight:700;font-size:15.5px}
 .up-info span{display:block;font-size:13px;color:var(--text-2);margin-top:3px}
-.up-act{display:flex;gap:6px}
-.up-act .circ{width:40px;height:40px}
-.points{position:relative;overflow:hidden;border-radius:24px;padding:22px;background:linear-gradient(135deg,#3b2a16,#1d1814 70%);margin-top:10px}
-.points::after{content:"";position:absolute;top:0;left:-50%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,220,170,.12),transparent);animation:sheen 5s ease-in-out infinite}
-@keyframes sheen{0%{left:-50%}60%,100%{left:130%}}
+.up2{background:var(--card);border-radius:22px;padding:18px;margin-bottom:12px;box-shadow:inset 0 0 0 1px var(--line);animation:rise .6s var(--ease) both;animation-delay:calc(var(--i,0)*70ms)}
+.up2.first{box-shadow:inset 0 0 0 1px var(--line-2)}
+.up2-top{display:flex;align-items:center;gap:16px}
+.up2 .up-date{background:var(--cream);color:#111}
+.up2 .up-date span{color:#8a5a1a}
+.up-chip{display:inline-block;margin-bottom:6px;padding:3px 10px;border-radius:999px;background:var(--card-3);color:var(--copper-2);font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.up2-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.up2-acts>*{flex:1 1 130px;min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 14px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line-2);font-size:13.5px;font-weight:700;text-align:center}
+.up2-acts>*:hover{box-shadow:inset 0 0 0 1px var(--text-3)}
+.up2-acts .danger{color:var(--danger);box-shadow:inset 0 0 0 1px rgba(255,90,79,.45)}
+.up2-acts svg{width:17px;height:17px}
+.mc-safe{margin:34px 0 0;padding-top:18px;border-top:1px solid var(--line);font-size:13px;line-height:1.6;color:var(--text-3)}
+.mc-safe a{display:inline-flex;align-items:center;min-height:44px;margin-top:4px;font-weight:800;color:var(--copper-2);text-decoration:underline}
+.points{position:relative;border-radius:22px;padding:22px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);margin-top:10px}
 .points b{font-family:var(--disp);font-size:46px;font-weight:400;line-height:1}
-.points span{display:block;font-size:13px;color:#d9c3a3;margin-top:6px}
-.pbar{height:8px;border-radius:8px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:16px}
+.points span{display:block;font-size:14px;color:var(--text-2);margin-top:8px}
+.pbar{height:8px;border-radius:8px;background:var(--card-3);overflow:hidden;margin-top:16px}
 .pbar i{display:block;height:100%;width:0;background:var(--copper-2);border-radius:8px;animation:grow 1.3s var(--ease) .3s forwards}
 @keyframes grow{to{width:var(--w)}}
 .note{padding:14px 16px;border-radius:16px;background:var(--card);color:var(--text-2);font-size:14px;line-height:1.55;margin-bottom:8px}
@@ -1944,8 +1953,14 @@ function abrirEspera(fecha){
 function renderMisCitas(app){
   if(!S.cliente){
     const l = leerLocal();
+    if(l.telefono && tokenPara(l.telefono) && !S.mcAuto){
+      S.mcAuto = true;
+      app.innerHTML = `<div class="appv enter"><h1 class="app-title">Mis citas</h1><p class="app-sub" role="status">Buscando tus citas…</p></div>`;
+      buscarCliente(l.telefono, true).then(()=>{ if(S.route === "mis-citas" && !S.cliente) renderMisCitas(app); });
+      return;
+    }
     app.innerHTML = `<div class="appv enter">
-      <h1 class="app-title">Mis citas</h1><p class="app-sub">Escribe el WhatsApp con el que agendaste.</p>
+      <h1 class="app-title">Mis citas</h1><p class="app-sub">Escribe el WhatsApp con el que agendaste. Por tu seguridad, tus citas solo se ven desde el mismo dispositivo con el que agendaste.</p>
       <label class="search" style="height:58px;margin-bottom:14px;max-width:none">${IC.phone}<input id="mcTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="Ej. 5512 3456" value="${esc(l.telefono||"")}" aria-label="Tu WhatsApp"></label>
       <button class="pill pill-white pill-block" id="mcGo">Ver mis citas ${IC.arrowR}</button>
       <p class="app-sub" style="margin-top:22px;font-size:13.5px">¿Aún no tienes cita? <button class="link-btn" data-reservar>Agenda aquí</button></p>
@@ -1965,22 +1980,30 @@ function renderMisCitas(app){
 
   app.innerHTML = `<div class="appv enter">
     <div class="hello"><h1>Hola, ${esc(primerNombre(cl.nombre))}</h1><p>${fmtFechaLarga(hoy)}</p></div>
+    <p class="sub-lbl">${prox.length > 1 ? "Próximas citas" : "Próxima cita"}</p>
+    ${prox.length ? prox.map((g,i)=>{ const d = parseIso(g.fecha), dias = Math.round((d - parseIso(hoy)) / 86400000), chip = dias === 0 ? "Hoy" : dias === 1 ? "Mañana" : `En ${dias} días`; return `<article class="up2 ${i===0?"first":""}" style="--i:${i}">
+        <div class="up2-top">
+          <div class="up-date"><b>${d.getDate()}</b><span>${MES_C[d.getMonth()]}</span></div>
+          <div class="up-info"><span class="up-chip">${chip}</span><b>${esc(nombresGrupo(g))}</b><span>${DIAS[d.getDay()]} · ${h12(g.hora_inicio)} – ${h12(g.hora_fin)}</span></div>
+        </div>
+        <div class="up2-acts">
+          <button data-ticket="${g.key}">${IC.ticket} Ver ticket</button>
+          <a href="${gcalLink(g, nombresGrupo(g))}" target="_blank" rel="noopener">${IC.cal} Calendario</a>
+          <button class="danger" data-cancel="${g.key}">${IC.x} Cancelar</button>
+        </div>
+      </article>`; }).join("")
+      : `<div class="note">No tienes citas próximas.</div><button class="pill pill-white pill-block" data-reservar style="margin-top:8px">Agendar una cita ${IC.arrowR}</button>`}
     ${ultima ? `<p class="sub-lbl">Última visita</p>
       <div class="last-card"><span class="av">${esc(iniciales(cl.nombre))}</span><div style="min-width:0"><b>${esc(nombresGrupo(ultima))}</b><span>${fmtFecha(ultima.fecha)}</span></div>
-      <button class="pill pill-black pill-sm" id="mcRepetir">Repetir</button></div>` : ""}
-    <p class="sub-lbl">Próximas citas</p>
-    ${prox.length ? prox.map((g,i)=>{ const d = parseIso(g.fecha); return `<div class="up-card" style="--i:${i}">
-        <div class="up-date"><b>${d.getDate()}</b><span>${MES_C[d.getMonth()]}</span></div>
-        <div class="up-info"><b>${esc(nombresGrupo(g))}</b><span>${DIAS[d.getDay()]} · ${h12(g.hora_inicio)} – ${h12(g.hora_fin)}</span></div>
-        <div class="up-act"><a class="circ" href="${gcalLink(g, nombresGrupo(g))}" target="_blank" rel="noopener" aria-label="Agregar al calendario">${IC.cal}</a><button class="circ" data-ticket="${g.key}" aria-label="Ver ticket">${IC.ticket}</button><button class="circ danger" data-cancel="${g.key}" aria-label="Cancelar cita">${IC.x}</button></div>
-      </div>`; }).join("")
-      : `<div class="note">No tienes citas próximas.</div><button class="pill pill-white pill-block" data-reservar style="margin-top:8px">Agendar una cita ${IC.arrowR}</button>`}
+      <button class="pill pill-sm" id="mcRepetir">Repetir</button></div>` : ""}
     ${espera.length ? `<p class="sub-lbl">Lista de espera</p>${espera.map(w=>`<div class="note">Anotado para el ${fmtFechaLarga(w.fecha_deseada)}. Te avisamos por WhatsApp si se libera un espacio.</div>`).join("")}` : ""}
     ${cfg.fidelidad_activa ? `<p class="sub-lbl">Fidelidad</p><div class="points"><b>${pts}<span style="display:inline;font-size:18px;color:#d9c3a3"> / ${meta}</span></b><span>${pts >= meta ? "¡Tienes un premio disponible! Pídelo en tu próxima visita." : `Te faltan ${meta-pts} visitas para: ${esc(cfg.premio_texto || "tu premio")}`}</span><div class="pbar"><i style="--w:${Math.min(100, Math.round(pts/meta*100))}%"></i></div></div>` : ""}
     ${pref ? `<p class="sub-lbl">Tu estilo preferido</p><div class="note" style="color:var(--cream)">${esc(pref.nombre)}</div>` : ""}
     ${cfg.referidos_activo && cl.codigo_referido ? `<p class="sub-lbl">Invita amigos</p><div class="ref-card"><div><span>Tu código de referido</span><b>${esc(cl.codigo_referido)}</b></div><button class="pill pill-ghost pill-sm" id="mcCopy">${IC.copy} Copiar</button></div>` : ""}
     ${hechas.length > 1 ? `<p class="sub-lbl">Historial</p><div class="hist">${hechas.slice(0,8).map(g=>`<span>${fmtFecha(g.fecha)} · ${esc(nombresGrupo(g))}</span>`).join("")}</div>` : ""}
-    <p style="margin-top:34px;text-align:center"><button class="link-btn" id="mcOtro">Buscar con otro número</button></p>
+    <div class="mc-safe"><p style="margin:0">Por tu seguridad, tus citas solo se ven desde el dispositivo con el que agendaste. ¿Cambiaste de teléfono o de navegador? Escríbenos y te ayudamos.</p>
+      ${waLink(cfg.whatsapp, "Hola, quiero consultar mis citas.") ? `<a href="${waLink(cfg.whatsapp, "Hola, quiero consultar mis citas.")}" target="_blank" rel="noopener">Escribir por WhatsApp</a>` : ""}</div>
+    <p style="margin-top:14px;text-align:center"><button class="link-btn" id="mcOtro">Buscar con otro número</button></p>
   </div>`;
   const rep = $("#mcRepetir");
   if(rep) rep.onclick = ()=>{
@@ -1993,7 +2016,7 @@ function renderMisCitas(app){
     S.wizardStep = 3; S.lastStep = 0; go("agendar");
   };
   const cp = $("#mcCopy"); if(cp) cp.onclick = ()=> navigator.clipboard && navigator.clipboard.writeText(cl.codigo_referido).then(()=> toast("Código copiado"));
-  $("#mcOtro").onclick = ()=>{ S.cliente = null; renderMisCitas(app); };
+  $("#mcOtro").onclick = ()=>{ S.cliente = null; S.mcAuto = true; renderMisCitas(app); };
   $$("[data-ticket]", app).forEach(b=> b.onclick = ()=>{
     const g = prox.find(x=> x.key === b.dataset.ticket); if(!g) return;
     const d = datosTicketGrupo(g, cl.nombre);
