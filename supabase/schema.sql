@@ -173,7 +173,9 @@ alter table config_negocio
   add column if not exists msg_espera text default '',
   add column if not exists msg_reactivar text default '',
   add column if not exists mostrar_paso_productos boolean default false,
-  add column if not exists texto_paso_productos text default '';
+  add column if not exists texto_paso_productos text default '',
+  add column if not exists qr_llegada_activo boolean default false;   -- registro de llegada con QR (opcional)
+alter table citas add column if not exists llego_en timestamptz;     -- cuándo llegó el cliente (registro de llegada)
 alter table servicios add column if not exists categoria text default '';
 alter table resenas add column if not exists nombre text default '';
 

@@ -689,6 +689,15 @@ body[data-route=admin] #ftr,body[data-route=agendar] #ftr,body[data-route=confir
 .tk-note{margin:8px 0 0;font-size:11.5px;color:#5a5144}
 .tk-c{margin:4px 0;text-align:center;font-size:12px}
 .tk-folio{font-weight:700;letter-spacing:.2em}
+.tk-qr{width:132px;margin:14px auto 6px}
+.tk-qr svg{display:block;width:100%;height:auto}
+.chk-card{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;border-radius:20px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line-2);margin-bottom:14px}
+.chk-card b{display:block;font-size:15px}
+.chk-card span{font-size:13px;color:var(--text-2)}
+.chk-in{display:flex;gap:8px;flex-wrap:wrap;flex:1 1 280px;justify-content:flex-end}
+.chk-in input{flex:1 1 150px;min-width:0;height:44px;padding:0 14px;border-radius:999px;border:0;background:var(--bg-2);box-shadow:inset 0 0 0 1px var(--line-2);letter-spacing:.08em;text-transform:uppercase}
+.scan-box{border-radius:18px;overflow:hidden;background:#000;aspect-ratio:1/1;margin-top:12px}
+.scan-box video{width:100%;height:100%;object-fit:cover}
 .tk-bars{display:block;width:100%;height:44px;margin:14px 0 4px}
 .tk-tear{height:12px;margin:0 10px;opacity:0;transition:opacity .4s;background:linear-gradient(135deg,#f4eee2 50%,transparent 50%) 0 0/12px 12px repeat-x,linear-gradient(225deg,#f4eee2 50%,transparent 50%) 0 0/12px 12px repeat-x}
 .tk-wrap.done .tk-tear,.tk-wrap.static .tk-tear{opacity:1}
@@ -873,7 +882,23 @@ function waLink(num, text){
   if(n.length === 8) n = codigoPais() + n;
   return "https://wa.me/" + n + (text ? "?text=" + encodeURIComponent(text) : "");
 }
-function qrUrl(data, size=260){ return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&margin=0&data=${encodeURIComponent(data)}`; }
+/* QR generado en el navegador con vendor/qrcode.js (MIT); no se envía ningún dato a terceros */
+let _qrP = null;
+function cargarQR(){
+  if(typeof window.qrcode === "function") return Promise.resolve();
+  if(_qrP) return _qrP;
+  _qrP = new Promise((ok, no)=>{ const sc = document.createElement("script"); sc.src = "vendor/qrcode.js"; sc.onload = ok; sc.onerror = ()=>{ _qrP = null; no(new Error("qr")); }; document.head.appendChild(sc); });
+  return _qrP;
+}
+function qrSvg(texto, opt={}){
+  const qr = window.qrcode(0, "M"); qr.addData(String(texto)); qr.make();
+  const n = qr.getModuleCount(); let d = "";
+  for(let r = 0; r < n; r++) for(let c = 0; c < n; c++) if(qr.isDark(r, c)) d += `M${c},${r}h1v1h-1z`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 ${n+4} ${n+4}" shape-rendering="crispEdges">${opt.fondo ? `<rect x="-2" y="-2" width="${n+4}" height="${n+4}" fill="${opt.fondo}"/>` : ""}<path fill="${opt.color || "#1b1713"}" d="${d}"/></svg>`;
+}
+function qrUrl(data){ try{ return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(qrSvg(data, {fondo:"#ffffff", color:"#000000"})); }catch(e){ return ""; } }
+function abrirQrImprimir(data){ try{ window.open(URL.createObjectURL(new Blob([qrSvg(data, {fondo:"#ffffff", color:"#000000"})], {type:"image/svg+xml"})), "_blank", "noopener"); }catch(e){ toast("No se pudo abrir el QR"); } }
+document.addEventListener("click", e=>{ const b = e.target.closest && e.target.closest("[data-qrprint]"); if(b) abrirQrImprimir(b.dataset.qrprint); });
 function urlBase(){ return location.origin + location.pathname; }
 function genCodigo(nombre){ const b = String(nombre||"CLI").normalize("NFD").replace(/[^A-Za-z]/g,"").toUpperCase().slice(0,4) || "CLI"; return b + Math.floor(1000 + Math.random()*9000); }
 function guardarLocal(o){ try{ localStorage.setItem("imperio_cliente", JSON.stringify({...leerLocal(), ...o})); }catch(e){} }
@@ -959,6 +984,7 @@ async function cargarDatosBase(){
       sb.from("bloqueos").select("id,fecha,hora_inicio,hora_fin,todo_el_dia").gte("fecha", isoDate(new Date())),
     ]);
     S.config = cfg.data || {nombre:"Imperio Store Barber"};
+    if(S.config.qr_llegada_activo) cargarQR().catch(()=>{});
     S.servicios = serv.data || [];
     S.estilos = est.data || [];
     S.horarios = hor.data || [];
@@ -1049,8 +1075,9 @@ function agruparCitas(rows){
   const map = new Map();
   (rows||[]).forEach(c=>{
     const key = c.visita_id || c.id;
-    if(!map.has(key)) map.set(key, {key, ids:[], items:[], cliente:c.clientes||null, fecha:c.fecha, hora_inicio:c.hora_inicio, hora_fin:c.hora_fin, estado:c.estado, notas:(c.clientes||{}).notas||""});
+    if(!map.has(key)) map.set(key, {key, ids:[], items:[], cliente:c.clientes||null, fecha:c.fecha, hora_inicio:c.hora_inicio, hora_fin:c.hora_fin, estado:c.estado, notas:(c.clientes||{}).notas||"", llego:false});
     const g = map.get(key);
+    if(c.llego_en) g.llego = true;
     g.ids.push(c.id);
     g.items.push({id:c.id, servicio_id:c.servicio_id, nombre:(c.servicios||{}).nombre||"Servicio", precio:Number((c.servicios||{}).precio)||0, etiqueta:c.etiqueta||"", estilo:(c.estilos_corte||{}).nombre||"", estilo_id:c.estilo_id||null, estado:c.estado});
     if(c.hora_inicio < g.hora_inicio) g.hora_inicio = c.hora_inicio;
@@ -1762,6 +1789,7 @@ function ticketHtml(d, modo){
   const cfg = S.config, nombre = cfg.nombre || "Imperio Store Barber";
   const precioLn = p=> Number(p) > 0 ? money(p) : "A cotizar";
   const cotizar = d.items.some(it=> !(Number(it.precio) > 0));
+  let qrLlegada = ""; if(cfg.qr_llegada_activo && typeof window.qrcode === "function"){ try{ qrLlegada = qrSvg(d.folio); }catch(e){} }
   return `<div class="tk-wrap ${modo || "static"}">
     <div class="tk-slot" aria-hidden="true"><i class="tk-led"></i></div>
     <article class="tk-paper" aria-label="Ticket de tu cita">
@@ -1782,7 +1810,7 @@ function ticketHtml(d, modo){
       <div class="tk-hr"></div>
       ${cfg.direccion ? `<p class="tk-c">${esc(cfg.direccion)}</p>` : ""}
       ${cfg.whatsapp ? `<p class="tk-c">WhatsApp ${esc(cfg.whatsapp)}</p>` : ""}
-      ${barrasSvg(d.folio)}
+      ${qrLlegada ? `<div class="tk-qr" role="img" aria-label="Código QR de llegada, folio ${esc(d.folio)}">${qrLlegada}</div><p class="tk-c">Muestra este código al llegar</p>` : barrasSvg(d.folio)}
       <p class="tk-c tk-folio">${esc(d.folio)}</p>
       <p class="tk-c">¡Gracias por elegirnos!<br>Pago en el local.</p>
     </article>
@@ -2054,8 +2082,9 @@ function linkRecordatorio(g){
 }
 function ordHtml(g, i, opt={}){
   const cl = g.cliente || {}, [txt, cls] = ESTADOS[g.estado] || [g.estado, ""];
+  const llegoBtn = S.config.qr_llegada_activo && g.fecha === isoDate(new Date()) ? (g.llego ? `<span class="badge ok">En el local</span>` : `<button class="mini" data-act="llego" data-id="${g.key}">Llegó</button>`) : "";
   const acciones = g.estado === "confirmada"
-    ? `${cl.telefono ? `<a class="mini c" href="${linkRecordatorio(g)}" target="_blank" rel="noopener">${IC.wa} Recordar</a>` : ""}
+    ? `${llegoBtn}${cl.telefono ? `<a class="mini c" href="${linkRecordatorio(g)}" target="_blank" rel="noopener">${IC.wa} Recordar</a>` : ""}
        <button class="mini ok" data-act="done" data-id="${g.key}">${IC.check} Listo</button>
        <button class="mini" data-act="noshow" data-id="${g.key}">No vino</button>
        ${opt.full ? `<button class="mini danger" data-act="cancel" data-id="${g.key}">Cancelar</button>` : ""}`
@@ -2083,6 +2112,11 @@ function cablearOrd(root, grupos){
       }
       S.citasAt = 0; S.churn = null; refrescarAdmin();
       hojaFinalizarVisita(g);
+    }
+    if(b.dataset.act === "llego"){
+      const {error} = await sb.from("citas").update({llego_en: new Date().toISOString()}).in("id", g.ids);
+      if(error){ console.error(error); return toast("No se pudo registrar. ¿Ejecutaste supabase/schema.sql?"); }
+      toast("Llegó " + primerNombre((g.cliente||{}).nombre)); refrescarAdmin(); return;
     }
     if(b.dataset.act === "noshow"){ await sb.from("citas").update({estado:"no_asistio"}).in("id", g.ids); toast("Marcada como no asistió"); refrescarAdmin(); }
     if(b.dataset.act === "cancel"){
@@ -2170,6 +2204,46 @@ function lateralHtml(grupos){
 }
 
 /* ---------------- HOY ---------------- */
+function checkinCardHtml(){
+  const cam = "BarcodeDetector" in window;
+  return `<div class="chk-card"><div><b>Registrar llegada</b><span>Escribe el folio del ticket${cam ? " o escanea su QR" : ""}.</span></div>
+    <div class="chk-in"><input id="ckFolio" placeholder="IMP-3F9A2C" autocapitalize="characters" autocomplete="off" aria-label="Folio del ticket"><button class="pill pill-white pill-sm" id="ckOk">Registrar</button>${cam ? `<button class="pill pill-ghost pill-sm" id="ckScan">${IC.qr} Escanear</button>` : ""}</div></div>`;
+}
+function cablearCheckin(box, grupos){
+  const registrar = async txt=>{
+    const m = String(txt||"").toUpperCase().replace(/[^A-Z0-9]/g, "").replace(/^IMP/, "");
+    if(m.length < 4) return toast("Escribe el folio completo");
+    const g = grupos.find(x=> folioDe(x.key).replace("IMP-", "") === m);
+    if(!g) return toast("No hay ninguna cita de hoy con ese folio");
+    if(g.estado !== "confirmada") return toast("Esa cita está " + String((ESTADOS[g.estado] || [g.estado])[0]).toLowerCase());
+    if(g.llego) return toast("Ya estaba registrada: " + primerNombre((g.cliente||{}).nombre));
+    const {error} = await sb.from("citas").update({llego_en: new Date().toISOString()}).in("id", g.ids);
+    if(error){ console.error(error); return toast("No se pudo registrar. ¿Ejecutaste supabase/schema.sql?"); }
+    toast("Llegó " + primerNombre((g.cliente||{}).nombre) + " · " + h12(g.hora_inicio)); refrescarAdmin();
+  };
+  $("#ckOk", box).onclick = ()=> registrar($("#ckFolio", box).value);
+  $("#ckFolio", box).onkeydown = e=>{ if(e.key === "Enter") registrar(e.target.value); };
+  const sc = $("#ckScan", box); if(sc) sc.onclick = ()=> escanearQR(registrar);
+}
+function escanearQR(alEncontrar){
+  openSheet(`<h3>Escanear QR</h3><p class="sub">Apunta la cámara al código del ticket del cliente.</p><div class="scan-box"><video id="scVid" playsinline muted></video></div><div class="sh-actions"><button class="pill pill-ghost" id="scX">Cerrar</button></div>`, async sh=>{
+    let stream = null, activo = true;
+    const parar = ()=>{ activo = false; if(stream) stream.getTracks().forEach(t=> t.stop()); };
+    $("#scX", sh).onclick = ()=>{ parar(); closeSheet(); };
+    try{
+      stream = await navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}});
+      const vid = $("#scVid", sh); vid.srcObject = stream; await vid.play();
+      const det = new BarcodeDetector({formats: ["qr_code"]});
+      const tick = async ()=>{
+        if(!activo) return;
+        if(!vid.isConnected){ parar(); return; }
+        try{ const r = await det.detect(vid); if(r.length){ parar(); closeSheet(); alEncontrar(r[0].rawValue); return; } }catch(e){}
+        setTimeout(tick, 250);
+      };
+      tick();
+    }catch(e){ parar(); closeSheet(); toast("No se pudo abrir la cámara. Escribe el folio a mano."); }
+  });
+}
 async function tabHoy(box){
   const hoy = isoDate(new Date());
   const [citas, cls] = await Promise.all([citasDelDia(hoy), sb.from("clientes").select("*", {count:"exact", head:true})]);
@@ -2183,6 +2257,7 @@ async function tabHoy(box){
   const tiles = [["Citas hoy", act.length], ["Ingresos estimados", money(total)], ["Clientes", cls.count || 0], ["En riesgo de perderse", enRiesgo]];
   box.innerHTML = `
     <div class="stat-tiles">${tiles.map(([l,v],i)=>`<div class="stile" style="--i:${i}"><span>${l}</span><b>${v}</b></div>`).join("")}</div>
+    ${S.config.qr_llegada_activo ? checkinCardHtml() : ""}
     ${next ? `<div class="next-card">
       <div class="nt"><small>SIGUIENTE</small>${hhmm(next.hora_inicio)}</div>
       <div><b>${esc((next.cliente||{}).nombre || "Cliente")}</b><span>${esc(nombresGrupo(next))}</span>${next.notas ? `<span style="color:#8a5a1f;margin-top:6px">${esc(next.notas)}</span>` : ""}</div>
@@ -2199,6 +2274,7 @@ async function tabHoy(box){
       <button id="qkQr">${IC.qr}QR para agendar</button>
     </div>`;
   cablearOrd(box, grupos);
+  if(S.config.qr_llegada_activo) cablearCheckin(box, grupos);
   $("#qkCita").onclick = ()=> hojaNuevaCita({fecha: hoy});
   $("#qkVenta").onclick = ()=> irTab("productos");
   $("#qkGasto").onclick = ()=> irTab("finanzas");
@@ -2637,11 +2713,12 @@ async function tabEspera(box){
 
 /* ---------------- RESEÑAS ---------------- */
 async function tabResenas(box){
+  await cargarQR().catch(()=>{});
   const {data} = await sb.from("resenas").select("*").order("creado_en", {ascending:false});
   const l = data || [], prom = l.length ? (l.reduce((a,r)=> a + r.calificacion, 0) / l.length).toFixed(1) : "—";
   const link = urlBase() + "#resena";
   box.innerHTML = `<div class="stat-tiles" style="grid-template-columns:repeat(2,1fr)"><div class="stile"><span>Promedio</span><b>${prom}</b></div><div class="stile" style="--i:1"><span>Reseñas</span><b>${l.length}</b></div></div>
-    <div class="qr-card"><img src="${qrUrl(link)}" alt="QR de reseñas"><div><b>QR de reseña rápida</b><p>Imprímelo y pégalo en el espejo. El cliente lo escanea al terminar y califica en 10 segundos.</p><a class="pill pill-ghost pill-sm" href="${qrUrl(link, 900)}" target="_blank" rel="noopener">Abrir para imprimir</a></div></div>
+    <div class="qr-card"><img src="${qrUrl(link)}" alt="QR de reseñas"><div><b>QR de reseña rápida</b><p>Imprímelo y pégalo en el espejo. El cliente lo escanea al terminar y califica en 10 segundos.</p><button class="pill pill-ghost pill-sm" data-qrprint="${esc(link)}">Abrir para imprimir</button></div></div>
     ${l.map((r,i)=>`<div class="ord" style="--i:${Math.min(i,10)}"><span class="av">${esc(iniciales(r.nombre || "C"))}</span><div class="ord-i"><b>${esc(r.nombre || "Cliente")}</b>${starsHtml(r.calificacion)}<span style="margin-top:6px">${esc(r.comentario) || "Sin comentario"}</span></div>
       <div class="ord-r"><span>${r.creado_en ? fmtFecha(String(r.creado_en).slice(0,10)) : ""}</span><button class="circ danger" style="margin-top:8px;width:36px;height:36px" data-delr="${r.id}" aria-label="Eliminar reseña">${IC.trash}</button></div></div>`).join("") || `<div class="adm-empty">Aún no hay reseñas.</div>`}`;
   $$("[data-delr]", box).forEach(b=> b.onclick = ()=> confirmar("¿Eliminar esta reseña?", "Dejará de mostrarse en la página.", "Eliminar", async ()=>{
@@ -2729,7 +2806,8 @@ async function pintarFinanzas(){
 }
 
 /* ---------------- AJUSTES ---------------- */
-function tabAjustes(box){
+async function tabAjustes(box){
+  await cargarQR().catch(()=>{});
   const c = S.config, v = k=> esc(c[k] ?? "");
   const link = urlBase() + "#agendar";
   box.innerHTML = `
@@ -2755,20 +2833,24 @@ function tabAjustes(box){
       <div class="field"><label>Premio</label><input id="ajPr" value="${v("premio_texto")}" placeholder="Ej. Corte gratis"></div>
       <div class="sw-row" style="border:0"><div>Códigos de referido</div><label class="sw"><input type="checkbox" id="ajRef" ${c.referidos_activo?"checked":""}><span></span></label></div>
     </div>
+    <div class="fcard"><h3>Registro de llegada con QR</h3><p>Opcional. Si lo activas, el ticket del cliente trae un código QR y en “Hoy” aparece un cuadro para registrar su llegada con el folio o escaneando el QR. Si no lo activas, todo sigue igual.</p>
+      <div class="sw-row" style="border:0"><div>Activar registro de llegada<small>Los clientes seguirán viendo su folio aunque lo apagues.</small></div><label class="sw"><input type="checkbox" id="ajQr" ${c.qr_llegada_activo?"checked":""}><span></span></label></div>
+    </div>
     <div class="fcard"><h3>Productos al agendar</h3><p>Agrega un paso opcional al final de la reserva para que el cliente pueda sumar productos. Si no tienes productos activos, este paso no aparece aunque lo actives.</p>
       <div class="sw-row" style="border:0"><div>Mostrar este paso<small>${productosActivos().length ? productosActivos().length + " producto(s) activo(s)" : "No tienes productos activos todavía — ve a la pestaña Productos"}</small></div><label class="sw"><input type="checkbox" id="ajPasoProd" ${c.mostrar_paso_productos?"checked":""}><span></span></label></div>
       <div class="field" style="margin-top:14px"><label>Pregunta que ve el cliente</label><input id="ajTxtProd" value="${v("texto_paso_productos")}" placeholder="¿Te interesa alguno de nuestros productos?"></div>
     </div>
-    <div class="qr-card"><img src="${qrUrl(link)}" alt="QR para agendar"><div><b>QR para agendar</b><p>Para tu vitrina, tarjetas o redes: abre directo la reserva.</p><a class="pill pill-ghost pill-sm" href="${qrUrl(link, 900)}" target="_blank" rel="noopener">Abrir para imprimir</a></div></div>
+    <div class="qr-card"><img src="${qrUrl(link)}" alt="QR para agendar"><div><b>QR para agendar</b><p>Para tu vitrina, tarjetas o redes: abre directo la reserva.</p><button class="pill pill-ghost pill-sm" data-qrprint="${esc(link)}">Abrir para imprimir</button></div></div>
     <div class="save-bar"><button class="pill pill-white" id="ajOk">Guardar ajustes</button></div>`;
   $("#ajOk").onclick = async ()=>{
     const base = {nombre: $("#ajNom").value.trim() || "Imperio Store Barber", direccion: $("#ajDir").value.trim(), maps_link: $("#ajMaps").value.trim(), whatsapp: soloDigitos($("#ajWa").value),
       fidelidad_activa: $("#ajFid").checked, puntos_por_visita: Math.max(1, Number($("#ajPV").value)||1), puntos_para_premio: Math.max(1, Number($("#ajPP").value)||10), referidos_activo: $("#ajRef").checked};
-    const extra = {msg_recordatorio: $("#ajMR").value.trim(), msg_espera: $("#ajME").value.trim(), msg_reactivar: $("#ajMX").value.trim(), premio_texto: $("#ajPr").value.trim(), mostrar_paso_productos: $("#ajPasoProd").checked, texto_paso_productos: $("#ajTxtProd").value.trim()};
+    const extra = {msg_recordatorio: $("#ajMR").value.trim(), msg_espera: $("#ajME").value.trim(), msg_reactivar: $("#ajMX").value.trim(), premio_texto: $("#ajPr").value.trim(), mostrar_paso_productos: $("#ajPasoProd").checked, texto_paso_productos: $("#ajTxtProd").value.trim(), qr_llegada_activo: $("#ajQr").checked};
     let {error} = await sb.from("config_negocio").update({...base, ...extra}).eq("id", 1);
+    const guardoExtra = !error;
     if(error) ({error} = await sb.from("config_negocio").update(base).eq("id", 1));
     if(error) return toast("No se pudo guardar");
-    toast("Ajustes guardados"); await cargarDatosBase(); pintarMarco();
+    toast(guardoExtra ? "Ajustes guardados" : "Ajustes guardados, pero falta ejecutar supabase/schema.sql para las opciones nuevas"); await cargarDatosBase(); pintarMarco();
   };
 }
 
