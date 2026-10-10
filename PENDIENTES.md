@@ -27,12 +27,13 @@ Estado: ✅ hecho · 🔧 en curso · ⬜ pendiente. Orden = prioridad.
 - ⬜ Datos de quien opera el negocio (razón social, NIT, dirección) en el pie de página
 
 ## 3. Producto / diseño (comparado con HeyGoldie)
-- ⬜ Acordeón de servicios por categoría con foto y "Mostrar más"
+- ✅ Servicios por categoría (acordeón) con foto grande, botón "Seleccionar" y "Mostrar más"
 - ⬜ Complementos adicionales (add-ons) por servicio
-- ⬜ Selector de cantidad por servicio (− / +) con total en la tarjeta resumen fija
-- ⬜ Calendario con indicador de disponibilidad por día (verde = hay cupo, rojo = lleno)
-- ⬜ Horarios agrupados Mañana / Tarde en formato 12 h y con la zona horaria visible
-- ⬜ "Precio a consultar" cuando un servicio tiene precio 0 (en HeyGoldie salen como Q0 y confunden)
+- ✅ Selector de cantidad (− / +) en cada servicio, con total en la barra fija
+- ✅ Indicador de disponibilidad por día (verde = cupo, rojo = lleno → lista de espera)
+- ⬜ Vista de mes completo (hoy es una tira de 30 días)
+- ✅ Horarios agrupados Mañana / Tarde / Noche en formato 12 h y con la zona horaria visible
+- ✅ "A cotizar" cuando un servicio tiene precio 0 (en HeyGoldie salen como Q0 y confunden)
 - ⬜ Mostrar el barbero que atiende en el resumen (HeyGoldie lo muestra: "con Samid Zerep")
 - ⬜ Multi-idioma (ES hoy; EN después)
 - ⬜ Cuentas de cliente (tras la verificación por WhatsApp)

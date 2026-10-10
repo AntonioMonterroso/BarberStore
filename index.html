@@ -633,6 +633,36 @@ body[data-route=admin] #ftr,body[data-route=agendar] #ftr,body[data-route=confir
 .cart-total{display:flex;justify-content:space-between;align-items:center;padding:14px 4px 4px;font-size:14px;color:var(--text-2)}
 .cart-total b{font-family:var(--disp);font-size:22px;font-weight:400;color:var(--cream)}
 .cart-empty{padding:16px;border-radius:16px;background:var(--bg-2);color:var(--text-3);font-size:13.5px;text-align:center;margin-top:4px}
+/* reserva: categorías, tarjetas con foto, cantidad, cupo por día */
+.tile{cursor:pointer}
+.tile-photo{width:calc(100% + 36px);max-width:none;height:112px;margin:-18px -18px 12px;object-fit:cover;border-radius:18px 18px 0 0}
+.tile .tile-ds.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tile .more{align-self:flex-start;margin-top:4px;font-size:12.5px;font-weight:700;color:var(--copper-2);padding:2px 0}
+.tile.on .more{color:#8a5a1a}
+.tile .sel-pill{margin-top:12px;height:38px;border-radius:12px;background:var(--copper);color:#140d05;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+.tile .step{position:absolute;top:10px;right:10px;z-index:2;display:flex;align-items:center;gap:2px;padding:3px;border-radius:999px;background:#111;color:var(--cream)}
+.tile .step b{min-width:22px;text-align:center;font-size:14px;font-weight:800;color:var(--cream)}
+.tile .step button{width:30px;height:30px;border-radius:50%;background:var(--cream);color:#111;font-size:18px;line-height:1;font-weight:800;display:grid;place-items:center}
+.tile.has-step:not(.with-photo) .tile-nm{padding-right:104px}
+.svc-cats{display:flex;flex-direction:column;gap:10px}
+.svc-cat{border-radius:18px;background:var(--bg-2);box-shadow:inset 0 0 0 1px var(--line)}
+.svc-cat>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:16px 18px;font-weight:800;font-size:15px}
+.svc-cat>summary::-webkit-details-marker{display:none}
+.svc-cat>summary span{flex:1}
+.svc-cat>summary em{font-style:normal;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:var(--copper);color:#140d05;font-size:12px;font-weight:800;display:grid;place-items:center}
+.svc-cat>summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--text-2);border-bottom:2px solid var(--text-2);transform:rotate(45deg);transition:transform .3s var(--ease);margin:-4px 4px 0 0}
+.svc-cat[open]>summary::after{transform:rotate(-135deg);margin-top:4px}
+.svc-cat .tiles{padding:0 12px 14px}
+.dchip .dot{width:16px;height:3px;border-radius:2px;background:transparent;margin-top:-1px;display:block}
+.dchip.ok .dot{background:var(--ok)}
+.dchip.full .dot{background:var(--danger)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text-3);margin:2px 0 18px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend .dot{width:14px;height:3px;border-radius:2px;display:inline-block}
+.legend .dot.ok{background:var(--ok)}
+.legend .dot.full{background:var(--danger)}
+.tz-note{font-size:12.5px;color:var(--text-3);margin:0 0 16px}
+.cart-total small{font-family:var(--ui);font-size:12px;color:var(--text-2);margin-left:6px;font-weight:600}
 .stepper{display:inline-flex;align-items:center;gap:10px;background:var(--card-2);border-radius:999px;padding:4px}
 .stepper button{width:28px;height:28px;border-radius:50%;background:var(--card-3);font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center}
 .stepper button:disabled{opacity:.3}
@@ -755,6 +785,20 @@ function parseIso(iso){ const [y,m,d] = iso.split("-").map(Number); return new D
 function fmtFecha(iso){ const d = parseIso(iso); return `${DIAS[d.getDay()]} ${d.getDate()} de ${MES_C[d.getMonth()]}`; }
 function fmtFechaLarga(iso){ const d = parseIso(iso); return `${DIAS[d.getDay()]}, ${d.getDate()} de ${MESES[d.getMonth()]}`; }
 function hhmm(t){ return t ? String(t).slice(0,5) : ""; }
+function h12(t){ const [h,m] = String(t||"").slice(0,5).split(":").map(Number); if(isNaN(h)) return ""; return ((h%12)||12) + ":" + String(m||0).padStart(2,"0") + " " + (h>=12 ? "p. m." : "a. m."); }
+function precioTxt(s){ return Number(s.precio) > 0 ? money(s.precio) : "A cotizar"; }
+function serviciosPorCategoria(){ const m = new Map(); S.servicios.forEach(x=>{ const k = (x.categoria||"").trim(); if(!m.has(k)) m.set(k, []); m.get(k).push(x); }); return [...m.entries()]; }
+function tileWizHtml(sv, i, count){
+  const largo = String(sv.descripcion||"").length > 90, abierto = !!(S.svcMore && S.svcMore.has(sv.id));
+  return `<div class="tile ${count?"on has-step":""} ${sv.foto_url?"with-photo":""}" data-tile="${sv.id}" role="button" tabindex="0" style="--i:${i}">
+    ${sv.foto_url ? `<img class="tile-photo" src="${esc(sv.foto_url)}" alt="" loading="lazy">` : ""}
+    ${count ? `<span class="step"><button type="button" data-dec="${sv.id}" aria-label="Quitar uno">−</button><b>${count}</b><button type="button" data-tile="${sv.id}" aria-label="Agregar otro">+</button></span>` : ""}
+    <span class="tile-nm">${esc(sv.nombre)}</span>
+    ${sv.descripcion ? `<span class="tile-ds ${largo && !abierto ? "clamp" : ""}">${esc(sv.descripcion)}</span>${largo ? `<button type="button" class="more" data-more="${sv.id}">${abierto ? "Mostrar menos" : "Mostrar más"}</button>` : ""}` : ""}
+    <span class="tile-ft"><span>${durTxt(sv.duracion_minutos)}</span><b>${precioTxt(sv)}</b></span>
+    ${count ? "" : `<span class="sel-pill">Seleccionar</span>`}
+  </div>`;
+}
 function toMin(t){ const [h,m] = hhmm(t).split(":").map(Number); return h*60 + m; }
 function addMin(t, mins){ const total = toMin(t) + mins; return pad(Math.floor(total/60)%24) + ":" + pad(total%60); }
 function ahoraHHMM(){ const d = new Date(); return pad(d.getHours()) + ":" + pad(d.getMinutes()); }
@@ -1303,7 +1347,7 @@ function tileHtml(s, on, i=0, extra="", count=0){
     ${count ? `<span class="tile-count">${count}</span>` : `<span class="tick">${IC.check}</span>`}
     <span class="tile-nm">${esc(s.nombre)}</span>
     ${s.descripcion ? `<span class="tile-ds">${esc(s.descripcion)}</span>` : ""}
-    <span class="tile-ft"><span>${durTxt(s.duracion_minutos)}</span><b>${money(s.precio)}</b></span>
+    <span class="tile-ft"><span>${durTxt(s.duracion_minutos)}</span><b>${precioTxt(s)}</b></span>
   </button>`;
 }
 
@@ -1360,7 +1404,7 @@ function sumaProductos(lista){ return (lista||[]).reduce((a,it)=> a + it.cantida
 function sumaDuracion(items){ return items.reduce((a,it)=> a + (Number(it.servicio.duracion_minutos)||0), 0); }
 function sumaPrecio(items){ return items.reduce((a,it)=> a + (Number(it.servicio.precio)||0), 0); }
 function iniciarReserva(o={}){
-  S.booking = nuevaReserva(); S.wizardStep = 1; S.lastStep = 0;
+  S.booking = nuevaReserva(); S.wizardStep = 1; S.lastStep = 0; S.svcOpen = null; S.svcMore = null;
   if(o.servicio){ S.booking.items = [{clave:uid(), servicio:o.servicio, etiqueta:""}]; S.wizardStep = 2; }
   if(o.estilo){ S.booking.estilo = o.estilo; }
   if(o.paso) S.wizardStep = o.paso;
@@ -1389,9 +1433,13 @@ function renderWizard(app){
   let body = "";
   if(key === "servicio"){
     const conteo = {}; b.items.forEach(it=> conteo[it.servicio.id] = (conteo[it.servicio.id]||0) + 1);
-    body = S.servicios.length ? `<div class="tiles ${entra?"stg":""}" style="grid-template-columns:repeat(2,1fr)">${S.servicios.map((s,i)=> tileHtml(s, false, i, "", conteo[s.id]||0)).join("")}</div>
-      <div class="cart-box" id="cartBox">${cartHtml(b.items)}</div>`
-      : `<div class="adm-empty">Aún no hay servicios disponibles.</div>`;
+    const gr = serviciosPorCategoria(), conCat = gr.length > 1 || (gr.length === 1 && gr[0][0]);
+    const tilesDe = lista=> `<div class="tiles ${entra?"stg":""}">${lista.map((sv,i)=> tileWizHtml(sv, i, conteo[sv.id]||0)).join("")}</div>`;
+    body = !S.servicios.length ? `<div class="adm-empty">Aún no hay servicios disponibles.</div>`
+      : `${conCat ? `<div class="svc-cats">${gr.map(([k,l],gi)=>{
+            const abierto = S.svcOpen ? S.svcOpen.has(k) : gi === 0, n = l.reduce((a,sv)=> a + (conteo[sv.id]||0), 0);
+            return `<details class="svc-cat" data-svccat="${esc(k)}" ${abierto?"open":""}><summary><span>${esc(k || "Otros servicios")}</span>${n ? `<em>${n}</em>` : ""}</summary>${tilesDe(l)}</details>`; }).join("")}</div>` : tilesDe(S.servicios)}
+        <div class="cart-box" id="cartBox">${cartHtml(b.items)}</div>`;
   }
   if(key === "estilo"){
     body = `<div class="style-grid ${entra?"stg":""}">${S.estilos.map((e,i)=>`
@@ -1416,8 +1464,11 @@ function renderWizard(app){
     body = `<div class="${entra?"stg":""}">
       <div class="month-row" style="--i:0"><span>${MESES[ref.getMonth()]} ${ref.getFullYear()}</span>
         <div style="display:flex;gap:6px"><button class="circ" data-wscroll="-1" aria-label="Anteriores">${IC.chevL}</button><button class="circ" data-wscroll="1" aria-label="Siguientes">${IC.chevR}</button></div></div>
-      <div class="date-row" id="wDates" style="--i:1">${dias.map(d=>`<button class="dchip ${d.iso===b.fecha?"on":""} ${d.disponible?"":"off"}" data-wdate="${d.iso}" aria-label="${fmtFechaLarga(d.iso)}"><b>${d.dia}</b><span>${DIAS_C[d.dow]}</span></button>`).join("")}</div>
-      ${libres ? grupos.map(([n,f],gi)=>{ const l = slots.filter(f); return l.length ? `<div class="slot-group" style="--i:${gi+2}"><h5>${n}</h5><div class="time-row" style="margin:0">${l.map(s=>`<button class="tpill ${s.ocupado?"taken":""} ${b.hora===s.hora?"on":""}" data-whora="${s.hora}" ${s.ocupado?"disabled":""}>${s.hora}</button>`).join("")}</div></div>` : ""; }).join("")
+      <div class="date-row" id="wDates" style="--i:1">${dias.map(d=>{ const cupo = d.disponible && calcularSlots(d.iso, dur).some(x=> !x.ocupado);
+        return `<button class="dchip ${d.iso===b.fecha?"on":""} ${d.disponible ? (cupo ? "ok" : "full") : "off"}" data-wdate="${d.iso}" aria-label="${fmtFechaLarga(d.iso)}${d.disponible ? (cupo ? ", con horarios disponibles" : ", sin cupo") : ", cerrado"}"><b>${d.dia}</b><span>${DIAS_C[d.dow]}</span><i class="dot"></i></button>`; }).join("")}</div>
+      <div class="legend"><span><i class="dot ok"></i>Con cupo</span><span><i class="dot full"></i>Lleno: puedes anotarte en la lista de espera</span></div>
+      <p class="tz-note">Horarios en hora de Guatemala (GMT-6)</p>
+      ${libres ? grupos.map(([n,f],gi)=>{ const l = slots.filter(f); return l.length ? `<div class="slot-group" style="--i:${gi+2}"><h5>${n}</h5><div class="time-row" style="margin:0">${l.map(s=>`<button class="tpill ${s.ocupado?"taken":""} ${b.hora===s.hora?"on":""}" data-whora="${s.hora}" ${s.ocupado?"disabled":""}>${h12(s.hora)}</button>`).join("")}</div></div>` : ""; }).join("")
         : `<div class="empty-note" style="--i:2">${b.fecha ? "No quedan horarios libres este día. Elige otra fecha o anótate y te avisamos si se libera un espacio." : "No hay días disponibles por ahora."}
            ${b.fecha ? `<div style="margin-top:14px"><button class="pill pill-white pill-sm" data-wait="${b.fecha}">Anotarme en lista de espera</button></div>` : ""}</div>`}
     </div>`;
@@ -1442,10 +1493,10 @@ function renderWizard(app){
       ${S.config.referidos_activo && !l.telefono ? `<div class="field" style="--i:2"><label for="fRef">Código de referido (opcional)</label><input id="fRef" autocapitalize="characters" placeholder="Si alguien te invitó"></div>` : ""}
       <div style="--i:3"><label class="chk"><input type="checkbox" id="fAcepto" ${l.acepto?"checked":""}><span>Acepto la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a> y los <a href="terminos.html" target="_blank" rel="noopener">términos del servicio</a>.</span></label></div>
       <div class="sum-card" style="--i:3">
-        ${b.items.map(it=> `<div class="sum-row"><span>${esc(it.servicio.nombre)}${it.etiqueta?` <i style="color:var(--text-3);font-style:normal">· ${esc(it.etiqueta)}</i>`:""}</span><b>${money(it.servicio.precio)}</b></div>`).join("")}
+        ${b.items.map(it=> `<div class="sum-row"><span>${esc(it.servicio.nombre)}${it.etiqueta?` <i style="color:var(--text-3);font-style:normal">· ${esc(it.etiqueta)}</i>`:""}</span><b>${precioTxt(it.servicio)}</b></div>`).join("")}
         <div class="sum-row"><span>Estilo</span><b>${b.estilo ? esc(b.estilo.nombre) : "El barbero decide"}${pasoEstilo?`<button data-wgo="${pasoEstilo}">Cambiar</button>`:""}</b></div>
         <div class="sum-row"><span>Fecha</span><b>${fmtFechaLarga(b.fecha)}<button data-wgo="${pasoHorario}">Cambiar</button></b></div>
-        <div class="sum-row"><span>Hora</span><b>${b.hora} – ${addMin(b.hora, dur)}</b></div>
+        <div class="sum-row"><span>Hora</span><b>${h12(b.hora)} – ${h12(addMin(b.hora, dur))}</b></div>
         ${b.productos.filter(x=>x.cantidad>0).map(it=> `<div class="sum-row"><span>${esc(it.producto.nombre)} ×${it.cantidad}</span><b>${money(it.producto.precio*it.cantidad)}</b></div>`).join("")}
         <div class="sum-row total"><span>Total</span><b>${money(precio)}</b></div>
       </div>
@@ -1456,7 +1507,7 @@ function renderWizard(app){
   let info = "", ok = false, txt = "Continuar";
   if(key === "servicio"){ ok = b.items.length > 0; info = ok ? `<b>${b.items.length} ${b.items.length===1?"servicio":"servicios"}</b><span>${durTxt(dur)} · ${money(precioServ)}</span>` : `<b>Agrega al menos un servicio</b>`; }
   if(key === "estilo"){ ok = !!(b.estilo || b.sorprende); info = b.estilo ? `<b>${esc(b.estilo.nombre)}</b><span>${b.items.length} servicio${b.items.length===1?"":"s"}</span>` : b.sorprende ? `<b>El barbero decide</b><span>${b.items.length} servicio${b.items.length===1?"":"s"}</span>` : `<b>Elige un estilo</b>`; }
-  if(key === "horario"){ ok = !!b.hora; info = b.hora ? `<b>${fmtFecha(b.fecha)}</b><span>${b.hora} – ${addMin(b.hora, dur)}</span>` : `<b>Elige una hora</b>`; }
+  if(key === "horario"){ ok = !!b.hora; info = b.hora ? `<b>${fmtFecha(b.fecha)}</b><span>${h12(b.hora)} – ${h12(addMin(b.hora, dur))}</span>` : `<b>Elige una hora</b>`; }
   if(key === "productos"){ ok = true; txt = precioProd ? "Continuar" : "Omitir"; info = precioProd ? `<b>${money(precioProd)} agregado</b><span>en productos</span>` : `<b>Sin productos</b><span>puedes continuar sin agregar</span>`; }
   if(key === "datos"){ ok = true; txt = "Confirmar cita"; info = `<b>${money(precio)}</b><span>${b.items.length} servicio${b.items.length===1?"":"s"}${precioProd?` + productos`:""}</span>`; }
 
@@ -1480,8 +1531,10 @@ function renderWizard(app){
     S.wizardStep = sig; renderWizard(app); window.scrollTo(0,0);
   };
   $("#wBody").onclick = e=>{
-    const t = e.target.closest("[data-tile],[data-rm],[data-west],[data-wdate],[data-whora],[data-wscroll],[data-wait],[data-wgo],[data-pstep]"); if(!t) return;
-    if(t.dataset.tile){ const s = S.servicios.find(x=> String(x.id) === t.dataset.tile); b.items.push({clave:uid(), servicio:s, etiqueta:""}); b.hora = null; }
+    const t = e.target.closest("[data-tile],[data-dec],[data-more],[data-rm],[data-west],[data-wdate],[data-whora],[data-wscroll],[data-wait],[data-wgo],[data-pstep]"); if(!t) return;
+    if(t.dataset.dec){ const sid = String(t.dataset.dec); for(let k = b.items.length-1; k >= 0; k--){ if(String(b.items[k].servicio.id) === sid){ b.items.splice(k,1); break; } } b.hora = null; }
+    else if(t.dataset.more){ const id = Number(t.dataset.more); S.svcMore = S.svcMore || new Set(); S.svcMore.has(id) ? S.svcMore.delete(id) : S.svcMore.add(id); }
+    else if(t.dataset.tile){ const s = S.servicios.find(x=> String(x.id) === t.dataset.tile); b.items.push({clave:uid(), servicio:s, etiqueta:""}); b.hora = null; }
     else if(t.dataset.rm){ b.items = b.items.filter(it=> it.clave !== t.dataset.rm); b.hora = null; }
     else if(t.dataset.west){ if(t.dataset.west === "any"){ b.sorprende = true; b.estilo = null; } else { b.estilo = S.estilos.find(x=> String(x.id) === t.dataset.west); b.sorprende = false; } }
     else if(t.dataset.wdate){ b.fecha = t.dataset.wdate; b.hora = null; }
@@ -1498,7 +1551,9 @@ function renderWizard(app){
     else if(t.dataset.wgo){ S.wizardStep = Number(t.dataset.wgo); renderWizard(app); window.scrollTo(0,0); return; }
     renderWizard(app);
   };
+  $("#wBody").onkeydown = e=>{ if((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches('.tile[role="button"]')){ e.preventDefault(); e.target.click(); } };
   if(key === "servicio"){
+    $$("details.svc-cat", app).forEach(d=> d.addEventListener("toggle", ()=>{ S.svcOpen = new Set($$("details.svc-cat[open]", app).map(x=> x.dataset.svccat)); }));
     $$("#cartBox [data-lbl]", app).forEach(inp=> inp.oninput = ()=>{ const it = b.items.find(x=> x.clave === inp.dataset.lbl); if(it) it.etiqueta = inp.value; });
   }
   if(key === "datos"){
@@ -1512,9 +1567,9 @@ function cartHtml(items){
   return items.map((it,i)=> `<div class="cart-line" style="--i:${i}">
       <span class="cl-n">${i+1}</span>
       <div class="cl-i"><b>${esc(it.servicio.nombre)}</b><input data-lbl="${it.clave}" value="${esc(it.etiqueta)}" placeholder="Para quién (opcional)" maxlength="30"></div>
-      <span class="cl-p">${money(it.servicio.precio)}</span>
+      <span class="cl-p">${precioTxt(it.servicio)}</span>
       <button class="circ danger" data-rm="${it.clave}" aria-label="Quitar">${IC.x}</button>
-    </div>`).join("") + `<div class="cart-total"><span>${items.length} servicio${items.length===1?"":"s"} · ${durTxt(sumaDuracion(items))}</span><b>${money(sumaPrecio(items))}</b></div>`;
+    </div>`).join("") + `<div class="cart-total"><span>${items.length} servicio${items.length===1?"":"s"} · ${durTxt(sumaDuracion(items))}</span><b>${money(sumaPrecio(items))}${items.some(it=> !(Number(it.servicio.precio) > 0)) ? "<small>+ a cotizar</small>" : ""}</b></div>`;
 }
 
 async function obtenerCliente(nombre, telefono, codigoRef){
@@ -1623,7 +1678,7 @@ function renderConfirmacion(app){
       <div class="tk-top"><span class="tk-logo"><img src="${LOGO}" alt=""></span><div><span>${c.items.length>1?c.items.length+" servicios":"Servicio"}</span><b>${esc(c.items.map(it=>it.servicio.nombre).join(" + "))}</b></div></div>
       <div class="tk-grid">
         <div><span>Fecha</span><b>${fmtFecha(c.fecha)}</b></div>
-        <div><span>Hora</span><b>${hhmm(c.hora_inicio)} – ${hhmm(c.hora_fin)}</b></div>
+        <div><span>Hora</span><b>${h12(c.hora_inicio)} – ${h12(c.hora_fin)}</b></div>
         <div><span>Estilo</span><b>${c.estilo ? esc(c.estilo.nombre) : "A criterio del barbero"}</b></div>
         ${c.productos && c.productos.length ? `<div><span>Productos</span><b>${esc(c.productos.map(it=> it.producto.nombre + " ×" + it.cantidad).join(", "))}</b></div>` : ""}
         <div><span>Total</span><b class="big">${money(total)}</b></div>
