@@ -353,7 +353,11 @@ body.menu-open .menu-foot{opacity:1}
 .ftr-brand{display:flex;align-items:center;gap:12px}
 .ftr-brand img{width:46px}
 .ftr-in button{color:var(--text-3);font-weight:600;transition:color .25s}
-.ftr-in button:hover{color:var(--cream)}
+.ftr-in button:hover,.ftr-in a:hover{color:var(--cream)}
+.ftr-in a{color:var(--text-3);font-weight:600;transition:color .25s}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;color:var(--text-2);margin:2px 0 16px;cursor:pointer}
+.chk input{margin-top:3px;accent-color:var(--copper);flex:0 0 auto}
+.chk a{color:var(--copper-2);text-decoration:underline}
 body[data-route=admin] #ftr,body[data-route=agendar] #ftr,body[data-route=confirmacion] #ftr{display:none}
 
 /* ---------- vistas tipo app ---------- */
@@ -1070,7 +1074,7 @@ function pintarMarco(){
   $("#menuFoot").innerHTML = `<button class="pill pill-white" data-reservar>Agendar cita ${IC.arrowR}</button>${wa ? `<a class="pill pill-ghost" href="${wa}" target="_blank" rel="noopener">${IC.wa} WhatsApp</a>` : ""}`;
   $("#ftr").innerHTML = `<div class="ftr-in">
     <div class="ftr-brand"><img src="${LOGO}" alt=""><div><b style="color:var(--cream);font-weight:800">${esc(S.config.nombre||"Imperio Store Barber")}</b><br>${esc(S.config.direccion||"")}</div></div>
-    <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center"><span>© ${new Date().getFullYear()}</span><button data-go="mis-citas">Mis citas</button><button data-go="admin">Panel del negocio</button></div>
+    <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center"><span>© ${new Date().getFullYear()}</span><button data-go="mis-citas">Mis citas</button><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="terminos.html">Términos</a><button data-go="admin">Panel del negocio</button></div>
   </div>`;
 }
 </script>
@@ -1436,6 +1440,7 @@ function renderWizard(app){
       <div class="field" style="--i:0"><label for="fNombre">Nombre completo</label><input id="fNombre" autocomplete="name" value="${esc(b.nombre)}" placeholder="Ej. Carlos Pérez"></div>
       <div class="field" style="--i:1"><label for="fTel">WhatsApp</label><input id="fTel" type="tel" inputmode="tel" autocomplete="tel" value="${esc(b.telefono)}" placeholder="Ej. 5512 3456"><small>Aquí te llega la confirmación y el recordatorio.</small></div>
       ${S.config.referidos_activo && !l.telefono ? `<div class="field" style="--i:2"><label for="fRef">Código de referido (opcional)</label><input id="fRef" autocapitalize="characters" placeholder="Si alguien te invitó"></div>` : ""}
+      <div style="--i:3"><label class="chk"><input type="checkbox" id="fAcepto" ${l.acepto?"checked":""}><span>Acepto la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a> y los <a href="terminos.html" target="_blank" rel="noopener">términos del servicio</a>.</span></label></div>
       <div class="sum-card" style="--i:3">
         ${b.items.map(it=> `<div class="sum-row"><span>${esc(it.servicio.nombre)}${it.etiqueta?` <i style="color:var(--text-3);font-style:normal">· ${esc(it.etiqueta)}</i>`:""}</span><b>${money(it.servicio.precio)}</b></div>`).join("")}
         <div class="sum-row"><span>Estilo</span><b>${b.estilo ? esc(b.estilo.nombre) : "El barbero decide"}${pasoEstilo?`<button data-wgo="${pasoEstilo}">Cambiar</button>`:""}</b></div>
@@ -1532,6 +1537,7 @@ async function confirmarCita(){
   const ref = $("#fRef") ? $("#fRef").value.trim() : "";
   if(b.nombre.length < 2){ toast("Escribe tu nombre"); return $("#fNombre").focus(); }
   if(soloDigitos(b.telefono).length < 8){ toast("Revisa tu número de WhatsApp"); return $("#fTel").focus(); }
+  if(!$("#fAcepto").checked){ toast("Acepta la política de privacidad para continuar"); return $("#fAcepto").focus(); }
   await procederConfirmar(ref, false);
 }
 async function procederConfirmar(ref, forzar){
@@ -1568,7 +1574,7 @@ async function procederConfirmar(ref, forzar){
       if(e === "limite_citas"){ toast("Tienes muchas citas pendientes. Escríbenos por WhatsApp."); return reactivar(); }
       throw new Error(e || "reserva");
     }
-    guardarLocal({nombre: b.nombre, telefono: soloDigitos(b.telefono)}); guardarToken(b.telefono, r.token);
+    guardarLocal({nombre: b.nombre, telefono: soloDigitos(b.telefono), acepto: true}); guardarToken(b.telefono, r.token);
     S.lastCita = {visita:{id:r.visita_id}, cliente:r.cliente, estilo:b.estilo, items:b.items, productos, fecha:b.fecha, hora_inicio:b.hora, hora_fin:r.hora_fin, citaId:r.cita_id};
     S.booking = null; S.citasAt = 0; S.quick.hora = null;
     go("confirmacion", {replace:true});
@@ -1638,15 +1644,17 @@ function abrirEspera(fecha){
   openSheet(`<h3>Lista de espera</h3><p class="sub">Si se libera un espacio el ${fmtFechaLarga(fecha)}, te avisamos por WhatsApp en orden de llegada.</p>
     <div class="field"><label for="wlNom">Nombre</label><input id="wlNom" value="${esc(l.nombre||"")}" autocomplete="name"></div>
     <div class="field"><label for="wlTel">WhatsApp</label><input id="wlTel" type="tel" inputmode="tel" value="${esc(l.telefono||"")}" autocomplete="tel"></div>
+    <div style="margin-top:6px"><label class="chk"><input type="checkbox" id="wlAcepto" ${l.acepto?"checked":""}><span>Acepto la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a> y los <a href="terminos.html" target="_blank" rel="noopener">términos del servicio</a>.</span></label></div>
     <button class="pill pill-white pill-block" id="wlOk">Anotarme</button>`, sh=>{
     $("#wlOk", sh).onclick = async ()=>{
       const nom = $("#wlNom",sh).value.trim(), tel = $("#wlTel",sh).value.trim();
       if(nom.length < 2 || soloDigitos(tel).length < 8) return toast("Completa tu nombre y WhatsApp");
+      if(!$("#wlAcepto",sh).checked) return toast("Acepta la política de privacidad para continuar");
       $("#wlOk",sh).disabled = true;
       try{
         const {data:r, error} = await sb.rpc("anotar_espera", {p_nombre: nom, p_telefono: soloDigitos(tel), p_token: tokenPara(tel), p_fecha: fecha});
         if(error) throw error;
-        guardarLocal({nombre: nom, telefono: soloDigitos(tel)}); guardarToken(tel, r.token);
+        guardarLocal({nombre: nom, telefono: soloDigitos(tel), acepto: true}); guardarToken(tel, r.token);
         closeSheet(); toast(r.ya ? "Ya estabas en la lista para ese día" : "Listo, te avisaremos por WhatsApp");
       }catch(e){ console.error(e); toast("No se pudo guardar, intenta de nuevo"); $("#wlOk",sh).disabled = false; }
     };

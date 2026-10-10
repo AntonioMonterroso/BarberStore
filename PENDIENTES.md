@@ -15,10 +15,11 @@ Estado: ✅ hecho · 🔧 en curso · ⬜ pendiente. Orden = prioridad.
 - ⬜ Fijar versión de supabase-js y añadir SRI; alojar fuentes en local (evita enviar la IP del visitante a Google)
 
 ## 2. Legal (plantillas; **las debe revisar un abogado guatemalteco**)
-- ⬜ Política de privacidad (qué datos, para qué, cuánto tiempo, derechos, contacto)
-- ⬜ Política de cookies / almacenamiento local (hoy: `localStorage` con nombre, teléfono y token; fuentes de Google; Supabase)
-- ⬜ Términos y condiciones del servicio de reservas (cancelación, no-show, anticipos, precios en GTQ)
-- ⬜ Casilla de aceptación al agendar (privacidad) y casilla **aparte** para mensajes promocionales por WhatsApp
+- 🔧 Política de privacidad: borrador en `privacidad.html` (completar los campos resaltados `[...]` y revisión legal)
+- 🔧 Cookies / almacenamiento local: borrador en `cookies.html`
+- 🔧 Términos del servicio: borrador en `terminos.html` (definir horas de cancelación, anticipos, impuestos)
+- ✅ Casilla de aceptación (privacidad y términos) al agendar y en lista de espera; enlaces en el pie
+- ⬜ Casilla **aparte** (y columna en BD) para mensajes promocionales por WhatsApp
 - ⬜ Borrado/exportación de datos a petición del cliente (RPC + botón en "Mis citas")
 - ⬜ Retención de datos (p. ej. anonimizar clientes inactivos tras N años)
 - ⬜ Facturación electrónica SAT (FEL) si cobra anticipos o productos en línea
