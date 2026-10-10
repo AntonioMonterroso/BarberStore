@@ -31,7 +31,7 @@ Estado: ✅ hecho · 🔧 en curso · ⬜ pendiente. Orden = prioridad.
 - ⬜ Complementos adicionales (add-ons) por servicio
 - ✅ Selector de cantidad (− / +) en cada servicio, con total en la barra fija
 - ✅ Indicador de disponibilidad por día (verde = cupo, rojo = lleno → lista de espera)
-- ⬜ Vista de mes completo (hoy es una tira de 30 días)
+- ✅ Calendario de mes completo con cupo por día y navegación entre meses
 - ✅ Horarios agrupados Mañana / Tarde / Noche en formato 12 h y con la zona horaria visible
 - ✅ "A cotizar" cuando un servicio tiene precio 0 (en HeyGoldie salen como Q0 y confunden)
 - ⬜ Mostrar el barbero que atiende en el resumen (HeyGoldie lo muestra: "con Samid Zerep")
@@ -39,6 +39,11 @@ Estado: ✅ hecho · 🔧 en curso · ⬜ pendiente. Orden = prioridad.
 - ⬜ Cuentas de cliente (tras la verificación por WhatsApp)
 - ⬜ Varios barberos / sedes
 - ⬜ Accesibilidad y contraste, SEO (`og:image`, `LocalBusiness`, sitemap), PWA
+
+- ✅ Ticket de confirmación que se "imprime" línea por línea, con folio, código de barras decorativo, imprimir/guardar PDF y compartir; también desde "Mis citas"
+- ✅ Paleta cálida nueva (negro cálido, cobre, hueso) y contraste AA en texto terciario
+- ⬜ Pasar al sitio real el resto del lienzo de diseño: inicio (hero, "Cómo funciona", barbero, reseñas, ubicación) y rediseño de "Mis citas" y del panel
+- ⬜ Código QR real en el ticket para registrar la llegada desde el panel (necesita librería de QR y lectura en el panel)
 
 ## 4. Negocio
 - ⬜ Anticipos con cobro real (enlace de pago o transferencia con confirmación)

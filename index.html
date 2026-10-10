@@ -5,7 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Imperio Store Barber — Agenda tu cita</title>
 <meta name="description" content="Imperio Store Barber: cortes, fades y barba. Agenda tu cita en línea en menos de un minuto.">
-<meta name="theme-color" content="#101012">
+<meta name="theme-color" content="#0f0e0d">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_GT">
+<meta property="og:title" content="Imperio Store Barber — Agenda tu cita">
+<meta property="og:description" content="Cortes, fades y barba. Agenda tu cita en línea en menos de un minuto.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,8 +20,8 @@
 <!-- Base de datos: ver supabase/schema.sql y supabase/seguridad.sql -->
 <style>
 :root{
-  --bg:#101012; --bg-2:#161619; --card:#1c1c20; --card-2:#26262b; --card-3:#323238;
-  --cream:#f3efe7; --text-2:#a3a09a; --text-3:#8f877b;
+  --bg:#0f0e0d; --bg-2:#151311; --card:#1b1916; --card-2:#252220; --card-3:#322e2a;
+  --cream:#f3ece0; --text-2:#a39b8f; --text-3:#8f877b;
   --line:rgba(255,255,255,.07); --line-2:rgba(255,255,255,.14);
   --copper:#c98a3e; --copper-2:#e1a95f; --amber:#f5a623;
   --ok:#5ec27a; --danger:#ff5a4f;
@@ -662,6 +666,61 @@ body[data-route=admin] #ftr,body[data-route=agendar] #ftr,body[data-route=confir
 .legend .dot.ok{background:var(--ok)}
 .legend .dot.full{background:var(--danger)}
 .tz-note{font-size:12.5px;color:var(--text-3);margin:0 0 16px}
+/* ===== ticket térmico (confirmación y Mis citas) ===== */
+.tk-wrap{position:relative;max-width:340px;margin:22px auto 24px;text-align:left;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))}
+.tk-slot{position:relative;z-index:2;height:16px;margin:0 -12px;border-radius:999px;background:#050505;box-shadow:inset 0 3px 5px #000,0 0 0 1px var(--line-2)}
+.tk-led{position:absolute;right:16px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:var(--ok);animation:pulse 1.2s infinite}
+.tk-wrap.done .tk-led,.tk-wrap.static .tk-led{animation:none;background:var(--text-3)}
+.tk-paper{position:relative;margin:-8px 10px 0;padding:30px 22px 28px;background:#f4eee2;color:#1b1713;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:13px;line-height:1.55}
+.tk-wrap.printing .tk-paper{clip-path:inset(0 0 100% 0)}
+.tk-wrap.printing.run .tk-paper{animation:tkPrint 2.8s steps(42,end) .3s forwards}
+.tk-wrap.printing.done .tk-paper{animation:none;clip-path:none}
+@keyframes tkPrint{to{clip-path:inset(0 0 0 0)}}
+.tk-brand{text-align:center}
+.tk-brand b{display:block;font-family:var(--disp);font-weight:400;font-size:30px;letter-spacing:.06em;line-height:1.05;text-transform:uppercase}
+.tk-brand span{display:block;margin-top:6px;font-size:11px;font-weight:700;letter-spacing:.3em}
+.tk-hr{border-top:1.5px dashed #b4ab9b;margin:14px 0}
+.tk-row{display:flex;justify-content:space-between;align-items:baseline;gap:14px}
+.tk-row>span:first-child{min-width:0}
+.tk-row>b,.tk-row>span:last-child{text-align:right;font-weight:700;flex:0 1 auto;max-width:72%}
+.tk-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.tk-total span{font-weight:700;letter-spacing:.16em}
+.tk-total b{font-family:var(--disp);font-weight:400;font-size:40px;line-height:1}
+.tk-note{margin:8px 0 0;font-size:11.5px;color:#5a5144}
+.tk-c{margin:4px 0;text-align:center;font-size:12px}
+.tk-folio{font-weight:700;letter-spacing:.2em}
+.tk-bars{display:block;width:100%;height:44px;margin:14px 0 4px}
+.tk-tear{height:12px;margin:0 10px;opacity:0;transition:opacity .4s;background:linear-gradient(135deg,#f4eee2 50%,transparent 50%) 0 0/12px 12px repeat-x,linear-gradient(225deg,#f4eee2 50%,transparent 50%) 0 0/12px 12px repeat-x}
+.tk-wrap.done .tk-tear,.tk-wrap.static .tk-tear{opacity:1}
+.tk-acts{visibility:hidden;opacity:0;transform:translateY(14px);transition:opacity .6s var(--ease),transform .6s var(--ease),visibility 0s .6s}
+.tk-acts.on{visibility:visible;opacity:1;transform:none;transition-delay:0s}
+.tk-btns{display:flex;gap:10px;margin-bottom:14px}
+.tk-btns .pill{flex:1;justify-content:center}
+#printTk{display:none}
+@media print{
+  body.printing-tk{background:#fff!important}
+  body.printing-tk>*:not(#printTk){display:none!important}
+  body.printing-tk #printTk{display:block}
+  #printTk .tk-wrap{width:80mm;max-width:none;margin:0 auto;filter:none}
+  #printTk .tk-slot,#printTk .tk-tear{display:none}
+  #printTk .tk-paper{margin:0;clip-path:none;animation:none}
+}
+@media (prefers-reduced-motion:reduce){.tk-wrap.printing.run .tk-paper{animation:none;clip-path:none}.tk-led{animation:none}}
+
+/* ===== calendario de mes (reserva) ===== */
+.mhead{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center;font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--text-3);padding:4px 0 6px}
+.mgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px 2px;margin-bottom:6px}
+.mday{width:100%;max-width:48px;min-height:48px;margin:0 auto;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:background .25s,transform .3s var(--ease)}
+.mday b{font-size:16px;font-weight:800}
+button.mday{box-shadow:inset 0 0 0 1px var(--line-2)}
+button.mday:hover{box-shadow:inset 0 0 0 1px var(--text-3)}
+.mday.on{background:var(--cream);color:#111;box-shadow:none}
+.mday.off{color:#5f5a52}
+.mday .dot{display:block;width:14px;height:3px;border-radius:2px;background:transparent}
+.mday.ok .dot{background:var(--ok)}
+.mday.full .dot{background:var(--danger)}
+.mday.on.ok .dot{background:#2f8f4e}
+.circ:disabled{opacity:.3;pointer-events:none}
 .cart-total small{font-family:var(--ui);font-size:12px;color:var(--text-2);margin-left:6px;font-weight:600}
 .stepper{display:inline-flex;align-items:center;gap:10px;background:var(--card-2);border-radius:999px;padding:4px}
 .stepper button{width:28px;height:28px;border-radius:50%;background:var(--card-3);font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center}
@@ -843,6 +902,8 @@ const IC = {
   out: sv('<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5-5-5M15 12H3"/>'),
   user: sv('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'),
   trash: sv('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>'),
+  print: sv('<path d="M7 9V3.5h10V9M7 17H4.5A1.5 1.5 0 0 1 3 15.5v-5A1.5 1.5 0 0 1 4.5 9h15a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5H17"/><rect x="7" y="13" width="10" height="7.5" rx="1"/>'),
+  ticket: sv('<path d="M3 8.5V6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2.5a2.5 2.5 0 0 0 0 5V16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2.5a2.5 2.5 0 0 0 0-5z"/><path d="M14 5v2M14 11v2M14 15v2"/>'),
   copy: sv('<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>'),
   qr: sv('<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M20 20h.01M17 20h.01"/>'),
   block: sv('<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>'),
@@ -1411,6 +1472,27 @@ function iniciarReserva(o={}){
   go("agendar");
 }
 
+function mesGridHtml(b, dur){
+  const dias = diasVentana(), mapa = new Map(dias.map(d=> [d.iso, d]));
+  const base = (b.mes || b.fecha || isoDate(new Date())).slice(0,7);
+  const [y, m] = base.split("-").map(Number);
+  const primero = new Date(y, m-1, 1), total = new Date(y, m, 0).getDate();
+  const mesIni = isoDate(new Date()).slice(0,7), mesFin = dias.length ? dias[dias.length-1].iso.slice(0,7) : mesIni;
+  const celdas = [];
+  for(let i = 0; i < primero.getDay(); i++) celdas.push(`<span></span>`);
+  for(let n = 1; n <= total; n++){
+    const iso = `${y}-${pad(m)}-${pad(n)}`, d = mapa.get(iso);
+    if(!d || !d.disponible){ celdas.push(`<span class="mday off" aria-label="${esc(fmtFechaLarga(iso))}, ${d ? "cerrado" : "no disponible"}"><b>${n}</b></span>`); continue; }
+    const cupo = calcularSlots(iso, dur).some(x=> !x.ocupado);
+    celdas.push(`<button class="mday ${iso === b.fecha ? "on" : ""} ${cupo ? "ok" : "full"}" data-wdate="${iso}" aria-label="${esc(fmtFechaLarga(iso))}${cupo ? ", con horarios disponibles" : ", sin cupo"}" ${iso === b.fecha ? 'aria-pressed="true"' : ""}><b>${n}</b><i class="dot"></i></button>`);
+  }
+  return `<div class="month-row" style="--i:0"><span>${MESES[m-1]} ${y}</span>
+      <div style="display:flex;gap:6px"><button class="circ" data-wmes="-1" aria-label="Mes anterior" ${base <= mesIni ? "disabled" : ""}>${IC.chevL}</button><button class="circ" data-wmes="1" aria-label="Mes siguiente" ${base >= mesFin ? "disabled" : ""}>${IC.chevR}</button></div></div>
+      <div class="mhead" aria-hidden="true">${["D","L","M","M","J","V","S"].map(x=> `<span>${x}</span>`).join("")}</div>
+      <div class="mgrid" style="--i:1">${celdas.join("")}</div>
+      <div class="legend"><span><i class="dot ok"></i>Con cupo</span><span><i class="dot full"></i>Lleno: puedes anotarte en la lista de espera</span></div>
+      <p class="tz-note">Horarios en hora de Guatemala (GMT-6)</p>`;
+}
 function renderWizard(app){
   if(!S.booking) S.booking = nuevaReserva();
   const b = S.booking;
@@ -1462,12 +1544,7 @@ function renderWizard(app){
     const grupos = [["Mañana", s=> toMin(s.hora) < 720], ["Tarde", s=> toMin(s.hora) >= 720 && toMin(s.hora) < 1080], ["Noche", s=> toMin(s.hora) >= 1080]];
     const ref = b.fecha ? parseIso(b.fecha) : new Date();
     body = `<div class="${entra?"stg":""}">
-      <div class="month-row" style="--i:0"><span>${MESES[ref.getMonth()]} ${ref.getFullYear()}</span>
-        <div style="display:flex;gap:6px"><button class="circ" data-wscroll="-1" aria-label="Anteriores">${IC.chevL}</button><button class="circ" data-wscroll="1" aria-label="Siguientes">${IC.chevR}</button></div></div>
-      <div class="date-row" id="wDates" style="--i:1">${dias.map(d=>{ const cupo = d.disponible && calcularSlots(d.iso, dur).some(x=> !x.ocupado);
-        return `<button class="dchip ${d.iso===b.fecha?"on":""} ${d.disponible ? (cupo ? "ok" : "full") : "off"}" data-wdate="${d.iso}" aria-label="${fmtFechaLarga(d.iso)}${d.disponible ? (cupo ? ", con horarios disponibles" : ", sin cupo") : ", cerrado"}"><b>${d.dia}</b><span>${DIAS_C[d.dow]}</span><i class="dot"></i></button>`; }).join("")}</div>
-      <div class="legend"><span><i class="dot ok"></i>Con cupo</span><span><i class="dot full"></i>Lleno: puedes anotarte en la lista de espera</span></div>
-      <p class="tz-note">Horarios en hora de Guatemala (GMT-6)</p>
+      ${mesGridHtml(b, dur)}
       ${libres ? grupos.map(([n,f],gi)=>{ const l = slots.filter(f); return l.length ? `<div class="slot-group" style="--i:${gi+2}"><h5>${n}</h5><div class="time-row" style="margin:0">${l.map(s=>`<button class="tpill ${s.ocupado?"taken":""} ${b.hora===s.hora?"on":""}" data-whora="${s.hora}" ${s.ocupado?"disabled":""}>${h12(s.hora)}</button>`).join("")}</div></div>` : ""; }).join("")
         : `<div class="empty-note" style="--i:2">${b.fecha ? "No quedan horarios libres este día. Elige otra fecha o anótate y te avisamos si se libera un espacio." : "No hay días disponibles por ahora."}
            ${b.fecha ? `<div style="margin-top:14px"><button class="pill pill-white pill-sm" data-wait="${b.fecha}">Anotarme en lista de espera</button></div>` : ""}</div>`}
@@ -1531,13 +1608,14 @@ function renderWizard(app){
     S.wizardStep = sig; renderWizard(app); window.scrollTo(0,0);
   };
   $("#wBody").onclick = e=>{
-    const t = e.target.closest("[data-tile],[data-dec],[data-more],[data-rm],[data-west],[data-wdate],[data-whora],[data-wscroll],[data-wait],[data-wgo],[data-pstep]"); if(!t) return;
+    const t = e.target.closest("[data-tile],[data-dec],[data-more],[data-rm],[data-west],[data-wmes],[data-wdate],[data-whora],[data-wscroll],[data-wait],[data-wgo],[data-pstep]"); if(!t) return;
     if(t.dataset.dec){ const sid = String(t.dataset.dec); for(let k = b.items.length-1; k >= 0; k--){ if(String(b.items[k].servicio.id) === sid){ b.items.splice(k,1); break; } } b.hora = null; }
     else if(t.dataset.more){ const id = Number(t.dataset.more); S.svcMore = S.svcMore || new Set(); S.svcMore.has(id) ? S.svcMore.delete(id) : S.svcMore.add(id); }
     else if(t.dataset.tile){ const s = S.servicios.find(x=> String(x.id) === t.dataset.tile); b.items.push({clave:uid(), servicio:s, etiqueta:""}); b.hora = null; }
     else if(t.dataset.rm){ b.items = b.items.filter(it=> it.clave !== t.dataset.rm); b.hora = null; }
     else if(t.dataset.west){ if(t.dataset.west === "any"){ b.sorprende = true; b.estilo = null; } else { b.estilo = S.estilos.find(x=> String(x.id) === t.dataset.west); b.sorprende = false; } }
-    else if(t.dataset.wdate){ b.fecha = t.dataset.wdate; b.hora = null; }
+    else if(t.dataset.wmes){ const [yy, mm] = (b.mes || b.fecha || isoDate(new Date())).slice(0,7).split("-").map(Number); const nd = new Date(yy, mm-1+Number(t.dataset.wmes), 1); b.mes = nd.getFullYear() + "-" + pad(nd.getMonth()+1); }
+    else if(t.dataset.wdate){ b.fecha = t.dataset.wdate; b.hora = null; b.mes = null; }
     else if(t.dataset.whora){ b.hora = t.dataset.whora; }
     else if(t.dataset.wscroll){ dates.scrollBy({left: Number(t.dataset.wscroll)*280, behavior: REDUCED ? "auto" : "smooth"}); return; }
     else if(t.dataset.wait){ return abrirEspera(t.dataset.wait); }
@@ -1656,12 +1734,75 @@ function icsHref(c, servNombre){
   return "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
 }
 
+/* ---------------- ticket ---------------- */
+function folioDe(id){ return "IMP-" + String(id||"").replace(/-/g,"").slice(0,6).toUpperCase(); }
+function barrasSvg(txt){
+  const t = String(txt||"IMP"); let x = 0, out = "";
+  for(let i = 0; i < 52; i++){
+    const c = t.charCodeAt(i % t.length) * (i + 3), w = 1 + (c % 3), gap = 1 + ((c >> 2) % 2);
+    if(i % 2 === 0) out += `<rect x="${x}" y="0" width="${w}" height="44"/>`;
+    x += i % 2 === 0 ? w : gap + 1;
+  }
+  return `<svg class="tk-bars" viewBox="0 0 ${x} 44" preserveAspectRatio="none" aria-hidden="true" fill="#1b1713">${out}</svg>`;
+}
+function datosTicketCita(c){
+  return {folio: folioDe((c.visita && c.visita.id) || c.citaId), cliente: c.cliente.nombre,
+    items: c.items.map(it=> ({nombre: it.servicio.nombre, precio: it.servicio.precio, etiqueta: it.etiqueta})),
+    productos: (c.productos||[]).map(it=> ({nombre: it.producto.nombre, cantidad: it.cantidad, precio: Number(it.producto.precio)||0})),
+    fecha: c.fecha, hora_inicio: c.hora_inicio, hora_fin: c.hora_fin, estilo: c.estilo ? c.estilo.nombre : "",
+    total: sumaPrecio(c.items) + sumaProductos(c.productos)};
+}
+function datosTicketGrupo(g, nombre){
+  return {folio: folioDe(g.key), cliente: nombre,
+    items: g.items.map(it=> ({nombre: it.nombre, precio: it.precio, etiqueta: it.etiqueta})), productos: [],
+    fecha: g.fecha, hora_inicio: g.hora_inicio, hora_fin: g.hora_fin,
+    estilo: (g.items.find(it=> it.estilo) || {}).estilo || "", total: totalGrupo(g)};
+}
+function ticketHtml(d, modo){
+  const cfg = S.config, nombre = cfg.nombre || "Imperio Store Barber";
+  const precioLn = p=> Number(p) > 0 ? money(p) : "A cotizar";
+  const cotizar = d.items.some(it=> !(Number(it.precio) > 0));
+  return `<div class="tk-wrap ${modo || "static"}">
+    <div class="tk-slot" aria-hidden="true"><i class="tk-led"></i></div>
+    <article class="tk-paper" aria-label="Ticket de tu cita">
+      <div class="tk-brand"><b>${esc(nombre)}</b><span>TICKET DE CITA</span></div>
+      <div class="tk-hr"></div>
+      <div class="tk-row"><span>FOLIO</span><b>${esc(d.folio)}</b></div>
+      <div class="tk-row"><span>CLIENTE</span><b>${esc(primerNombre(d.cliente))}</b></div>
+      <div class="tk-hr"></div>
+      <div class="tk-row"><span>FECHA</span><b>${esc(fmtFechaLarga(d.fecha))}</b></div>
+      <div class="tk-row"><span>HORA</span><b style="white-space:nowrap">${h12(d.hora_inicio)} – ${h12(d.hora_fin)}</b></div>
+      <div class="tk-row"><span>ESTILO</span><b>${esc(d.estilo || "A criterio del barbero")}</b></div>
+      <div class="tk-hr"></div>
+      ${d.items.map(it=> `<div class="tk-row"><span>${esc(it.nombre)}${it.etiqueta ? ` (${esc(it.etiqueta)})` : ""}</span><span>${precioLn(it.precio)}</span></div>`).join("")}
+      ${(d.productos||[]).map(p=> `<div class="tk-row"><span>${esc(p.nombre)} ×${p.cantidad}</span><span>${money(p.precio * p.cantidad)}</span></div>`).join("")}
+      <div class="tk-hr"></div>
+      <div class="tk-total"><span>TOTAL</span><b>${money(d.total)}</b></div>
+      ${cotizar ? `<p class="tk-note">+ servicios a cotizar: el precio se confirma en el local.</p>` : ""}
+      <div class="tk-hr"></div>
+      ${cfg.direccion ? `<p class="tk-c">${esc(cfg.direccion)}</p>` : ""}
+      ${cfg.whatsapp ? `<p class="tk-c">WhatsApp ${esc(cfg.whatsapp)}</p>` : ""}
+      ${barrasSvg(d.folio)}
+      <p class="tk-c tk-folio">${esc(d.folio)}</p>
+      <p class="tk-c">¡Gracias por elegirnos!<br>Pago en el local.</p>
+    </article>
+    <div class="tk-tear" aria-hidden="true"></div>
+  </div>`;
+}
+function imprimirTicket(d){
+  const previo = $("#printTk"); if(previo) previo.remove();
+  const box = document.createElement("div"); box.id = "printTk"; box.innerHTML = ticketHtml(d, "static");
+  document.body.appendChild(box); document.body.classList.add("printing-tk");
+  const limpiar = ()=>{ document.body.classList.remove("printing-tk"); box.remove(); window.removeEventListener("afterprint", limpiar); };
+  window.addEventListener("afterprint", limpiar);
+  setTimeout(()=> window.print(), 60);
+}
+
 /* ---------------- confirmación ---------------- */
 function renderConfirmacion(app){
   const c = S.lastCita; if(!c) return go("inicio", {replace:true});
-  const cfg = S.config;
+  const cfg = S.config, d = datosTicketCita(c);
   const nombresTxt = c.items.map(it=> it.servicio.nombre + (it.etiqueta?` (${it.etiqueta})`:"")).join(", ");
-  const total = sumaPrecio(c.items) + sumaProductos(c.productos);
   const waTxt = `Hola, soy ${c.cliente.nombre}. Acabo de agendar ${nombresTxt} el ${fmtFechaLarga(c.fecha)} a las ${hhmm(c.hora_inicio)}.`;
   const wa = waLink(cfg.whatsapp, waTxt);
   const acts = [
@@ -1671,25 +1812,31 @@ function renderConfirmacion(app){
     cfg.maps_link ? `<a class="act" href="${esc(cfg.maps_link)}" target="_blank" rel="noopener" style="--i:3"><span class="act-ic">${IC.pin}</span><span><b>Cómo llegar</b><small>${esc(cfg.direccion || "Abrir en Maps")}</small></span>${IC.chevR}</a>` : "",
   ].join("");
   app.innerHTML = `<div class="appv center">
-    <div class="ok-anim"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M24 41l11 11 21-23"/></svg></div>
     <h1 class="app-title">¡Listo, ${esc(primerNombre(c.cliente.nombre))}!</h1>
-    <p class="app-sub">Tu cita quedó confirmada. Te esperamos.</p>
-    <div class="ticket">
-      <div class="tk-top"><span class="tk-logo"><img src="${LOGO}" alt=""></span><div><span>${c.items.length>1?c.items.length+" servicios":"Servicio"}</span><b>${esc(c.items.map(it=>it.servicio.nombre).join(" + "))}</b></div></div>
-      <div class="tk-grid">
-        <div><span>Fecha</span><b>${fmtFecha(c.fecha)}</b></div>
-        <div><span>Hora</span><b>${h12(c.hora_inicio)} – ${h12(c.hora_fin)}</b></div>
-        <div><span>Estilo</span><b>${c.estilo ? esc(c.estilo.nombre) : "A criterio del barbero"}</b></div>
-        ${c.productos && c.productos.length ? `<div><span>Productos</span><b>${esc(c.productos.map(it=> it.producto.nombre + " ×" + it.cantidad).join(", "))}</b></div>` : ""}
-        <div><span>Total</span><b class="big">${money(total)}</b></div>
-      </div>
-      <div class="tk-cut"></div>
-      <div class="tk-bot">${IC.pin}<span>${esc(cfg.direccion || cfg.nombre || "")}</span></div>
+    <p class="app-sub" id="tkEstado" role="status">Imprimiendo tu ticket…</p>
+    ${ticketHtml(d, "printing")}
+    <div class="tk-acts" id="tkActs">
+      <div class="tk-btns"><button class="pill pill-white" id="tkPrint">${IC.print} Imprimir o guardar</button><button class="pill pill-ghost" id="tkShare">Compartir</button></div>
+      <div class="act-list">${acts}</div>
+      ${cfg.referidos_activo && c.cliente.codigo_referido ? `<div class="ref-card"><div><span>Invita a un amigo con tu código</span><b>${esc(c.cliente.codigo_referido)}</b></div><button class="pill pill-ghost pill-sm" id="copyRef">${IC.copy} Copiar</button></div>` : ""}
+      <button class="pill pill-ghost pill-block" data-go="inicio">Volver al inicio</button>
     </div>
-    <div class="act-list">${acts}</div>
-    ${cfg.referidos_activo && c.cliente.codigo_referido ? `<div class="ref-card"><div><span>Invita a un amigo con tu código</span><b>${esc(c.cliente.codigo_referido)}</b></div><button class="pill pill-ghost pill-sm" id="copyRef">${IC.copy} Copiar</button></div>` : ""}
-    <button class="pill pill-ghost pill-block" data-go="inicio">Volver al inicio</button>
   </div>`;
+  const wrap = $(".tk-wrap", app), paper = $(".tk-paper", wrap), acciones = $("#tkActs");
+  const fin = ()=>{
+    if(!document.body.contains(wrap) || wrap.classList.contains("done")) return;
+    wrap.classList.add("done"); acciones.classList.add("on");
+    $("#tkEstado").textContent = "Tu cita quedó confirmada. Te esperamos.";
+    if(navigator.vibrate){ try{ navigator.vibrate(25); }catch(e){} }
+  };
+  if(REDUCED) fin();
+  else { requestAnimationFrame(()=> wrap.classList.add("run")); paper.addEventListener("animationend", fin, {once:true}); setTimeout(fin, 4500); }
+  $("#tkPrint").onclick = ()=> imprimirTicket(d);
+  $("#tkShare").onclick = async ()=>{
+    const txt = `Mi cita en ${cfg.nombre || "Imperio Store Barber"}: ${nombresTxt}\n${fmtFechaLarga(c.fecha)} · ${h12(c.hora_inicio)} – ${h12(c.hora_fin)}\nFolio ${d.folio}`;
+    try{ if(navigator.share){ await navigator.share({title: "Mi cita", text: txt}); return; } await navigator.clipboard.writeText(txt); toast("Resumen copiado"); }
+    catch(e){ if(!e || e.name !== "AbortError") toast("No se pudo compartir"); }
+  };
   const cp = $("#copyRef"); if(cp) cp.onclick = ()=>{ (navigator.clipboard ? navigator.clipboard.writeText(c.cliente.codigo_referido) : Promise.reject()).then(()=> toast("Código copiado"), ()=> toast(c.cliente.codigo_referido)); };
 }
 
@@ -1750,7 +1897,7 @@ function renderMisCitas(app){
     ${prox.length ? prox.map((g,i)=>{ const d = parseIso(g.fecha); return `<div class="up-card" style="--i:${i}">
         <div class="up-date"><b>${d.getDate()}</b><span>${MES_C[d.getMonth()]}</span></div>
         <div class="up-info"><b>${esc(nombresGrupo(g))}</b><span>${DIAS[d.getDay()]} · ${hhmm(g.hora_inicio)} – ${hhmm(g.hora_fin)}</span></div>
-        <div class="up-act"><a class="circ" href="${gcalLink(g, nombresGrupo(g))}" target="_blank" rel="noopener" aria-label="Agregar al calendario">${IC.cal}</a><button class="circ danger" data-cancel="${g.key}" aria-label="Cancelar cita">${IC.x}</button></div>
+        <div class="up-act"><a class="circ" href="${gcalLink(g, nombresGrupo(g))}" target="_blank" rel="noopener" aria-label="Agregar al calendario">${IC.cal}</a><button class="circ" data-ticket="${g.key}" aria-label="Ver ticket">${IC.ticket}</button><button class="circ danger" data-cancel="${g.key}" aria-label="Cancelar cita">${IC.x}</button></div>
       </div>`; }).join("")
       : `<div class="note">No tienes citas próximas.</div><button class="pill pill-white pill-block" data-reservar style="margin-top:8px">Agendar una cita ${IC.arrowR}</button>`}
     ${espera.length ? `<p class="sub-lbl">Lista de espera</p>${espera.map(w=>`<div class="note">Anotado para el ${fmtFechaLarga(w.fecha_deseada)}. Te avisamos por WhatsApp si se libera un espacio.</div>`).join("")}` : ""}
@@ -1772,6 +1919,13 @@ function renderMisCitas(app){
   };
   const cp = $("#mcCopy"); if(cp) cp.onclick = ()=> navigator.clipboard && navigator.clipboard.writeText(cl.codigo_referido).then(()=> toast("Código copiado"));
   $("#mcOtro").onclick = ()=>{ S.cliente = null; renderMisCitas(app); };
+  $$("[data-ticket]", app).forEach(b=> b.onclick = ()=>{
+    const g = prox.find(x=> x.key === b.dataset.ticket); if(!g) return;
+    const d = datosTicketGrupo(g, cl.nombre);
+    openSheet(`<h3>Tu ticket</h3>${ticketHtml(d, "static")}<div class="sh-actions"><button class="pill pill-white" id="tkPrint2">${IC.print} Imprimir o guardar</button><button class="pill pill-ghost" id="tkClose">Cerrar</button></div>`, sh=>{
+      $("#tkPrint2", sh).onclick = ()=> imprimirTicket(d); $("#tkClose", sh).onclick = closeSheet;
+    });
+  });
   $$("[data-cancel]", app).forEach(b=> b.onclick = ()=>{
     const g = prox.find(x=> x.key === b.dataset.cancel);
     confirmar("¿Cancelar esta cita?", `${nombresGrupo(g)} · ${fmtFechaLarga(g.fecha)} a las ${hhmm(g.hora_inicio)}. El espacio se liberará para otro cliente.`, "Sí, cancelar", async ()=>{
@@ -1914,7 +2068,7 @@ function ordHtml(g, i, opt={}){
       ${opt.full && cl.telefono ? `<span>${esc(cl.telefono)}</span>` : ""}
       ${g.notas ? `<span class="ord-note">${esc(g.notas)}</span>` : ""}
       <div class="ord-acts">${acciones}</div></div>
-    <div class="ord-r"><b>${hhmm(g.hora_inicio)}</b><span>${money(totalGrupo(g))}</span></div>
+    <div class="ord-r"><b>${hhmm(g.hora_inicio)}</b><span>${money(totalGrupo(g))}</span><span style="font-size:11px;letter-spacing:.08em">${folioDe(g.key)}</span></div>
   </div>`;
 }
 function cablearOrd(root, grupos){
