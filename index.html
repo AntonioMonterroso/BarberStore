@@ -1090,6 +1090,18 @@ body[data-route=admin] #ftr,body[data-route=agendar] #ftr,body[data-route=confir
 .up-lock{margin:0;font-size:13px;line-height:1.55;color:var(--text-2)}
 .up-lock a{color:var(--copper-2);text-decoration:underline;text-underline-offset:3px}
 #sheetRoot .date-row{margin-bottom:14px}
+
+/* ---------- punto de acceso discreto al panel + saludo del dispositivo ---------- */
+.dot-admin{width:28px;height:40px;display:grid;place-items:center;flex:0 0 auto}
+@media(max-width:420px){.hdr-in{gap:8px;padding-left:16px;padding-right:14px}.hdr-right{gap:2px}.brand{gap:8px}.brand small{white-space:nowrap;letter-spacing:.2em}}
+.dot-admin i{width:6px;height:6px;border-radius:50%;background:var(--copper);opacity:.75;box-shadow:0 0 0 3px rgba(201,138,62,.14),0 0 12px rgba(201,138,62,.35);transition:opacity .3s,transform .3s var(--ease),box-shadow .3s}
+.dot-admin:hover i,.dot-admin:focus-visible i{opacity:1;transform:scale(1.35);box-shadow:0 0 0 4px rgba(201,138,62,.2),0 0 16px rgba(201,138,62,.5)}
+.dot-admin:active i{transform:scale(1.3)}
+body[data-route=admin] .dot-admin{display:none}
+.chip-me{cursor:pointer;color:var(--cream);transition:background .25s,border-color .25s}
+.chip-me svg{color:var(--copper-2)}
+@media(hover:hover) and (pointer:fine){.chip-me:hover{background:rgba(255,255,255,.1);border-color:var(--line-2)}}
+.login-note{margin:14px 0 0;text-align:center;font-size:12.5px;color:var(--text-3);line-height:1.5}
 </style>
 </head>
 <body data-route="inicio">
@@ -1111,6 +1123,7 @@ body[data-route=admin] #ftr,body[data-route=agendar] #ftr,body[data-route=confir
     </nav>
     <div class="hdr-right">
       <div class="hdr-social" id="hdrSocial"></div>
+      <button class="dot-admin" data-go="admin" aria-label="Acceso del negocio"><i></i></button>
       <button class="pill pill-white pill-sm" data-reservar>Agendar<span class="lg-only">&nbsp;cita</span></button>
       <button class="burger" id="burger" aria-label="Abrir menú"><span></span><span></span></button>
     </div>
@@ -1443,6 +1456,7 @@ document.addEventListener("click", e=>{
 
 function render(){
   document.body.dataset.route = S.route;
+  if(S.route !== "mis-citas") S.omitirAuto = false;
   closeSheet(); cerrarMenu();
   const app = $("#app");
   app.style.animation = "none"; void app.offsetWidth; app.style.animation = "";
@@ -1508,7 +1522,7 @@ function pintarMarco(){
     <div class="ftr-col"><h5>Explora</h5><button data-anchor="servicios">Servicios</button>${hayEstilos() ? `<button data-anchor="estilos">Estilos</button>` : ""}${hayTienda ? `<button data-anchor="tienda">Tienda</button>` : ""}<button data-anchor="ubicacion">Ubicación y horario</button><button data-go="mis-citas">Mis citas</button></div>
     <div class="ftr-col"><h5>Contacto</h5>${wa ? `<a href="${wa}" target="_blank" rel="noopener">WhatsApp</a>` : ""}${c.maps_link ? `<a href="${esc(c.maps_link)}" target="_blank" rel="noopener">Cómo llegar</a>` : ""}<div class="fsoc-row">${sociales}</div></div>
     <div class="ftr-col ftr-cta"><button class="pill pill-white pill-sm" data-reservar>Agendar cita ${IC.arrowR}</button></div>
-    <div class="ftr-legal"><span>© ${new Date().getFullYear()} ${esc(c.nombre||"Imperio Store Barber")}</span><button data-go="admin">Panel del negocio</button></div>
+    <div class="ftr-legal"><span>© ${new Date().getFullYear()} ${esc(c.nombre||"Imperio Store Barber")}</span></div>
   </div>`;
 }
 </script>
@@ -1534,6 +1548,7 @@ function renderInicio(app){
     <div class="hx-in">
       <div class="hx-meta">
         <span class="chip-status"><i class="dot ${est.abierto?"on":""}"></i>${esc(est.texto)}</span>
+        ${saludoChip()}
         ${S.promedio ? `<span class="chip-status">${IC.star}${S.promedio} · ${S.totalResenas} reseñas</span>` : ""}
       </div>
       <h1 class="hx-title">${lineas.map((l,i)=>`<span class="ln ${i%2?"r":""}"><span style="--d:${(.15+i*.13).toFixed(2)}s">${titulo(l)}</span></span>`).join("")}</h1>
@@ -1600,6 +1615,11 @@ function renderInicio(app){
   const q = $("#svcQ"); if(q) q.oninput = ()=>{ S.svcQ = q.value; pintarTiles(); };
   pintarTiles();
   activarReveal(app);
+}
+
+function saludoChip(){
+  const l = leerLocal(); if(!l.nombre) return "";
+  return `<button class="chip-status chip-me" data-go="mis-citas">${IC.user} Hola, ${esc(primerNombre(l.nombre))} · Mis citas</button>`;
 }
 
 function svcRow(s,i){
@@ -2197,6 +2217,16 @@ function abrirEspera(fecha){
    MIS CITAS (referencia: Black Box home)
    ============================================================ */
 function renderMisCitas(app){
+  const l0 = leerLocal();
+  if(l0.telefono && !S.omitirAuto && !S.misCitasRefrescando){
+    S.misCitasRefrescando = true;
+    if(!S.cliente) app.innerHTML = `<div class="appv enter"><h1 class="app-title">Mis citas</h1><p class="app-sub">Buscando tus citas…</p></div>`;
+    buscarCliente(l0.telefono, true).finally(()=>{
+      S.misCitasRefrescando = false; S.omitirAuto = true;
+      if(!S.cliente && S.route === "mis-citas") renderMisCitas($("#app"));
+    });
+    if(!S.cliente) return;
+  }
   if(!S.cliente){
     const l = leerLocal();
     app.innerHTML = `<div class="appv enter">
@@ -2242,7 +2272,7 @@ function renderMisCitas(app){
     ${pref ? `<p class="sub-lbl">Tu estilo preferido</p><div class="note" style="color:var(--cream)">${esc(pref.nombre)}</div>` : ""}
     ${cfg.referidos_activo && cl.codigo_referido ? `<p class="sub-lbl">Invita amigos</p><div class="ref-card"><div><span>Tu código de referido</span><b>${esc(cl.codigo_referido)}</b></div><button class="pill pill-ghost pill-sm" id="mcCopy">${IC.copy} Copiar</button></div>` : ""}
     ${hechas.length > 1 ? `<p class="sub-lbl">Historial</p><div class="hist">${hechas.slice(0,8).map(g=>`<span>${fmtFecha(g.fecha)} · ${esc(nombresGrupo(g))}</span>`).join("")}</div>` : ""}
-    <p style="margin-top:34px;text-align:center"><button class="link-btn" id="mcOtro">Buscar con otro número</button></p>
+    <p style="margin-top:34px;text-align:center"><button class="link-btn" id="mcOtro">Buscar con otro número</button> &nbsp;·&nbsp; <button class="link-btn" id="mcOlvidar">Olvidar este dispositivo</button></p>
   </div>`;
   const rep = $("#mcRepetir");
   if(rep) rep.onclick = ()=>{
@@ -2255,7 +2285,8 @@ function renderMisCitas(app){
     S.wizardStep = 3; S.lastStep = 0; go("agendar");
   };
   const cp = $("#mcCopy"); if(cp) cp.onclick = ()=> navigator.clipboard && navigator.clipboard.writeText(cl.codigo_referido).then(()=> toast("Código copiado"));
-  $("#mcOtro").onclick = ()=>{ S.cliente = null; renderMisCitas(app); };
+  $("#mcOtro").onclick = ()=>{ S.cliente = null; S.omitirAuto = true; renderMisCitas(app); };
+  $("#mcOlvidar").onclick = ()=>{ try{ localStorage.removeItem("imperio_cliente"); }catch(e){} S.cliente = null; S.citasCliente = []; S.omitirAuto = true; toast("Listo, este dispositivo ya no recuerda tus datos"); renderMisCitas(app); };
   $$("[data-confirm]", app).forEach(b=> b.onclick = async ()=>{
     const g = prox.find(x=> x.key === b.dataset.confirm); if(!g) return;
     b.disabled = true;
@@ -2339,7 +2370,7 @@ async function buscarCliente(telefono, silencioso){
   const tel = soloDigitos(telefono);
   if(tel.length < 8){ if(!silencioso) toast("Escribe tu número completo"); return; }
   const {data:cl} = await sb.from("clientes").select("*").eq("telefono", tel).maybeSingle();
-  if(!cl){ toast("No encontramos citas con ese número"); return; }
+  if(!cl){ if(!silencioso) toast("No encontramos citas con ese número"); return; }
   const [{data:citas}, {data:wl}] = await Promise.all([
     sb.from("citas").select("*, servicios(nombre,precio), estilos_corte(nombre)").eq("cliente_id", cl.id).order("fecha",{ascending:false}),
     sb.from("waitlist").select("*").eq("cliente_id", cl.id),
@@ -2419,19 +2450,23 @@ async function pintarTab(){
   try{ await f(box); }catch(e){ console.error(e); box.innerHTML = `<div class="adm-empty">No se pudo cargar esta sección. Revisa tu conexión o que ejecutaste el SQL.</div>`; }
 }
 
+function correoAdminGuardado(){ try{ return localStorage.getItem("imperio_admin_mail") || ""; }catch(e){ return ""; } }
 function renderLogin(app){
   app.innerHTML = `<div class="login enter">
     <img class="login-logo" src="${LOGO}" alt="">
     <h1 class="app-title">Panel del negocio</h1><p class="app-sub">Ingresa para administrar tu barbería</p>
     <div class="login-card">
-      <div class="field"><label for="lgMail">Correo</label><input id="lgMail" type="email" autocomplete="username"></div>
+      <div class="field"><label for="lgMail">Correo</label><input id="lgMail" type="email" autocomplete="username" value="${esc(correoAdminGuardado())}"></div>
       <div class="field"><label for="lgPass">Contraseña</label><input id="lgPass" type="password" autocomplete="current-password"></div>
       <button class="pill pill-white pill-block" id="lgOk">Ingresar ${IC.arrowR}</button>
+      <p class="login-note">La sesión se mantiene en este dispositivo hasta que cierres sesión.</p>
     </div></div>`;
+  if($("#lgMail").value) $("#lgPass").focus();
   const entrar = async ()=>{
     const btn = $("#lgOk"); btn.disabled = true;
     const {error} = await sb.auth.signInWithPassword({email: $("#lgMail").value.trim(), password: $("#lgPass").value});
     if(error){ btn.disabled = false; return toast("Correo o contraseña incorrectos"); }
+    try{ localStorage.setItem("imperio_admin_mail", $("#lgMail").value.trim()); }catch(e){}
     render();
   };
   $("#lgOk").onclick = entrar; $("#lgPass").onkeydown = e=>{ if(e.key === "Enter") entrar(); };
