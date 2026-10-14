@@ -1139,6 +1139,8 @@ body[data-route=admin] .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px)
 .adm-bottom button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 0 7px;border-radius:14px;color:var(--text-3);font-size:11px;font-weight:700;letter-spacing:.02em;transition:color .25s,background .25s,transform .2s var(--ease)}
 .adm-bottom button svg{width:23px;height:23px}
 .adm-bottom button.on{color:var(--copper-2);background:rgba(201,138,62,.12)}
+.adm-bottom button{position:relative}
+.adm-bottom .nb{position:absolute;top:3px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--copper-2);color:#140d05;font-style:normal;font-size:10.5px;font-weight:800;display:grid;place-items:center;box-shadow:0 0 0 2px rgba(20,20,23,.94)}
 .adm-bottom button:active{transform:scale(.95)}
 
 /* resumen del día */
@@ -1221,6 +1223,97 @@ body[data-route=admin] .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px)
 .nt-btns{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}
 .nt-tip{margin:12px 2px 0;font-size:13px;line-height:1.55;color:var(--text-2)}
 .nt-tip b{color:var(--cream)}
+
+/* ============================================================
+   SECCIONES DEL PANEL — mismo orden y estilo que "Hoy"
+   ============================================================ */
+.tsum{background:linear-gradient(155deg,#26231d 0%,var(--card) 62%);border-radius:24px;padding:20px 20px 18px;box-shadow:inset 0 0 0 1px var(--line-2);margin-bottom:12px;animation:rise .5s var(--ease) both}
+.tsum-top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
+.tsum-top small{display:block;font-size:12.5px;color:var(--text-2);font-weight:600;margin-bottom:8px}
+.tsum-v{display:block;font-family:var(--disp);font-size:60px;line-height:.92;font-weight:400}
+.tsum-top span{display:block;font-size:13px;color:var(--text-2);margin-top:8px}
+.tsum-side{text-align:right}
+.tsum-side b{font-family:var(--disp);font-size:34px;font-weight:400;color:var(--copper-2);line-height:1}
+.tsum-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.tsum.pos .tsum-v{color:var(--ok)}
+.tsum.neg .tsum-v{color:var(--danger)}
+.fin-split{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.fin-split div{display:flex;flex-direction:column;gap:6px}
+.fin-split span{display:flex;align-items:center;font-size:12.5px;color:var(--text-2);font-weight:700}
+.fin-split b{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.dot-g,.dot-r{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-right:6px;flex:0 0 auto}
+.dot-r{background:var(--danger)}
+.sbar{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px;margin-bottom:14px}
+.sb{background:var(--card);border-radius:16px;padding:12px 14px;min-width:0;animation:rise .5s var(--ease) both;animation-delay:calc(var(--i,0)*60ms)}
+.sb span{display:block;font-size:11.5px;color:var(--text-2);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb b{display:block;font-family:var(--disp);font-weight:400;font-size:26px;line-height:1;margin-top:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb.ok b{color:var(--ok)}.sb.warn b{color:var(--copper-2)}.sb.bad b{color:var(--danger)}
+.fchips{display:flex;gap:8px;overflow-x:auto;margin:0 -14px 12px;padding:0 14px 2px;scrollbar-width:none}
+.fchips::-webkit-scrollbar{display:none}
+.grp{background:var(--card);border-radius:22px;padding:18px 16px;margin-bottom:12px}
+.grp-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.grp-hd h3{margin:0;font-size:17px;font-weight:800;letter-spacing:-.02em}
+.legend{display:flex;gap:12px;font-size:12px;color:var(--text-2)}
+.legend span{display:flex;align-items:center}
+.grp .rc{background:var(--card-2)}
+.grp .adm-empty{box-shadow:none;padding:22px 12px}
+.grp .fin-chart{margin:0}
+.grp-h{display:flex;justify-content:space-between}
+
+/* tarjeta de fila (clientes, espera, reseñas, finanzas) */
+.rc{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:18px;padding:12px 14px;margin-bottom:8px;animation:rise .45s var(--ease) both;animation-delay:calc(var(--i,0)*45ms);min-width:0}
+.rc.btn{cursor:pointer;transition:background .25s,transform .25s var(--ease)}
+.rc.btn:active{transform:scale(.985)}
+.rc.top{align-items:flex-start}
+.rc.wrap{flex-wrap:wrap}
+.rc .av{width:44px;height:44px;border-radius:14px;margin:0;font-size:14px}
+.rc .av.rank{background:rgba(201,138,62,.14);color:var(--copper-2);font-family:var(--disp);font-size:20px;font-weight:400}
+.rc-b{flex:1;min-width:0}
+.rc-b b{display:block;font-weight:700;font-size:15px;line-height:1.3}
+.rc-b>span{display:block;font-size:12.5px;color:var(--text-2);margin-top:2px;line-height:1.4}
+.rc-b .stars{margin-top:5px}
+.rc-note{color:var(--copper-2)!important}
+.rc-txt{margin:8px 0 0;font-size:14px;line-height:1.55;color:var(--text-2)}
+.rc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.rc-r{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:0 0 auto}
+.rc-date{font-size:12px;color:var(--text-3)}
+.rc-amt{font-weight:800;font-size:16px;flex:0 0 auto}
+.rc-amt.neg{color:var(--danger)}
+.rc-wa{width:40px;height:40px;color:var(--copper-2);flex:0 0 auto}
+.rc-acts{flex:1 1 100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:2px}
+.rc-acts .oa{min-height:50px;padding:0 4px;text-align:center;line-height:1.15}
+
+/* filas antiguas (bloqueos y otras) con el mismo aspecto */
+.cl-row .av{display:grid;margin:0;width:44px;height:44px;border-radius:14px;font-size:14px;color:var(--cream)}
+.cl-row>.ci>span{margin-top:2px}
+
+/* formularios agrupados */
+.fcard{box-shadow:inset 0 0 0 1px var(--line);background:linear-gradient(180deg,rgba(255,255,255,.03),transparent 36%),var(--card)}
+.fcard h3{display:flex;align-items:center;gap:10px;font-size:17px}
+.fcard h3::before{content:"";width:4px;height:18px;border-radius:4px;background:linear-gradient(var(--copper-2),var(--copper));flex:0 0 auto}
+.fcard>p{margin-left:14px}
+.save-bar{bottom:calc(86px + env(safe-area-inset-bottom,0px));justify-content:stretch}
+.save-bar .pill{flex:1}
+@media(min-width:700px){.save-bar{bottom:calc(14px + env(safe-area-inset-bottom,0px));justify-content:flex-end}.save-bar .pill{flex:0 0 auto}}
+
+/* horario: una tarjeta compacta por día */
+.dr{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px 12px;padding:12px 14px}
+.dr-n{width:auto;font-size:15px}
+.dr-st{font-size:12px;font-weight:700;color:var(--ok);letter-spacing:.02em}
+.dr.off .dr-st{color:var(--text-3)}
+.dr-t{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px;opacity:1;margin-top:6px}
+.dr.off .dr-t{display:none}
+.dr input[type=time]{width:100%;height:44px;font-size:14px;padding:0 6px;text-align:center;color:var(--cream)}
+.dr .segc{grid-column:1/-1;display:flex;width:100%}
+.dr .segc button{flex:1;height:36px}
+.hr-actions{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+@media(min-width:700px){.hr-actions{flex-direction:row;justify-content:space-between;align-items:center}}
+
+/* finanzas */
+.fin-tabs{display:flex;width:100%;margin-bottom:14px}
+.fin-tabs button{flex:1;white-space:nowrap}
+.fin-chart{background:none;padding:0;border-radius:0}
+@media(min-width:700px){.fin-tabs{display:inline-flex;width:auto}.tsum-v{font-size:72px}}
 </style>
 </head>
 <body data-route="inicio">
@@ -2544,8 +2637,14 @@ function renderResena(app){
    PANEL DEL NEGOCIO (referencia: POS de iPad)
    ============================================================ */
 const TABS = [["hoy","Hoy"],["agenda","Agenda"],["clientes","Clientes"],["servicios","Servicios"],["productos","Productos"],["estilos","Estilos"],["horario","Horario"],["pagina","Página"],["espera","Espera"],["resenas","Reseñas"],["finanzas","Finanzas"],["ajustes","Ajustes"]];
-const NAV_MOVIL = [["hoy","Hoy","home"],["agenda","Agenda","cal"],["clientes","Clientes","users"],["finanzas","Finanzas","chart"]];
-const NAV_MAS = [["servicios","Servicios","scissors"],["productos","Productos","box"],["estilos","Estilos","image"],["horario","Horario","clock"],["pagina","Página","eye"],["espera","Lista de espera","clock"],["resenas","Reseñas","star"],["ajustes","Ajustes","gear"]];
+/* piezas comunes del panel: resumen, tiras de cifras y tarjetas de fila */
+function tsum(l, v, sub, l2, v2, chips, cls=""){
+  return `<section class="tsum ${cls}"><div class="tsum-top"><div><small>${l}</small><b class="tsum-v">${v}</b>${sub ? `<span>${sub}</span>` : ""}</div>${l2 ? `<div class="tsum-side"><small>${l2}</small><b>${v2}</b></div>` : ""}</div>${chips ? `<div class="tsum-chips">${chips}</div>` : ""}</section>`;
+}
+function sbar(items){ return `<div class="sbar">${items.map(([l,v,c],i)=>`<div class="sb ${c||""}" style="--i:${i}"><span>${l}</span><b>${v}</b></div>`).join("")}</div>`; }
+function grpHd(titulo, extra=""){ return `<header class="grp-hd"><h3>${titulo}</h3>${extra}</header>`; }
+const NAV_MOVIL = [["hoy","Hoy","home"],["agenda","Agenda","cal"],["clientes","Clientes","users"],["espera","Espera","clock"]];
+const NAV_MAS = [["servicios","Servicios","scissors"],["productos","Productos","box"],["estilos","Estilos","image"],["horario","Horario","clock"],["pagina","Página","eye"],["finanzas","Finanzas","chart"],["resenas","Reseñas","star"],["ajustes","Ajustes","gear"]];
 const ESTADOS = {confirmada:["Confirmada","c"], completada:["Completada","ok"], cancelada:["Cancelada","bad"], no_asistio:["No asistió","bad"]};
 
 async function renderAdmin(app){
@@ -2601,7 +2700,16 @@ function hojaMas(){
     });
   });
 }
-async function refrescarAdmin(){ await Promise.all([pintarTab(), pintarLateral()]); }
+async function badgeEspera(){
+  const b = $('#admBottom [data-tab="espera"]'); if(!b) return;
+  let n = 0;
+  try{ const r = await sb.from("waitlist").select("*", {count:"exact", head:true}).eq("estado","esperando").gte("fecha_deseada", isoDate(new Date())); n = r.count || 0; }catch(e){}
+  let i = b.querySelector(".nb");
+  if(!n){ if(i) i.remove(); return; }
+  if(!i){ i = document.createElement("i"); i.className = "nb"; b.appendChild(i); }
+  i.textContent = n > 9 ? "9+" : n;
+}
+async function refrescarAdmin(){ await Promise.all([pintarTab(), pintarLateral(), badgeEspera()]); }
 async function pintarTab(){
   const box = $("#admBody"); if(!box) return;
   box.style.animation = "none"; void box.offsetWidth; box.style.animation = "";
@@ -2937,27 +3045,34 @@ async function hojaNuevaCita(pre={}){
 /* ---------------- CLIENTES (relación barbero-cliente) ---------------- */
 async function tabClientes(box){
   await calcularRiesgo();
-  box.innerHTML = `<div class="adm-bar"><label class="search">${IC.search}<input id="clQ" placeholder="Buscar por nombre o teléfono" aria-label="Buscar cliente"></label>
-    <button class="chip" id="clRiesgo">En riesgo (${Object.values(S.churn||{}).filter(x=>x.riesgo).length})</button></div><div id="clList"></div>`;
-  let t, soloRiesgo = false;
+  const {count} = await sb.from("clientes").select("*", {count:"exact", head:true});
+  const nRies = Object.values(S.churn||{}).filter(x=> x.riesgo).length, fid = !!S.config.fidelidad_activa;
+  box.innerHTML = `${tsum("Tus clientes", count || 0, "registrados en total", "En riesgo", nRies, "", nRies ? "" : "")}
+    <label class="search" style="max-width:none;margin-bottom:12px">${IC.search}<input id="clQ" placeholder="Buscar por nombre o teléfono" aria-label="Buscar cliente"></label>
+    <div class="fchips" id="clF"><button class="chip on" data-f="todos">Todos</button><button class="chip" data-f="riesgo">En riesgo (${nRies})</button>${fid ? `<button class="chip" data-f="pts">Con puntos</button>` : ""}</div>
+    <p class="grp-h" id="clCount" style="margin-top:6px"></p><div id="clList"></div>`;
+  let t, filtro = "todos";
   const buscar = async ()=>{
     const q = $("#clQ").value.trim().replace(/[%,()]/g,"");
     let query = sb.from("clientes").select("*").order("creado_en", {ascending:false}).limit(200);
     if(q) query = query.or(`nombre.ilike.%${q}%,telefono.ilike.%${soloDigitos(q) || q}%`);
     const {data} = await query;
     let lista = data || [];
-    if(soloRiesgo) lista = lista.filter(c=> S.churn[c.id] && S.churn[c.id].riesgo);
+    if(filtro === "riesgo") lista = lista.filter(c=> S.churn[c.id] && S.churn[c.id].riesgo);
+    if(filtro === "pts") lista = lista.filter(c=> Number(c.puntos_actuales) > 0);
+    $("#clCount").textContent = `${lista.length} ${lista.length === 1 ? "cliente" : "clientes"}`;
     $("#clList").innerHTML = lista.length ? lista.map((c,i)=>{
       const pref = S.estilos.find(e=> e.id === c.estilo_preferido_id);
       const r = S.churn && S.churn[c.id];
-      return `<button class="cl-row" data-cl="${c.id}" style="--i:${Math.min(i,12)}"><span class="av">${esc(iniciales(c.nombre))}</span>
-        <div class="ci"><b>${esc(c.nombre)}${r && r.riesgo?` <span class="badge risk">En riesgo · ${r.diasDesde}d</span>`:""}</b><span>${esc(c.telefono)}${pref ? " · " + esc(pref.nombre) : ""}${c.notas ? " · " + esc(c.notas) : ""}</span></div>
-        ${S.config.fidelidad_activa ? `<span class="badge c">${Number(c.puntos_actuales)||0} pts</span>` : ""}${IC.chevR}</button>`; }).join("")
-      : `<div class="adm-empty">${q || soloRiesgo ? "Sin resultados." : "Aún no hay clientes. Se crean solos cuando alguien agenda."}</div>`;
-    $$("[data-cl]", box).forEach(b=> b.onclick = ()=> hojaCliente(lista.find(x=> x.id === b.dataset.cl)));
+      return `<div class="rc btn" data-cl="${c.id}" style="--i:${Math.min(i,12)}" role="button" tabindex="0"><span class="av">${esc(iniciales(c.nombre))}</span>
+        <div class="rc-b"><b>${esc(c.nombre)}</b><span>${esc(c.telefono)}${pref ? " · " + esc(pref.nombre) : ""}</span>${c.notas ? `<span class="rc-note">${esc(c.notas)}</span>` : ""}
+          ${(r && r.riesgo) || fid ? `<div class="rc-tags">${r && r.riesgo ? `<span class="badge risk">${r.diasDesde} d sin venir</span>` : ""}${fid ? `<span class="badge c">${Number(c.puntos_actuales)||0} pts</span>` : ""}</div>` : ""}</div>
+        ${c.telefono ? `<a class="circ rc-wa" href="${waLink(c.telefono)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">${IC.wa}</a>` : ""}</div>`; }).join("")
+      : `<div class="adm-empty">${q || filtro !== "todos" ? "Sin resultados." : "Aún no hay clientes. Se crean solos cuando alguien agenda."}</div>`;
+    $$("[data-cl]", box).forEach(b=> b.onclick = e=>{ if(e.target.closest("a")) return; hojaCliente(lista.find(x=> x.id === b.dataset.cl)); });
   };
   $("#clQ").oninput = ()=>{ clearTimeout(t); t = setTimeout(buscar, 250); };
-  $("#clRiesgo").onclick = ()=>{ soloRiesgo = !soloRiesgo; $("#clRiesgo").classList.toggle("on", soloRiesgo); buscar(); };
+  $("#clF").onclick = e=>{ const b = e.target.closest("[data-f]"); if(!b) return; filtro = b.dataset.f; $$("#clF .chip").forEach(x=> x.classList.toggle("on", x === b)); buscar(); };
   await buscar();
 }
 async function hojaCliente(c){
@@ -2995,7 +3110,8 @@ async function tabServicios(box){
   const {data} = await sb.from("servicios").select("*").order("orden");
   const todos = data || [];
   const cats = [...new Set(todos.map(s=> (s.categoria||"").trim()).filter(Boolean))];
-  box.innerHTML = `<div class="adm-bar">
+  box.innerHTML = `${sbar([["Servicios", todos.length], ["Visibles", todos.filter(s=> s.activo).length, "ok"], ["Ocultos", todos.filter(s=> !s.activo).length, todos.some(s=> !s.activo) ? "warn" : ""]])}
+    <div class="adm-bar">
       <label class="search">${IC.search}<input id="asQ" placeholder="Buscar por nombre, precio o duración" aria-label="Buscar servicio"></label>
       ${cats.length ? `<select class="selectc" id="asCat"><option value="">Todas las categorías</option>${cats.map(k=>`<option>${esc(k)}</option>`).join("")}</select>` : ""}
     </div><div class="tiles stg" id="asTiles"></div>`;
@@ -3052,7 +3168,8 @@ function hojaServicio(s, cats=[]){
 async function tabEstilos(box){
   const {data} = await sb.from("estilos_corte").select("*").order("orden");
   const todos = data || [];
-  box.innerHTML = `<p class="side-sub" style="margin-bottom:16px">Catálogo de referencia que ve el cliente al agendar. Su elección se guarda como su estilo preferido.</p>
+  box.innerHTML = `${sbar([["Estilos", todos.length], ["Visibles", todos.filter(e=> e.activo).length, "ok"], ["Categorías", new Set(todos.map(e=> (e.categoria||"").trim()).filter(Boolean)).size]])}
+    <p class="side-sub" style="margin-bottom:14px">Catálogo que ve el cliente al agendar. Su elección se guarda como su estilo preferido.</p>
     <div class="port-grid" id="aeGrid">
       <button class="port-item tile add" id="aeNew" style="aspect-ratio:3/4">${IC.plus}Nuevo estilo</button>
       ${todos.map((e,i)=>`<button class="port-item" data-est="${e.id}" style="--i:${i+1};${e.activo?"":"opacity:.45"}">
@@ -3091,7 +3208,9 @@ function hojaEstilo(e){
 async function tabProductos(box){
   const {data} = await sb.from("productos").select("*").order("orden");
   const todos = data || [];
-  box.innerHTML = `<p class="side-sub" style="margin-bottom:16px">Lo que vendes además de los cortes: pomadas, aceites, máquinas, lo que sea. Registra cada venta para llevar el control.</p>
+  const bajos = todos.filter(p=> p.stock != null && Number(p.stock) <= 3).length, valor = todos.reduce((a,p)=> a + (p.stock != null ? Number(p.stock) * Number(p.precio) : 0), 0);
+  box.innerHTML = `${sbar([["Productos", todos.length], ["Stock bajo", bajos, bajos ? "bad" : ""], ["En inventario", money(valor), "warn"]])}
+    <p class="side-sub" style="margin-bottom:14px">Toca un producto para registrar una venta, editarlo o ajustar su stock.</p>
     <div class="tiles stg" id="prTiles"></div>`;
   const pintar = ()=>{
     $("#prTiles").innerHTML = `<button class="tile add" id="prNew" style="--i:0">${IC.plus}Nuevo producto</button>` +
@@ -3166,15 +3285,17 @@ function hojaProducto(p){
 /* ---------------- HORARIO ---------------- */
 async function tabHorario(box){
   const [{data:hor}, {data:bl}] = await Promise.all([sb.from("horarios").select("*").order("dia_semana"), sb.from("bloqueos").select("*").gte("fecha", isoDate(new Date())).order("fecha")]);
-  box.innerHTML = `<div class="fcard"><h3>Días y horas de atención</h3><p>El intervalo define cada cuánto aparecen horarios para agendar. La duración real de la cita la pone cada servicio.</p>
+  const abiertos = (hor||[]).filter(h=> h.activo), horasSem = abiertos.reduce((a,h)=> a + Math.max(0, toMin(h.hora_fin) - toMin(h.hora_inicio)) / 60, 0);
+  box.innerHTML = `${sbar([["Días abiertos", abiertos.length + " de 7", "ok"], ["Horas / semana", Math.round(horasSem) + " h"], ["Bloqueos", (bl||[]).length, (bl||[]).length ? "warn" : ""]])}
+    <div class="fcard"><h3>Días y horas de atención</h3><p>El intervalo define cada cuánto aparecen horarios para agendar. La duración real de la cita la pone cada servicio.</p>
     ${[1,2,3,4,5,6,0].map(d=>{ const h = (hor||[]).find(x=> x.dia_semana === d) || {activo:false, hora_inicio:"09:00", hora_fin:"18:00", intervalo_minutos:30}; const iv = Number(h.intervalo_minutos)||30;
       return `<div class="dr ${h.activo?"":"off"}" data-dia="${d}" style="background:var(--card-2)">
         <label class="sw"><input type="checkbox" class="dAct" ${h.activo?"checked":""} aria-label="${DIAS[d]} abierto"><span></span></label>
-        <span class="dr-n">${DIAS[d]}</span>
+        <span class="dr-n">${DIAS[d]}</span><span class="dr-st">${h.activo ? "Abierto" : "Cerrado"}</span>
         <div class="dr-t"><input type="time" class="dIni" value="${hhmm(h.hora_inicio)}"> a <input type="time" class="dFin" value="${hhmm(h.hora_fin)}">
           <div class="segc">${[15,30,60].map(v=>`<button type="button" data-v="${v}" class="${iv===v?"on":""}">${v===60?"1 h":v+" min"}</button>`).join("")}</div></div>
       </div>`; }).join("")}
-    <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="pill pill-white" id="hrOk">Guardar horario</button></div></div>
+    <div class="hr-actions"><button class="pill pill-ghost pill-sm" id="hrCopy" type="button">${IC.copy} Copiar el lunes a los demás días abiertos</button><button class="pill pill-white" id="hrOk">Guardar horario</button></div></div>
 
     <div class="fcard"><h3>Bloqueos</h3><p>Vacaciones, feriados o un rato libre. Esos horarios dejan de ofrecerse.</p>
       <div class="grid2">
@@ -3187,9 +3308,15 @@ async function tabHorario(box){
       <div style="margin-top:16px">${(bl||[]).map(b=>`<div class="cl-row" style="background:var(--card-2);cursor:default"><span class="av">${IC.block}</span><div class="ci"><b>${fmtFechaLarga(b.fecha)}</b><span>${b.todo_el_dia ? "Todo el día" : hhmm(b.hora_inicio)+" – "+hhmm(b.hora_fin)}${b.motivo ? " · "+esc(b.motivo) : ""}</span></div><button class="circ danger" data-delb="${b.id}" aria-label="Quitar bloqueo">${IC.trash}</button></div>`).join("") || `<p class="side-sub" style="margin:0">Sin bloqueos próximos.</p>`}</div>
     </div>`;
   $$(".dr", box).forEach(r=>{
-    $(".dAct", r).onchange = e=> r.classList.toggle("off", !e.target.checked);
+    $(".dAct", r).onchange = e=>{ r.classList.toggle("off", !e.target.checked); $(".dr-st", r).textContent = e.target.checked ? "Abierto" : "Cerrado"; };
     $(".segc", r).onclick = e=>{ const b = e.target.closest("[data-v]"); if(!b) return; $$(".segc button", r).forEach(x=> x.classList.toggle("on", x === b)); };
   });
+  $("#hrCopy").onclick = ()=>{
+    const base = $$(".dr", box).find(r=> r.dataset.dia === "1"); if(!base) return;
+    const ini = $(".dIni", base).value, fin = $(".dFin", base).value, iv = ($(".segc .on", base) || {dataset:{v:"30"}}).dataset.v;
+    $$(".dr", box).forEach(r=>{ if(r === base || !$(".dAct", r).checked) return; $(".dIni", r).value = ini; $(".dFin", r).value = fin; $$(".segc button", r).forEach(x=> x.classList.toggle("on", x.dataset.v === iv)); });
+    toast("Horario del lunes copiado. Revisa y guarda.");
+  };
   $("#hrOk").onclick = async ()=>{
     const filas = $$(".dr", box).map(r=> ({dia_semana: Number(r.dataset.dia), activo: $(".dAct",r).checked, hora_inicio: $(".dIni",r).value || "09:00", hora_fin: $(".dFin",r).value || "18:00", intervalo_minutos: Number(($(".segc .on",r)||{dataset:{v:30}}).dataset.v)}));
     if(filas.some(f=> f.activo && toMin(f.hora_fin) <= toMin(f.hora_inicio))) return toast("Revisa: la hora de cierre debe ser después de la apertura");
@@ -3264,13 +3391,16 @@ async function tabEspera(box){
   const {data} = await sb.from("waitlist").select("*, clientes(nombre,telefono)").gte("fecha_deseada", isoDate(new Date())).in("estado", ["esperando","notificado"]).order("fecha_deseada").order("creado_en");
   const lista = data || [];
   const grupos = {}; lista.forEach(w=> (grupos[w.fecha_deseada] = grupos[w.fecha_deseada] || []).push(w));
-  box.innerHTML = `<p class="side-sub" style="margin-bottom:6px">Cuando se libere un espacio, avisa al primero de la lista del día. Si no responde, pasa al siguiente.</p>
-    ${lista.length ? Object.keys(grupos).map(f=>`<p class="grp-h">${fmtFechaLarga(f)}</p>${grupos[f].map((w,i)=>{ const cl = w.clientes || {};
+  const avisados = lista.filter(w=> w.estado === "notificado").length;
+  box.innerHTML = `${tsum("En lista de espera", lista.length, lista.length === 1 ? "persona esperando un espacio" : "personas esperando un espacio", "Ya avisados", avisados)}
+    <p class="side-sub" style="margin:0 0 6px">Cuando se libere un espacio, avisa al primero de la lista del día. Si no responde, pasa al siguiente.</p>
+    ${lista.length ? Object.keys(grupos).map(f=>`<p class="grp-h">${fmtFechaLarga(f)} · ${grupos[f].length}</p>${grupos[f].map((w,i)=>{ const cl = w.clientes || {};
       const msg = plantilla(S.config.msg_espera || DEF_ESPERA, {nombre: primerNombre(cl.nombre), fecha: fmtFechaLarga(w.fecha_deseada), negocio: S.config.nombre || ""});
-      return `<div class="ord" style="--i:${i}"><span class="av">${i+1}</span><div class="ord-i"><b>${esc(cl.nombre||"Cliente")}</b><span>${esc(cl.telefono||"")}</span>
-        <div class="ord-acts">${cl.telefono ? `<a class="mini c" href="${waLink(cl.telefono, msg)}" target="_blank" rel="noopener" data-notif="${w.id}">${IC.wa} Avisar</a>` : ""}
-        <button class="mini ok" data-wl="tomado" data-id="${w.id}">${IC.check} Tomó el espacio</button><button class="mini" data-wl="expirado" data-id="${w.id}">Quitar</button></div></div>
-        <div class="ord-r"><span class="badge ${w.estado==="notificado"?"c":""}">${w.estado==="notificado"?"Avisado":"Esperando"}</span></div></div>`; }).join("")}`).join("")
+      return `<div class="rc wrap" style="--i:${Math.min(i,8)}"><span class="av">${i+1}</span>
+        <div class="rc-b"><b>${esc(cl.nombre||"Cliente")}</b><span>${esc(cl.telefono||"")}${w.hora_desde ? ` · ${hhmm(w.hora_desde)}${w.hora_hasta ? " – " + hhmm(w.hora_hasta) : ""}` : ""}</span></div>
+        <span class="badge ${w.estado==="notificado"?"c":""}">${w.estado==="notificado"?"Avisado":"Esperando"}</span>
+        <div class="rc-acts">${cl.telefono ? `<a class="oa wa" href="${waLink(cl.telefono, msg)}" target="_blank" rel="noopener" data-notif="${w.id}">${IC.wa}<span>Avisar</span></a>` : ""}
+          <button class="oa ok" data-wl="tomado" data-id="${w.id}">${IC.check}<span>Tomó el espacio</span></button><button class="oa" data-wl="expirado" data-id="${w.id}">${IC.x}<span>Quitar</span></button></div></div>`; }).join("")}`).join("")
       : `<div class="adm-empty" style="margin-top:14px">Nadie en lista de espera por ahora.</div>`}`;
   $$("[data-notif]", box).forEach(a=> a.addEventListener("click", ()=> setTimeout(async ()=>{ await sb.from("waitlist").update({estado:"notificado"}).eq("id", a.dataset.notif); pintarTab(); }, 300)));
   $$("[data-wl]", box).forEach(b=> b.onclick = async ()=>{ await sb.from("waitlist").update({estado: b.dataset.wl}).eq("id", b.dataset.id); toast(b.dataset.wl === "tomado" ? "Marcado. Recuerda agendar su cita." : "Quitado de la lista"); pintarTab(); });
@@ -3281,10 +3411,13 @@ async function tabResenas(box){
   const {data} = await sb.from("resenas").select("*").order("creado_en", {ascending:false});
   const l = data || [], prom = l.length ? (l.reduce((a,r)=> a + r.calificacion, 0) / l.length).toFixed(1) : "—";
   const link = urlBase() + "#resena";
-  box.innerHTML = `<div class="stat-tiles" style="grid-template-columns:repeat(2,1fr)"><div class="stile"><span>Promedio</span><b>${prom}</b></div><div class="stile" style="--i:1"><span>Reseñas</span><b>${l.length}</b></div></div>
+  const conteo = [5,4,3,2,1].map(n=> [n, l.filter(r=> r.calificacion === n).length]).filter(x=> x[1]);
+  box.innerHTML = `${tsum("Calificación promedio", prom, `${l.length} ${l.length === 1 ? "reseña" : "reseñas"}`, "", "", conteo.map(([n,c])=>`<span class="badge c">${n}★ · ${c}</span>`).join(""))}
     <div class="qr-card"><img src="${qrUrl(link)}" alt="QR de reseñas"><div><b>QR de reseña rápida</b><p>Imprímelo y pégalo en el espejo. El cliente lo escanea al terminar y califica en 10 segundos.</p><a class="pill pill-ghost pill-sm" href="${qrUrl(link, 900)}" target="_blank" rel="noopener">Abrir para imprimir</a></div></div>
-    ${l.map((r,i)=>`<div class="ord" style="--i:${Math.min(i,10)}"><span class="av">${esc(iniciales(r.nombre || "C"))}</span><div class="ord-i"><b>${esc(r.nombre || "Cliente")}</b>${starsHtml(r.calificacion)}<span style="margin-top:6px">${esc(r.comentario) || "Sin comentario"}</span></div>
-      <div class="ord-r"><span>${r.creado_en ? fmtFecha(String(r.creado_en).slice(0,10)) : ""}</span><button class="circ danger" style="margin-top:8px;width:36px;height:36px" data-delr="${r.id}" aria-label="Eliminar reseña">${IC.trash}</button></div></div>`).join("") || `<div class="adm-empty">Aún no hay reseñas.</div>`}`;
+    ${l.length ? `<p class="grp-h">Lo que dicen tus clientes</p>` : ""}
+    ${l.map((r,i)=>`<div class="rc top" style="--i:${Math.min(i,10)}"><span class="av">${esc(iniciales(r.nombre || "C"))}</span>
+      <div class="rc-b"><b>${esc(r.nombre || "Cliente")}</b>${starsHtml(r.calificacion)}<p class="rc-txt">${esc(r.comentario) || "Sin comentario"}</p></div>
+      <div class="rc-r"><span class="rc-date">${r.creado_en ? fmtFecha(String(r.creado_en).slice(0,10)) : ""}</span><button class="circ danger" style="width:36px;height:36px" data-delr="${r.id}" aria-label="Eliminar reseña">${IC.trash}</button></div></div>`).join("") || `<div class="adm-empty">Aún no hay reseñas.</div>`}`;
   $$("[data-delr]", box).forEach(b=> b.onclick = ()=> confirmar("¿Eliminar esta reseña?", "Dejará de mostrarse en la página.", "Eliminar", async ()=>{
     const {error} = await sb.from("resenas").delete().eq("id", b.dataset.delr);
     if(error) return toast("No se pudo eliminar (ejecuta la migración v3)");
@@ -3295,25 +3428,8 @@ async function tabResenas(box){
 /* ---------------- FINANZAS ---------------- */
 async function tabFinanzas(box){
   box.innerHTML = `<div class="fin-tabs" id="finTabs">${[7,30].map(n=>`<button data-r="${n}" class="${S.finRango===n?"on":""}">${n} días</button>`).join("")}<button data-r="mes" class="${S.finRango==="mes"?"on":""}">Este mes</button></div>
-    <div id="finBody"></div>
-    <div class="fcard"><h3>Gastos</h3><p>Insumos, renta, una máquina nueva, lo que sea.</p>
-      <div class="grid2">
-        <div class="field"><label>Concepto</label><input id="gaCon" placeholder="Ej. Máquina de corte nueva"></div>
-        <div class="field"><label>Categoría</label><input id="gaCat" list="gaCats" placeholder="Ej. Equipo"><datalist id="gaCats"><option>Insumos</option><option>Equipo</option><option>Renta</option><option>Servicios</option><option>Otro</option></datalist></div>
-        <div class="field"><label>Monto (Q)</label><input id="gaMonto" type="number" min="0" step="0.01"></div>
-        <div class="field"><label>Fecha</label><input id="gaFecha" type="date" value="${isoDate(new Date())}"></div>
-      </div>
-      <button class="pill pill-ghost pill-sm" id="gaOk">${IC.plus} Agregar gasto</button>
-      <div id="gaList" style="margin-top:16px"></div>
-    </div>`;
+    <div id="finBody"></div>`;
   $("#finTabs").onclick = e=>{ const b = e.target.closest("[data-r]"); if(!b) return; S.finRango = isNaN(b.dataset.r) ? b.dataset.r : Number(b.dataset.r); pintarTab(); };
-  $("#gaOk").onclick = async ()=>{
-    const concepto = $("#gaCon").value.trim(), monto = Number($("#gaMonto").value);
-    if(!concepto || !(monto > 0)) return toast("Escribe el concepto y un monto válido");
-    const {error} = await sb.from("gastos").insert({concepto, categoria: $("#gaCat").value.trim(), monto, fecha: $("#gaFecha").value || isoDate(new Date())});
-    if(error) return toast("No se pudo guardar (¿ejecutaste la migración v4?)");
-    toast("Gasto agregado"); pintarTab();
-  };
   await pintarFinanzas();
 }
 function rangoFechas(){
@@ -3321,6 +3437,24 @@ function rangoFechas(){
   if(S.finRango === "mes") return {desde: isoDate(new Date(hoy.getFullYear(), hoy.getMonth(), 1)), hasta: isoDate(hoy), dias: hoy.getDate()};
   const n = Number(S.finRango)||7, desde = new Date(hoy); desde.setDate(hoy.getDate() - (n-1));
   return {desde: isoDate(desde), hasta: isoDate(hoy), dias: n};
+}
+function hojaGasto(){
+  openSheet(`<h3>Nuevo gasto</h3><p class="sub">Insumos, renta, una máquina nueva, lo que sea.</p>
+    <div class="field"><label>Concepto</label><input id="gaCon" placeholder="Ej. Máquina de corte nueva"></div>
+    <div class="grid2">
+      <div class="field"><label>Categoría</label><input id="gaCat" list="gaCats" placeholder="Ej. Equipo"><datalist id="gaCats"><option>Insumos</option><option>Equipo</option><option>Renta</option><option>Servicios</option><option>Otro</option></datalist></div>
+      <div class="field"><label>Monto (Q)</label><input id="gaMonto" type="number" inputmode="decimal" min="0" step="0.01"></div>
+    </div>
+    <div class="field"><label>Fecha</label><input id="gaFecha" type="date" value="${isoDate(new Date())}"></div>
+    <button class="pill pill-white pill-block" id="gaOk">Guardar gasto</button>`, sh=>{
+    $("#gaOk", sh).onclick = async ()=>{
+      const concepto = $("#gaCon", sh).value.trim(), monto = Number($("#gaMonto", sh).value);
+      if(!concepto || !(monto > 0)) return toast("Escribe el concepto y un monto válido");
+      const {error} = await sb.from("gastos").insert({concepto, categoria: $("#gaCat", sh).value.trim(), monto, fecha: $("#gaFecha", sh).value || isoDate(new Date())});
+      if(error) return toast("No se pudo guardar (¿ejecutaste la migración v4?)");
+      closeSheet(); toast("Gasto agregado"); pintarTab();
+    };
+  });
 }
 async function pintarFinanzas(){
   const {desde, hasta, dias} = rangoFechas();
@@ -3334,8 +3468,8 @@ async function pintarFinanzas(){
   const ingresos = ingServ + ingProd;
   const totalGastos = (gastos||[]).reduce((a,g)=> a + Number(g.monto), 0);
   const neto = ingresos - totalGastos;
+  const etiqueta = S.finRango === "mes" ? "este mes" : `${dias} días`;
 
-  // serie por día (máx 14 barras para que se vea bien)
   const bucket = {}; for(let i=0;i<dias;i++){ const d = new Date(rangoFechas().desde+"T00:00:00"); d.setDate(d.getDate()+i); bucket[isoDate(d)] = {ing:0,gas:0}; }
   (citas||[]).forEach(c=>{ if(bucket[c.fecha]) bucket[c.fecha].ing += Number((c.servicios||{}).precio)||0; });
   (ventas||[]).forEach(v=>{ if(bucket[v.fecha]) bucket[v.fecha].ing += Number(v.cantidad)*Number(v.precio_unit); });
@@ -3344,7 +3478,6 @@ async function pintarFinanzas(){
   if(claves.length > 14){ const paso = Math.ceil(claves.length/14); claves = claves.filter((_,i)=> i%paso===0); }
   const maxV = Math.max(1, ...claves.map(k=> Math.max(bucket[k].ing, bucket[k].gas)));
 
-  // top clientes por ingreso
   const porCliente = {};
   (citas||[]).forEach(c=>{ if(!c.cliente_id) return; const k = c.cliente_id; porCliente[k] = porCliente[k] || {nombre:(c.clientes||{}).nombre||"Cliente", total:0, visitas:0}; porCliente[k].total += Number((c.servicios||{}).precio)||0; });
   (ventas||[]).forEach(v=>{ if(!v.cliente_id) return; const k = v.cliente_id; porCliente[k] = porCliente[k] || {nombre:(v.clientes||{}).nombre||"Cliente", total:0, visitas:0}; porCliente[k].total += Number(v.cantidad)*Number(v.precio_unit); });
@@ -3352,21 +3485,20 @@ async function pintarFinanzas(){
   const top = Object.values(porCliente).sort((a,b)=> b.total-a.total).slice(0,8);
 
   $("#finBody").innerHTML = `
-    <div class="fin-cards">
-      <div class="fin-card pos"><span>Ingresos (servicios + productos)</span><b>${money(ingresos)}</b></div>
-      <div class="fin-card neg"><span>Gastos</span><b>${money(totalGastos)}</b></div>
-      <div class="fin-card ${neto>=0?"pos":"neg"}"><span>Neto</span><b>${money(neto)}</b></div>
-    </div>
-    <div class="fin-chart">${claves.map(k=>{ const d = parseIso(k), b = bucket[k];
-      return `<div class="fin-bar"><div class="bwrap"><i style="height:${Math.round(b.ing/maxV*100)}%" title="Ingresos ${money(b.ing)}"></i><i class="g" style="height:${Math.round(b.gas/maxV*100)}%" title="Gastos ${money(b.gas)}"></i></div><span>${d.getDate()}/${d.getMonth()+1}</span></div>`; }).join("")}</div>
-    <p class="lbl">Top clientes por ingresos (${dias} días)</p>
-    ${top.length ? top.map((c,i)=>`<div class="top-cl"><span class="n">${i+1}</span><div class="ci"><b>${esc(c.nombre)}</b><span>${c.visitas} visita${c.visitas===1?"":"s"}</span></div><span class="amt">${money(c.total)}</span></div>`).join("") : `<div class="adm-empty">Sin ingresos en este rango.</div>`}
-  `;
-  $("#gaList").innerHTML = (gastos||[]).length ? gastos.map(g=>`<div class="table-row" style="display:flex;align-items:center;gap:12px;background:var(--card-2);border-radius:14px;padding:10px 12px;margin-bottom:6px">
-      <div style="flex:1;min-width:0"><b style="display:block;font-size:14px;font-weight:700">${esc(g.concepto)}</b><span style="font-size:12px;color:var(--text-2)">${fmtFecha(g.fecha)}${g.categoria?" · "+esc(g.categoria):""}</span></div>
-      <b>${money(g.monto)}</b><button class="circ danger" data-delg="${g.id}" style="width:32px;height:32px" aria-label="Eliminar">${IC.x}</button></div>`).join("")
-    : `<div class="adm-empty">Sin gastos registrados en este rango.</div>`;
-  $$("[data-delg]").forEach(b=> b.onclick = async ()=>{ await sb.from("gastos").delete().eq("id", b.dataset.delg); pintarFinanzas(); });
+    <section class="tsum ${neto>=0?"pos":"neg"}">
+      <div class="tsum-top"><div><small>Ganancia neta · ${etiqueta}</small><b class="tsum-v">${money(neto)}</b><span>${(citas||[]).length} ${(citas||[]).length===1?"corte":"cortes"} · ${(ventas||[]).length} ${(ventas||[]).length===1?"venta":"ventas"}</span></div></div>
+      <div class="fin-split"><div><span><i class="dot-g"></i>Ingresos</span><b>${money(ingresos)}</b></div><div><span><i class="dot-r"></i>Gastos</span><b>${money(totalGastos)}</b></div></div>
+    </section>
+    ${sbar([["Servicios", money(ingServ)], ["Productos", money(ingProd)], ["Promedio / día", money(Math.round(ingresos/Math.max(1,dias))), "warn"]])}
+    <section class="grp">${grpHd("Por día", `<div class="legend"><span><i class="dot-g"></i>Ingresos</span><span><i class="dot-r"></i>Gastos</span></div>`)}
+      <div class="fin-chart">${claves.map(k=>{ const d = parseIso(k), b = bucket[k];
+        return `<div class="fin-bar"><div class="bwrap"><i style="height:${Math.round(b.ing/maxV*100)}%" title="Ingresos ${money(b.ing)}"></i><i class="g" style="height:${Math.round(b.gas/maxV*100)}%" title="Gastos ${money(b.gas)}"></i></div><span>${d.getDate()}/${d.getMonth()+1}</span></div>`; }).join("")}</div></section>
+    <section class="grp">${grpHd("Mejores clientes")}
+      ${top.length ? top.map((c,i)=>`<div class="rc" style="--i:${i}"><span class="av rank">${i+1}</span><div class="rc-b"><b>${esc(c.nombre)}</b><span>${c.visitas} visita${c.visitas===1?"":"s"}</span></div><span class="rc-amt">${money(c.total)}</span></div>`).join("") : `<div class="adm-empty">Sin ingresos en este rango.</div>`}</section>
+    <section class="grp">${grpHd("Gastos", `<button class="pill pill-white pill-sm" id="gaNew">${IC.plus} Agregar</button>`)}
+      ${(gastos||[]).length ? gastos.map((g,i)=>`<div class="rc" style="--i:${i}"><span class="av">${IC.box}</span><div class="rc-b"><b>${esc(g.concepto)}</b><span>${fmtFecha(g.fecha)}${g.categoria?" · "+esc(g.categoria):""}</span></div><span class="rc-amt neg">${money(g.monto)}</span><button class="circ danger" data-delg="${g.id}" style="width:36px;height:36px" aria-label="Eliminar gasto">${IC.x}</button></div>`).join("") : `<div class="adm-empty">Sin gastos registrados en este rango.</div>`}</section>`;
+  $("#gaNew").onclick = hojaGasto;
+  $$("[data-delg]").forEach(b=> b.onclick = ()=> confirmar("¿Eliminar este gasto?", "Se quitará de tus cuentas.", "Eliminar", async ()=>{ await sb.from("gastos").delete().eq("id", b.dataset.delg); toast("Gasto eliminado"); pintarFinanzas(); }));
 }
 
 /* ---------------- AJUSTES ---------------- */
