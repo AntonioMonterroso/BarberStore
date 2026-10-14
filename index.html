@@ -6,6 +6,8 @@
 <title>Imperio Store Barber — Agenda tu cita</title>
 <meta name="description" content="Imperio Store Barber: cortes, fades y barba. Agenda tu cita en línea en menos de un minuto.">
 <meta name="theme-color" content="#101012">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -777,7 +779,7 @@ body[data-route=admin] #ftr,body[data-route=agendar] #ftr,body[data-route=confir
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
 /* ---------- panel del negocio ---------- */
-.login{max-width:440px;margin:0 auto;padding:calc(120px + env(safe-area-inset-top,0px)) 20px 80px;text-align:center}
+.login{max-width:440px;margin:0 auto;padding:calc(64px + env(safe-area-inset-top,0px)) 20px 80px;text-align:center}
 .login-logo{width:96px;margin:0 auto 22px}
 .login-card{background:var(--card);border-radius:28px;padding:28px 22px;text-align:left;margin-top:8px}
 .login-card .field input{background:var(--card-2)}
@@ -852,7 +854,7 @@ body[data-route=admin] #ftr,body[data-route=agendar] #ftr,body[data-route=confir
 .badge.bad{background:rgba(255,90,79,.14);color:var(--danger)}
 .ag-nav{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
 .ag-day{flex:1;min-width:160px}
-.ag-day b{display:block;font-weight:800;font-size:20px;letter-spacing:-.02em;text-transform:capitalize}
+.ag-day b{display:block;font-weight:800;font-size:20px;letter-spacing:-.02em}
 .ag-day span{font-size:13px;color:var(--text-2)}
 .ag-nav input[type=date]{height:44px;padding:0 12px;border-radius:12px;background:var(--card);border:0;color-scheme:dark;font-size:14px}
 .dr{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--card);border-radius:18px;padding:14px 16px;margin-bottom:8px}
@@ -1102,6 +1104,123 @@ body[data-route=admin] .dot-admin{display:none}
 .chip-me svg{color:var(--copper-2)}
 @media(hover:hover) and (pointer:fine){.chip-me:hover{background:rgba(255,255,255,.1);border-color:var(--line-2)}}
 .login-note{margin:14px 0 0;text-align:center;font-size:12.5px;color:var(--text-3);line-height:1.5}
+
+/* ============================================================
+   PANEL DEL NEGOCIO v2 (móvil primero)
+   ============================================================ */
+body[data-route=admin] #hdr{display:none}
+.adm{padding:0 0 calc(92px + env(safe-area-inset-bottom,0px));gap:0;grid-auto-rows:min-content}
+.adm-top{grid-column:1/-1;position:sticky;top:0;z-index:30;margin:0;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;background:rgba(16,16,18,.86);-webkit-backdrop-filter:saturate(1.4) blur(16px);backdrop-filter:saturate(1.4) blur(16px);border-bottom:1px solid var(--line)}
+.adm-brand img{width:38px;height:38px;object-fit:contain}
+.adm-brand b{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw}
+.adm-brand span{font-size:12px}
+.adm-top-r .circ{width:40px;height:40px}
+.adm-main{background:transparent;border-radius:0;padding:16px 14px 0}
+.adm-title{margin:0 0 16px;font-size:30px;font-weight:800;letter-spacing:-.03em}
+.adm-tabs{display:none}
+.bell{position:relative}
+.bell-dot{position:absolute;top:7px;right:7px;width:9px;height:9px;border-radius:50%;background:var(--copper-2);box-shadow:0 0 0 2px var(--bg);font-style:normal}
+.bell-dot.hide{display:none}
+.bell-dot.n{top:3px;right:2px;min-width:18px;height:18px;padding:0 4px;display:grid;place-items:center;background:var(--danger);color:#fff;font-size:10.5px;font-weight:800;box-shadow:0 0 0 2px var(--bg)}
+body[data-route=admin] .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+@media(min-width:700px){
+  .adm{padding:0 20px 50px;gap:16px}
+  .adm-top{margin:0 -20px;padding-left:20px;padding-right:20px}
+  .adm-main{background:var(--bg-2);border-radius:28px;padding:30px}
+  .adm-title{display:none}
+  .adm-tabs{display:flex}
+  .adm-bottom{display:none!important}
+  body[data-route=admin] .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+}
+@media(min-width:1150px){.adm-side{top:80px;max-height:calc(100svh - 100px)}}
+
+/* barra inferior tipo app */
+.adm-bottom{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));background:rgba(20,20,23,.94);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-top:1px solid var(--line-2)}
+.adm-bottom button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 0 7px;border-radius:14px;color:var(--text-3);font-size:11px;font-weight:700;letter-spacing:.02em;transition:color .25s,background .25s,transform .2s var(--ease)}
+.adm-bottom button svg{width:23px;height:23px}
+.adm-bottom button.on{color:var(--copper-2);background:rgba(201,138,62,.12)}
+.adm-bottom button:active{transform:scale(.95)}
+
+/* resumen del día */
+.day-card{background:linear-gradient(155deg,#26231d 0%,var(--card) 62%);border-radius:24px;padding:20px 20px 16px;box-shadow:inset 0 0 0 1px var(--line-2);margin-bottom:12px}
+.dc-top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
+.dc-top small{display:block;font-size:12.5px;color:var(--text-2);font-weight:600;margin-bottom:8px}
+.dc-n{display:block;font-family:var(--disp);font-size:68px;line-height:.9;font-weight:400}
+.dc-top span{display:block;font-size:13px;color:var(--text-2);margin-top:8px}
+.dc-money{text-align:right}
+.dc-money b{font-family:var(--disp);font-size:36px;font-weight:400;color:var(--copper-2);line-height:1}
+.dc-bar{height:6px;border-radius:6px;background:var(--card-3);margin:18px 0 10px;overflow:hidden}
+.dc-bar i{display:block;height:100%;width:var(--w);border-radius:6px;background:linear-gradient(90deg,var(--copper),var(--copper-2));transform-origin:left;animation:fill .9s var(--ease) both}
+.dc-foot{display:flex;justify-content:space-between;font-size:12.5px;color:var(--text-2)}
+.alerts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.alert-pill{height:38px;padding:0 14px;border-radius:999px;display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;background:var(--card);box-shadow:inset 0 0 0 1px var(--line-2);transition:transform .2s var(--ease)}
+.alert-pill svg{width:16px;height:16px}
+.alert-pill.warn{color:var(--copper-2);background:rgba(201,138,62,.1);box-shadow:inset 0 0 0 1px rgba(201,138,62,.35)}
+.alert-pill:active{transform:scale(.97)}
+.next-card{border-radius:22px;padding:20px}
+.next-card .nt{font-size:46px}
+
+/* tarjetas de cita */
+.side-list{gap:10px}
+.ord{display:grid;grid-template-columns:54px minmax(0,1fr);gap:10px;background:none;padding:0;border-radius:0;box-shadow:none;align-items:stretch}
+.ord.next{box-shadow:none}
+.ord.cancelada,.ord.no_asistio{opacity:.55}
+.ord-time{display:flex;flex-direction:column;align-items:center;padding-top:15px}
+.ord-time b{font-family:var(--disp);font-weight:400;font-size:25px;line-height:1}
+.ord-time span{font-size:11.5px;color:var(--text-3);margin-top:4px}
+.ord-time::after{content:"";flex:1;width:2px;margin-top:10px;border-radius:2px;background:var(--st,var(--line-2));opacity:.5}
+.ord.confirmada{--st:var(--copper)}.ord.completada{--st:var(--ok)}.ord.cancelada,.ord.no_asistio{--st:var(--danger)}
+.ord-card{background:var(--card);border-radius:18px;padding:14px;min-width:0;box-shadow:inset 0 0 0 1.5px transparent;transition:box-shadow .3s}
+.ord.next .ord-card{box-shadow:inset 0 0 0 1.5px var(--copper)}
+.ord-head{display:flex;gap:12px;align-items:center}
+.ord-who{min-width:0;flex:1}
+.ord-who b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-weight:700;font-size:15.5px;line-height:1.25;overflow:hidden}
+.ord-who .sv{display:block;font-size:13px;color:var(--text-2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ord-price{font-weight:800;font-size:15px;flex:0 0 auto}
+.ord-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.ord-tags .badge svg{width:12px;height:12px;margin-right:4px}
+.badge.pend{background:rgba(201,138,62,.14);color:var(--copper-2)}
+.badge.ok{display:inline-flex;align-items:center}
+.ord-tel{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:13px;color:var(--text-2)}
+.ord-tel svg{width:14px;height:14px}
+.ord-note{margin-top:10px}
+.ord-acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(66px,1fr));gap:8px;margin-top:12px}
+.oa{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:54px;border-radius:14px;background:var(--card-2);font-size:11.5px;font-weight:700;color:var(--text-2);transition:background .25s,transform .2s var(--ease)}
+.oa svg{width:18px;height:18px}
+.oa.ok{color:var(--ok);background:rgba(94,194,122,.12)}
+.oa.wa{color:var(--copper-2)}
+.oa.bad{color:var(--danger)}
+.oa:active{transform:scale(.96)}
+
+/* accesos rápidos */
+.quick{grid-template-columns:repeat(3,1fr);gap:8px;margin-top:0}
+.quick button{min-height:86px;align-items:center;justify-content:center;text-align:center;gap:9px;padding:12px 6px;font-size:12.5px}
+@media(min-width:820px){.quick{grid-template-columns:repeat(6,1fr)}}
+
+/* agenda */
+.ag-strip{margin:0 -14px 14px;padding:2px 14px 6px}
+.ag-strip .dchip{width:54px;height:70px;border-radius:16px}
+.ag-strip .dchip b{font-size:20px}
+@media(min-width:700px){.ag-strip{margin:0 -30px 14px;padding:2px 30px 6px}}
+
+/* hoja "Más" y hoja de avisos */
+.mas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mas-grid button,.mas-extra button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:92px;padding:10px 6px;border-radius:18px;background:var(--card);font-size:12.5px;font-weight:700;text-align:center;transition:background .25s,transform .2s var(--ease)}
+.mas-grid button svg,.mas-extra button svg{width:24px;height:24px;color:var(--copper-2)}
+.mas-grid button:active,.mas-extra button:active{transform:scale(.96)}
+.mas-extra{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.mas-extra button{min-height:70px;flex-direction:row;gap:10px}
+.nt-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.nt-item{display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:var(--card)}
+.nt-ic{width:42px;height:42px;border-radius:13px;background:var(--card-2);display:grid;place-items:center;color:var(--copper-2);flex:0 0 auto}
+.nt-item b{display:block;font-size:14.5px}
+.nt-item div span{display:block;font-size:12.5px;color:var(--text-2);margin-top:2px;line-height:1.4}
+.nt-item div{flex:1;min-width:0}
+.nt-st{width:10px;height:10px;border-radius:50%;flex:0 0 auto;background:var(--text-3)}
+.nt-st.ok{background:var(--ok)}.nt-st.pend{background:var(--copper-2)}.nt-st.bad{background:var(--danger)}
+.nt-btns{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}
+.nt-tip{margin:12px 2px 0;font-size:13px;line-height:1.55;color:var(--text-2)}
+.nt-tip b{color:var(--cream)}
 </style>
 </head>
 <body data-route="inicio">
@@ -1247,6 +1366,17 @@ const IC = {
   star: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>',
   wa: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>',
 };
+Object.assign(IC, {
+  home: sv('<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>'),
+  users: sv('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18.5 14.5a6.5 6.5 0 0 1 3 5.5"/>'),
+  grid: sv('<rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/>'),
+  bell: sv('<path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9zM10 20a2 2 0 0 0 4 0"/>'),
+  chart: sv('<path d="M5 20V11M12 20V4M19 20v-6M2 20.5h20"/>'),
+  gear: sv('<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/>'),
+  box: sv('<path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5zM3.5 7.5L12 12l8.5-4.5M12 12v9"/>'),
+  download: sv('<path d="M12 4v11M7 11l5 5 5-5M4 20h16"/>'),
+  phoneI: sv('<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/>'),
+});
 function starsHtml(n){ const r = Math.round(Number(n)||0); let h = ""; for(let i=1;i<=5;i++) h += IC.star.replace("<svg", `<svg class="${i<=r?"":"off"}"`); return `<span class="stars" aria-label="${r} de 5 estrellas">${h}</span>`; }
 
 let toastT;
@@ -2414,6 +2544,8 @@ function renderResena(app){
    PANEL DEL NEGOCIO (referencia: POS de iPad)
    ============================================================ */
 const TABS = [["hoy","Hoy"],["agenda","Agenda"],["clientes","Clientes"],["servicios","Servicios"],["productos","Productos"],["estilos","Estilos"],["horario","Horario"],["pagina","Página"],["espera","Espera"],["resenas","Reseñas"],["finanzas","Finanzas"],["ajustes","Ajustes"]];
+const NAV_MOVIL = [["hoy","Hoy","home"],["agenda","Agenda","cal"],["clientes","Clientes","users"],["finanzas","Finanzas","chart"]];
+const NAV_MAS = [["servicios","Servicios","scissors"],["productos","Productos","box"],["estilos","Estilos","image"],["horario","Horario","clock"],["pagina","Página","eye"],["espera","Lista de espera","clock"],["resenas","Reseñas","star"],["ajustes","Ajustes","gear"]];
 const ESTADOS = {confirmada:["Confirmada","c"], completada:["Completada","ok"], cancelada:["Cancelada","bad"], no_asistio:["No asistió","bad"]};
 
 async function renderAdmin(app){
@@ -2421,26 +2553,53 @@ async function renderAdmin(app){
   if(!session) return renderLogin(app);
   if(!S.agFecha) S.agFecha = isoDate(new Date());
   app.innerHTML = `<div class="adm">
-    <div class="adm-main">
-      <div class="adm-top">
-        <div class="adm-brand"><img src="${LOGO}" alt=""><div><b>Panel del negocio</b><span>${fmtFechaLarga(isoDate(new Date()))}</span></div></div>
-        <div class="adm-top-r"><button class="circ" data-go="inicio" aria-label="Ver página" title="Ver página">${IC.eye}</button><button class="circ" id="admOut" aria-label="Cerrar sesión" title="Cerrar sesión">${IC.out}</button></div>
+    <header class="adm-top">
+      <div class="adm-brand"><img src="${LOGO}" alt=""><div><b>${esc(S.config.nombre || "Panel del negocio")}</b><span>${fmtFechaLarga(isoDate(new Date()))}</span></div></div>
+      <div class="adm-top-r">
+        <button class="circ bell" id="admBell" aria-label="Notificaciones y app" title="Notificaciones y app">${IC.bell}<i class="bell-dot" id="bellDot"></i></button>
+        <button class="circ" data-go="inicio" aria-label="Ver página" title="Ver página">${IC.eye}</button>
+        <button class="circ" id="admOut" aria-label="Cerrar sesión" title="Cerrar sesión">${IC.out}</button>
       </div>
+    </header>
+    <div class="adm-main">
+      <h1 class="adm-title" id="admTitle"></h1>
       <nav class="adm-tabs" id="admTabs">${TABS.map(([k,l])=>`<button data-tab="${k}" class="${S.adminTab===k?"on":""}">${l}</button>`).join("")}</nav>
       <div id="admBody"></div>
     </div>
     <aside class="adm-side" id="admSide"></aside>
+    <nav class="adm-bottom" id="admBottom" aria-label="Secciones del panel">${NAV_MOVIL.map(([k,l,ic])=>`<button data-tab="${k}">${IC[ic]}<span>${l}</span></button>`).join("")}<button data-mas>${IC.grid}<span>Más</span></button></nav>
   </div>`;
   $("#admTabs").onclick = e=>{ const b = e.target.closest("[data-tab]"); if(!b) return; irTab(b.dataset.tab); };
-  $("#admOut").onclick = async ()=>{ await sb.auth.signOut(); render(); };
-  const on = $("#admTabs .on"); if(on) on.scrollIntoView({inline:"center", block:"nearest"});
+  $("#admBottom").onclick = e=>{ const b = e.target.closest("button"); if(!b) return; if(b.hasAttribute("data-mas")) return hojaMas(); irTab(b.dataset.tab); };
+  $("#admOut").onclick = async ()=>{ detenerRealtime(); await sb.auth.signOut(); render(); };
+  $("#admBell").onclick = hojaNotificaciones;
+  marcarNav(); actualizarCampana(); iniciarRealtime();
   await refrescarAdmin();
 }
-function irTab(k){
-  S.adminTab = k;
+function marcarNav(){
+  const k = S.adminTab;
   $$("#admTabs button").forEach(x=> x.classList.toggle("on", x.dataset.tab === k));
-  const b = $(`#admTabs [data-tab="${k}"]`); if(b) b.scrollIntoView({inline:"center", block:"nearest", behavior:"smooth"});
+  const enMas = !NAV_MOVIL.some(n=> n[0] === k);
+  $$("#admBottom button").forEach(x=> x.classList.toggle("on", x.hasAttribute("data-mas") ? enMas : x.dataset.tab === k));
+  const t = $("#admTitle"); if(t) t.textContent = (TABS.find(x=> x[0] === k) || ["",""])[1];
+  const on = $("#admTabs .on"); if(on) on.scrollIntoView({inline:"center", block:"nearest"});
+}
+function irTab(k){
+  S.adminTab = k; marcarNav();
+  window.scrollTo({top:0, left:0, behavior:"instant"});
   pintarTab();
+}
+function hojaMas(){
+  openSheet(`<h3>Más secciones</h3><p class="sub">Todo lo demás de tu negocio.</p>
+    <div class="mas-grid">${NAV_MAS.map(([k,l,ic])=>`<button data-gotab="${k}">${IC[ic]}<span>${l}</span></button>`).join("")}</div>
+    <div class="mas-extra"><button data-masn>${IC.bell}<span>Notificaciones y app</span></button><button data-masw>${IC.eye}<span>Ver la página</span></button></div>`, sh=>{
+    sh.addEventListener("click", e=>{
+      const b = e.target.closest("button"); if(!b) return;
+      if(b.dataset.gotab){ closeSheet(); irTab(b.dataset.gotab); }
+      else if("masn" in b.dataset){ closeSheet(); setTimeout(hojaNotificaciones, 380); }
+      else if("masw" in b.dataset){ closeSheet(); go("inicio"); }
+    });
+  });
 }
 async function refrescarAdmin(){ await Promise.all([pintarTab(), pintarLateral()]); }
 async function pintarTab(){
@@ -2460,7 +2619,8 @@ function renderLogin(app){
       <div class="field"><label for="lgPass">Contraseña</label><input id="lgPass" type="password" autocomplete="current-password"></div>
       <button class="pill pill-white pill-block" id="lgOk">Ingresar ${IC.arrowR}</button>
       <p class="login-note">La sesión se mantiene en este dispositivo hasta que cierres sesión.</p>
-    </div></div>`;
+    </div>
+    <p style="margin-top:22px"><button class="link-btn" data-go="inicio">← Volver al sitio</button></p></div>`;
   if($("#lgMail").value) $("#lgPass").focus();
   const entrar = async ()=>{
     const btn = $("#lgOk"); btn.disabled = true;
@@ -2485,22 +2645,31 @@ function linkRecordatorio(g){
 }
 function ordHtml(g, i, opt={}){
   const cl = g.cliente || {}, [txt, cls] = ESTADOS[g.estado] || [g.estado, ""];
-  const acciones = g.estado === "confirmada"
-    ? `${cl.telefono ? `<a class="mini c" href="${linkRecordatorio(g)}" target="_blank" rel="noopener">${IC.wa} Recordar</a>` : ""}
-       ${g.confirmo ? "" : `<button class="mini" data-act="confirm" data-id="${g.key}">${IC.check} Marcar confirmada</button>`}
-       <button class="mini ok" data-act="done" data-id="${g.key}">${IC.check} Listo</button>
-       <button class="mini" data-act="noshow" data-id="${g.key}">No vino</button>
-       ${opt.full ? `<button class="mini danger" data-act="cancel" data-id="${g.key}">Cancelar</button>` : ""}`
-    : `<span class="badge ${cls}">${txt}</span>`;
+  const activa = g.estado === "confirmada";
   const riesgo = cl.id && S.churn && S.churn[cl.id] && S.churn[cl.id].riesgo;
-  return `<div class="ord ${opt.next?"next":""} ${g.estado}" style="--i:${i}">
-    <span class="av">${esc(iniciales(cl.nombre))}</span>
-    <div class="ord-i"><b>${esc(cl.nombre || "Cliente")}${g.estado === "confirmada" && g.confirmo ? ` <span class="badge ok">Confirmó</span>` : ""}${riesgo?` <span class="badge risk">En riesgo</span>`:""}</b>
-      <span>${esc(nombresGrupo(g))}</span>
-      ${opt.full && cl.telefono ? `<span>${esc(cl.telefono)}</span>` : ""}
+  const tags = [
+    activa ? (g.confirmo ? `<span class="badge ok">${IC.check} Confirmó</span>` : `<span class="badge pend">Sin confirmar</span>`) : `<span class="badge ${cls}">${txt}</span>`,
+    opt.next ? `<span class="badge c">Siguiente</span>` : "",
+    riesgo ? `<span class="badge risk">En riesgo</span>` : "",
+  ].join("");
+  const acciones = activa ? `<div class="ord-acts">
+      ${cl.telefono ? `<a class="oa wa" href="${linkRecordatorio(g)}" target="_blank" rel="noopener">${IC.wa}<span>Recordar</span></a>` : ""}
+      <button class="oa ok" data-act="done" data-id="${g.key}">${IC.check}<span>Listo</span></button>
+      ${g.confirmo ? "" : `<button class="oa" data-act="confirm" data-id="${g.key}">${IC.cal}<span>Confirmó</span></button>`}
+      <button class="oa" data-act="noshow" data-id="${g.key}">${IC.x}<span>No vino</span></button>
+      ${opt.full ? `<button class="oa bad" data-act="cancel" data-id="${g.key}">${IC.trash}<span>Cancelar</span></button>` : ""}
+    </div>` : "";
+  return `<div class="ord ${g.estado} ${opt.next?"next":""}" style="--i:${i}">
+    <div class="ord-time"><b>${hhmm(g.hora_inicio)}</b><span>${hhmm(g.hora_fin)}</span></div>
+    <div class="ord-card">
+      <div class="ord-head"><span class="av">${esc(iniciales(cl.nombre))}</span>
+        <div class="ord-who"><b>${esc(cl.nombre || "Cliente")}</b><span class="sv">${esc(nombresGrupo(g))}</span></div>
+        <span class="ord-price">${money(totalGrupo(g))}</span></div>
+      <div class="ord-tags">${tags}</div>
+      ${opt.full && cl.telefono ? `<span class="ord-tel">${IC.phone} ${esc(cl.telefono)}</span>` : ""}
       ${g.notas ? `<span class="ord-note">${esc(g.notas)}</span>` : ""}
-      <div class="ord-acts">${acciones}</div></div>
-    <div class="ord-r"><b>${hhmm(g.hora_inicio)}</b><span>${money(totalGrupo(g))}</span></div>
+      ${acciones}
+    </div>
   </div>`;
 }
 function cablearOrd(root, grupos){
@@ -2609,33 +2778,60 @@ function lateralHtml(grupos){
 /* ---------------- HOY ---------------- */
 async function tabHoy(box){
   const hoy = isoDate(new Date());
-  const [citas, cls] = await Promise.all([citasDelDia(hoy), sb.from("clientes").select("*", {count:"exact", head:true})]);
+  const [citas, cls, esp] = await Promise.all([
+    citasDelDia(hoy),
+    sb.from("clientes").select("*", {count:"exact", head:true}),
+    sb.from("waitlist").select("*", {count:"exact", head:true}).eq("estado","esperando"),
+  ]);
   await calcularRiesgo();
   const grupos = agruparCitas(citas);
   const act = grupos.filter(g=> g.estado !== "cancelada" && g.estado !== "no_asistio");
+  const pend = grupos.filter(g=> g.estado === "confirmada");
+  const hechas = grupos.filter(g=> g.estado === "completada").length;
   const total = act.reduce((a,g)=> a + totalGrupo(g), 0);
+  const sinConf = pend.filter(g=> !g.confirmo).length;
+  const pct = act.length ? Math.round(hechas / act.length * 100) : 0;
   const ahora = ahoraHHMM();
   const next = grupos.find(g=> g.estado === "confirmada" && hhmm(g.hora_fin) > ahora);
   const enRiesgo = Object.values(S.churn||{}).filter(x=> x.riesgo).length;
-  const tiles = [["Citas hoy", act.length], ["Ingresos estimados", money(total)], ["Clientes", cls.count || 0], ["En riesgo de perderse", enRiesgo]];
+  const hr = new Date().getHours(), saludo = hr < 12 ? "Buenos días" : hr < 19 ? "Buenas tardes" : "Buenas noches";
+  const nom = primerNombre(S.config.barbero_nombre || "");
+  const alertas = [
+    sinConf ? `<button class="alert-pill warn" id="alConf">${IC.clock} ${sinConf} sin confirmar</button>` : "",
+    esp.count ? `<button class="alert-pill" id="alEsp">${IC.users} ${esp.count} en lista de espera</button>` : "",
+    enRiesgo ? `<button class="alert-pill" id="alRies">${IC.block} ${enRiesgo} en riesgo de perderse</button>` : "",
+  ].join("");
   box.innerHTML = `
-    <div class="stat-tiles">${tiles.map(([l,v],i)=>`<div class="stile" style="--i:${i}"><span>${l}</span><b>${v}</b></div>`).join("")}</div>
+    <section class="day-card">
+      <div class="dc-top">
+        <div><small>${saludo}${nom ? ", " + esc(nom) : ""}</small><b class="dc-n">${pend.length}</b><span>${pend.length === 1 ? "cita pendiente" : "citas pendientes"}</span></div>
+        <div class="dc-money"><small>Estimado de hoy</small><b>${money(total)}</b></div>
+      </div>
+      <div class="dc-bar"><i style="--w:${pct}%"></i></div>
+      <div class="dc-foot"><span>${hechas} de ${act.length} completadas</span><span>${cls.count || 0} clientes</span></div>
+    </section>
+    ${alertas ? `<div class="alerts">${alertas}</div>` : ""}
     ${next ? `<div class="next-card">
       <div class="nt"><small>SIGUIENTE</small>${hhmm(next.hora_inicio)}</div>
       <div><b>${esc((next.cliente||{}).nombre || "Cliente")}</b><span>${esc(nombresGrupo(next))}</span>${next.notas ? `<span style="color:#8a5a1f;margin-top:6px">${esc(next.notas)}</span>` : ""}</div>
       <div class="acts">${(next.cliente||{}).telefono ? `<a class="pill pill-black pill-sm" href="${linkRecordatorio(next)}" target="_blank" rel="noopener">${IC.wa} Recordar</a>` : ""}<button class="pill pill-ghost pill-sm" style="color:#111;box-shadow:inset 0 0 0 1px #bbb" data-act="done" data-id="${next.key}">${IC.check} Marcar listo</button></div>
     </div>` : ""}
-    <div class="only-mobile"><h3 class="side-h" style="margin-top:8px">Tu día</h3><p class="side-sub">${act.length} ${act.length===1?"cita":"citas"} para hoy</p>
+    <div class="only-mobile" id="miDia"><h3 class="side-h" style="margin-top:8px">Tu día</h3><p class="side-sub">${act.length} ${act.length===1?"cita":"citas"} para hoy</p>
       <div class="side-list">${grupos.length ? grupos.map((g,i)=> ordHtml(g, i, {next: next && next.key === g.key})).join("") : `<div class="adm-empty">Sin citas para hoy.</div>`}</div></div>
+    <h3 class="side-h" style="margin:22px 0 12px;font-size:19px">Accesos rápidos</h3>
     <div class="quick">
       <button id="qkCita">${IC.plus}Nueva cita</button>
-      <button id="qkVenta">${IC.qr}Vender producto</button>
-      <button id="qkGasto">${IC.block}Registrar gasto</button>
-      <button id="qkBloq">${IC.block}Bloquear un día</button>
-      <button id="qkServ">${IC.scissors}Nuevo servicio</button>
-      <button id="qkQr">${IC.qr}QR para agendar</button>
+      <button id="qkVenta">${IC.box}Vender</button>
+      <button id="qkGasto">${IC.chart}Gasto</button>
+      <button id="qkBloq">${IC.block}Bloquear día</button>
+      <button id="qkServ">${IC.scissors}Servicio</button>
+      <button id="qkQr">${IC.qr}QR agendar</button>
     </div>`;
   cablearOrd(box, grupos);
+  const al = id=> $(id, box);
+  if(al("#alConf")) al("#alConf").onclick = ()=>{ const m = $("#miDia"); if(m) m.scrollIntoView({behavior:"smooth", block:"start"}); };
+  if(al("#alEsp")) al("#alEsp").onclick = ()=> irTab("espera");
+  if(al("#alRies")) al("#alRies").onclick = ()=> irTab("clientes");
   $("#qkCita").onclick = ()=> hojaNuevaCita({fecha: hoy});
   $("#qkVenta").onclick = ()=> irTab("productos");
   $("#qkGasto").onclick = ()=> irTab("finanzas");
@@ -2650,7 +2846,10 @@ async function tabAgenda(box){
   await calcularRiesgo();
   const grupos = agruparCitas(citas);
   const act = grupos.filter(g=> g.estado !== "cancelada");
+  const baseD = new Date(); baseD.setDate(baseD.getDate() - 2);
+  const tira = Array.from({length:21}, (_,i)=>{ const d = new Date(baseD.getFullYear(), baseD.getMonth(), baseD.getDate()+i); return {iso:isoDate(d), dia:d.getDate(), dow:d.getDay()}; });
   box.innerHTML = `
+    <div class="date-row ag-strip" id="agStrip">${tira.map(d=>`<button class="dchip ${d.iso===f?"on":""}" data-agd="${d.iso}" aria-label="${fmtFechaLarga(d.iso)}"><b>${d.dia}</b><span>${DIAS_C[d.dow]}</span></button>`).join("")}</div>
     <div class="ag-nav">
       <button class="circ" id="agPrev" aria-label="Día anterior">${IC.chevL}</button>
       <div class="ag-day"><b>${fmtFechaLarga(f)}</b><span>${act.length} ${act.length===1?"cita":"citas"} · ${money(act.reduce((a,g)=> a + totalGrupo(g), 0))}</span></div>
@@ -2663,6 +2862,8 @@ async function tabAgenda(box){
   $("#agPrev").onclick = ()=> mover(-1); $("#agNext").onclick = ()=> mover(1);
   $("#agDate").onchange = e=>{ if(e.target.value){ S.agFecha = e.target.value; pintarTab(); } };
   $("#agNew").onclick = ()=> hojaNuevaCita({fecha: S.agFecha});
+  $("#agStrip").onclick = e=>{ const b = e.target.closest("[data-agd]"); if(!b) return; S.agFecha = b.dataset.agd; pintarTab(); };
+  const stOn = $("#agStrip .on"); if(stOn) $("#agStrip").scrollLeft = stOn.offsetLeft - 24;
   cablearOrd($("#agList"), grupos);
 }
 
@@ -3258,12 +3459,142 @@ async function subirImagen(file){
 window.addEventListener("resize", ()=>{ if(S.route === "admin" && window.innerWidth >= 1150 && $("#admSide") && !$("#admSide").innerHTML) pintarLateral(); });
 
 /* ============================================================
+   APP INSTALABLE + NOTIFICACIONES
+   ============================================================ */
+const PUSH_PUBLIC_KEY = "BC3kGD3l45vw1_LKTT8yjlZjhg9Z-xFhu7j4lS9PinAvU254buhwmDxlKW0jOUgMpTD4r7z9d9IpwTZ2PcugzWQ";
+const PUSH = {reg:null, instalar:null};
+function b64u(txt){ const p = "=".repeat((4 - txt.length % 4) % 4), b = (txt + p).replace(/-/g,"+").replace(/_/g,"/"), r = atob(b); return Uint8Array.from([...r].map(c=> c.charCodeAt(0))); }
+function esApp(){ try{ return matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; }catch(e){ return false; } }
+function estadoNotif(){ return ("Notification" in window && "serviceWorker" in navigator) ? Notification.permission : "no-soportado"; }
+async function registrarSW(){
+  if(!("serviceWorker" in navigator)) return null;
+  try{ PUSH.reg = await navigator.serviceWorker.register("sw.js"); }catch(e){ console.warn("sw", e); }
+  return PUSH.reg;
+}
+async function regSW(){ return PUSH.reg || (await navigator.serviceWorker.getRegistration()) || (await registrarSW()); }
+window.addEventListener("beforeinstallprompt", e=>{ e.preventDefault(); PUSH.instalar = e; });
+window.addEventListener("appinstalled", ()=>{ PUSH.instalar = null; toast("App instalada"); });
+if("serviceWorker" in navigator) navigator.serviceWorker.addEventListener("message", e=>{ if(e.data && e.data.tipo === "ir-admin") go("admin"); });
+
+async function suscripcionActual(){ try{ const r = await regSW(); return r ? await r.pushManager.getSubscription() : null; }catch(e){ return null; } }
+async function activarNotificaciones(){
+  if(estadoNotif() === "no-soportado") return {ok:false, motivo:"no-soportado"};
+  const perm = await Notification.requestPermission();
+  if(perm !== "granted") return {ok:false, motivo:perm};
+  if(!("PushManager" in window)) return {ok:true, push:false, motivo:"sin-push"};
+  try{
+    const reg = await regSW();
+    let sub = await reg.pushManager.getSubscription();
+    if(!sub) sub = await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:b64u(PUSH_PUBLIC_KEY)});
+    const j = sub.toJSON();
+    const {error} = await sb.from("push_subs").upsert({endpoint:j.endpoint, p256dh:j.keys.p256dh, auth:j.keys.auth, user_agent:navigator.userAgent.slice(0,200)}, {onConflict:"endpoint"});
+    if(error){ console.warn(error); return {ok:true, push:false, motivo:"sql"}; }
+    return {ok:true, push:true};
+  }catch(e){ console.warn("push", e); return {ok:true, push:false, motivo:"suscripcion"}; }
+}
+async function mostrarAviso(titulo, cuerpo, tag){
+  const reg = await regSW(); if(!reg) return false;
+  await reg.showNotification(titulo, {body:cuerpo, icon:"img/icon-192.png", badge:"img/icon-192.png", tag:tag || "imperio", renotify:true, vibrate:[120,60,120], data:{url:"./?app=1"}});
+  return true;
+}
+
+function filaNotif(ic, titulo, texto, est){ return `<div class="nt-item"><span class="nt-ic">${ic}</span><div><b>${titulo}</b><span>${texto}</span></div><i class="nt-st ${est}"></i></div>`; }
+async function hojaNotificaciones(){
+  S.nAlertas = 0; actualizarCampana();
+  const est = estadoNotif(), sub = est === "granted" ? await suscripcionActual() : null;
+  const huawei = /huawei|honor|hmscore|harmony/i.test(navigator.userAgent);
+  const filas = [
+    filaNotif(IC.bell, "Avisos de citas en este teléfono",
+      est === "granted" ? (sub ? "Activados, incluso con la app cerrada" : "Permiso dado: se avisa con la app abierta") :
+      est === "denied" ? "Bloqueados en el navegador" : est === "no-soportado" ? "Este navegador no los admite" : "Sin activar",
+      est === "granted" ? (sub ? "ok" : "pend") : (est === "default" ? "pend" : "bad")),
+    filaNotif(IC.phoneI, "App en la pantalla de inicio", esApp() ? "Ya la estás usando como app" : (PUSH.instalar ? "Lista para instalar con un toque" : "Se instala desde el menú del navegador"), esApp() ? "ok" : "pend"),
+  ].join("");
+  const botones = [
+    est === "default" ? `<button class="pill pill-white pill-block" id="ntOn">${IC.bell} Activar notificaciones</button>` : "",
+    est === "granted" ? `<button class="pill pill-white pill-block" id="ntTest">${IC.bell} Enviar una prueba</button>` : "",
+    (PUSH.instalar && !esApp()) ? `<button class="pill pill-ghost pill-block" id="ntInst">${IC.download} Instalar la app</button>` : "",
+  ].join("");
+  const ayuda = [
+    est === "denied" ? `<p class="nt-tip"><b>Están bloqueadas.</b> Toca el candado junto a la dirección del sitio, entra a <i>Permisos</i> y vuelve a permitir las notificaciones.</p>` : "",
+    (!esApp() && !PUSH.instalar) ? `<p class="nt-tip"><b>Instalar la app:</b> menú del navegador (⋮) → <i>Añadir a pantalla de inicio</i> o <i>Instalar app</i>. Así abre a pantalla completa, como una app.</p>` : "",
+    huawei ? `<p class="nt-tip"><b>Huawei:</b> con Google Chrome los avisos funcionan igual. Si tu teléfono no tiene servicios de Google, el navegador de Huawei avisa con el panel abierto, pero con la app cerrada no está garantizado.</p>` : "",
+    `<p class="nt-tip">Con el panel abierto siempre suena y vibra al llegar, cancelar, reprogramar o confirmar una cita. Para recibirlos también con la app cerrada hace falta una configuración única del servidor.</p>`,
+  ].join("");
+  openSheet(`<h3>Avisos y app</h3><p class="sub">Entérate de cada cita al instante y ten el panel como una app.</p>
+    <div class="nt-list">${filas}</div><div class="nt-btns">${botones}</div>${ayuda}`, sh=>{
+    const reabrir = ()=>{ closeSheet(); setTimeout(hojaNotificaciones, 420); };
+    const on = $("#ntOn", sh); if(on) on.onclick = async ()=>{
+      on.disabled = true; const r = await activarNotificaciones();
+      if(!r.ok) toast(r.motivo === "denied" ? "Quedaron bloqueadas: permítelas en los permisos del sitio" : "No se pudieron activar");
+      else if(r.push) toast("Listo: te avisaremos de cada cita");
+      else toast(r.motivo === "sql" ? "Activadas con la app abierta. Falta el SQL de notificaciones" : "Activadas con la app abierta");
+      actualizarCampana(); reabrir();
+    };
+    const te = $("#ntTest", sh); if(te) te.onclick = async ()=>{ const ok = await mostrarAviso("Imperio Store Barber", "Así te llegarán los avisos de nuevas citas.", "prueba"); toast(ok ? "Prueba enviada" : "No se pudo enviar la prueba"); };
+    const ins = $("#ntInst", sh); if(ins) ins.onclick = async ()=>{ const ev = PUSH.instalar; PUSH.instalar = null; try{ ev.prompt(); await ev.userChoice; }catch(e){} reabrir(); };
+  });
+}
+
+/* avisos en vivo mientras el panel está abierto */
+function sonar(){
+  try{
+    const C = window.AudioContext || window.webkitAudioContext; const ac = S.ac || (S.ac = new C()), t = ac.currentTime;
+    [[880,0],[1175,.14]].forEach(([f,d])=>{ const o = ac.createOscillator(), g = ac.createGain(); o.type = "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(0, t+d); g.gain.linearRampToValueAtTime(.12, t+d+.02); g.gain.exponentialRampToValueAtTime(.0001, t+d+.22);
+      o.connect(g); g.connect(ac.destination); o.start(t+d); o.stop(t+d+.25); });
+  }catch(e){}
+}
+function actualizarCampana(){
+  const d = $("#bellDot"); if(!d) return;
+  const n = S.nAlertas || 0, est = estadoNotif();
+  d.className = "bell-dot" + (n ? " n" : (est === "granted" ? " hide" : ""));
+  d.textContent = n ? (n > 9 ? "9+" : n) : "";
+}
+async function describirCambio(p){
+  const n = p.new || {}, o = p.old || {}, sinAntes = Object.keys(o).length <= 1;
+  let tipo = null;
+  if(p.eventType === "INSERT") tipo = "nueva";
+  else if(p.eventType === "UPDATE"){
+    if(n.estado === "cancelada" && o.estado !== "cancelada") tipo = "cancelada";
+    else if(!sinAntes && (n.fecha !== o.fecha || hhmm(n.hora_inicio) !== hhmm(o.hora_inicio))) tipo = "reprogramada";
+    else if(n.asistencia_confirmada && (sinAntes ? (Date.now() - new Date(n.confirmada_en||0).getTime() < 20000) : !o.asistencia_confirmada)) tipo = "confirmo";
+  }
+  if(!tipo) return null;
+  const clave = (n.visita_id || n.id) + tipo, t = Date.now();
+  S.rtVistos = S.rtVistos || {};
+  if(S.rtVistos[clave] && t - S.rtVistos[clave] < 4000) return null;
+  S.rtVistos[clave] = t;
+  let nombre = "Un cliente";
+  try{ const {data} = await sb.from("clientes").select("nombre").eq("id", n.cliente_id).maybeSingle(); if(data && data.nombre) nombre = data.nombre; }catch(e){}
+  const sv = (S.servicios.find(s=> s.id === n.servicio_id) || {}).nombre || "Cita";
+  const titulos = {nueva:"Nueva cita", cancelada:"Cita cancelada", reprogramada:"Cita reprogramada", confirmo:"Confirmó asistencia"};
+  return {tipo, titulo:titulos[tipo], cuerpo:`${nombre} · ${sv}\n${fmtFecha(n.fecha)} · ${hhmm(n.hora_inicio)}`, tag:String(n.visita_id || n.id)};
+}
+async function onCitaCambio(p){
+  const ev = await describirCambio(p); if(!ev) return;
+  S.nAlertas = (S.nAlertas || 0) + 1; actualizarCampana();
+  if(document.visibilityState === "visible"){
+    toast(`${ev.titulo}: ${ev.cuerpo.replace("\n"," · ")}`); sonar();
+    try{ navigator.vibrate && navigator.vibrate([120,60,120]); }catch(e){}
+    if(S.route === "admin") refrescarAdmin();
+  }else if(estadoNotif() === "granted"){ mostrarAviso(ev.titulo, ev.cuerpo, ev.tag); }
+}
+function iniciarRealtime(){
+  if(S.rt || !sb.channel) return;
+  try{ S.rt = sb.channel("citas-admin").on("postgres_changes", {event:"*", schema:"public", table:"citas"}, onCitaCambio).subscribe(); }catch(e){ console.warn("realtime", e); }
+}
+function detenerRealtime(){ try{ if(S.rt){ sb.removeChannel(S.rt); S.rt = null; } }catch(e){} }
+
+/* ============================================================
    ARRANQUE
    ============================================================ */
 (async function init(){
   $("#brandLogo").src = LOGO; $("#bootLogo").src = LOGO;
   $("#burger").onclick = ()=> document.body.classList.contains("menu-open") ? cerrarMenu() : abrirMenu();
   S.route = rutaDesdeHash();
+  registrarSW();
+  if(esApp() && !location.hash && S.route === "inicio" && correoAdminGuardado()) S.route = "admin";
   await cargarDatosBase();
   try{ await cargarCitasRango(true); }catch(e){ console.error(e); }
   pintarMarco();
