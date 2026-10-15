@@ -1372,6 +1372,10 @@ body[data-route=admin] .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px)
 .cb-sum{margin:0 2px 16px;font-size:13.5px;color:var(--text-2)}
 .cb-sum b{color:var(--cream)}
 
+.det-list{max-height:55vh;overflow:auto;margin:0 -4px 14px;padding:0 4px}
+.det-dia{display:flex;justify-content:space-between;padding:14px 0 6px;font-size:12.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--copper-2)}
+.det-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.det-row b{display:block;font-size:14.5px}.det-row small{color:var(--text-2);font-size:12.5px}.det-row span{font-weight:700;white-space:nowrap}.det-row span.neg{color:#e0685f}
 /* antes y después */
 .ba-grid{display:grid;grid-template-columns:1fr;gap:14px}
 @media(min-width:760px){.ba-grid{grid-template-columns:repeat(2,1fr)}}
@@ -1392,26 +1396,26 @@ body[data-route=admin] .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px)
 .mbar{height:6px;border-radius:99px;background:var(--card);margin-top:8px;overflow:hidden}
 .mbar i{display:block;height:100%;background:var(--copper);border-radius:99px}
 /* recibo con animación de impresión */
-.tk-wrap{position:relative;max-width:320px;margin:18px auto;text-align:left;filter:drop-shadow(0 14px 24px rgba(0,0,0,.5))}
+.tk-wrap{position:relative;max-width:400px;margin:18px auto;text-align:left;filter:drop-shadow(0 14px 24px rgba(0,0,0,.5))}
 .tk-slot{position:relative;z-index:2;height:14px;margin:0 -10px;border-radius:999px;background:#050505;box-shadow:inset 0 3px 5px #000}
 .tk-led{position:absolute;right:14px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#4ec27a;animation:tkLed 1.2s infinite}
 .tk-wrap.done .tk-led,.tk-wrap.static .tk-led{animation:none;background:#777}
 @keyframes tkLed{50%{opacity:.25}}
-.tk-paper{position:relative;margin:-7px 10px 0;padding:26px 20px 22px;background:#f4eee2;color:#1b1713;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:13px;line-height:1.55}
+.tk-paper{position:relative;margin:-7px 10px 0;padding:30px 24px 26px;background:#f4eee2;color:#1b1713;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:15.5px;line-height:1.6}
 .tk-wrap.printing .tk-paper{clip-path:inset(0 0 100% 0)}
 .tk-wrap.printing.run .tk-paper{animation:tkPrint 2.8s steps(42,end) .3s forwards}
 .tk-wrap.printing.done .tk-paper{animation:none;clip-path:none}
 @keyframes tkPrint{to{clip-path:inset(0 0 0 0)}}
 .tk-brand{text-align:center}
-.tk-brand b{display:block;font-family:var(--disp);font-weight:400;font-size:28px;letter-spacing:.06em;line-height:1.05;text-transform:uppercase}
+.tk-brand b{display:block;font-family:var(--disp);font-weight:400;font-size:34px;letter-spacing:.06em;line-height:1.05;text-transform:uppercase}
 .tk-brand span{display:block;margin-top:6px;font-size:11px;font-weight:700;letter-spacing:.3em}
 .tk-hr{border-top:1.5px dashed #b4ab9b;margin:12px 0}
 .tk-row{display:flex;justify-content:space-between;align-items:baseline;gap:14px}
 .tk-row>b,.tk-row>span:last-child{text-align:right;font-weight:700}
 .tk-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .tk-total span{font-weight:700;letter-spacing:.16em}
-.tk-total b{font-family:var(--disp);font-weight:400;font-size:38px;line-height:1;color:#8a5a1f}
-.tk-c{margin:4px 0;text-align:center;font-size:12px}
+.tk-total b{font-family:var(--disp);font-weight:400;font-size:46px;line-height:1;color:#8a5a1f}
+.tk-c{margin:4px 0;text-align:center;font-size:14px}
 .tk-tear{height:12px;margin:0 10px;opacity:0;transition:opacity .4s;background:linear-gradient(135deg,#f4eee2 50%,transparent 50%) 0 0/12px 12px repeat-x,linear-gradient(225deg,#f4eee2 50%,transparent 50%) 0 0/12px 12px repeat-x}
 .tk-wrap.done .tk-tear,.tk-wrap.static .tk-tear{opacity:1}
 @media (prefers-reduced-motion:reduce){.tk-wrap.printing.run .tk-paper{animation-duration:.01s}.tk-led{animation:none}}
@@ -3360,6 +3364,7 @@ function ordHtml(g, i, opt={}){
       <button class="oa ok" data-act="done" data-id="${g.key}">${IC.check}<span>Listo</span></button>
       ${g.confirmo ? "" : `<button class="oa" data-act="confirm" data-id="${g.key}">${IC.cal}<span>Confirmó</span></button>`}
       <button class="oa" data-act="mover" data-id="${g.key}">${IC.cal}<span>Mover</span></button>
+      ${cl.id ? `<button class="oa" data-act="nombre" data-id="${g.key}">${IC.user}<span>Nombre</span></button>` : ""}
       <button class="oa" data-act="noshow" data-id="${g.key}">${IC.x}<span>No vino</span></button>
       ${opt.full ? `<button class="oa bad" data-act="cancel" data-id="${g.key}">${IC.trash}<span>Cancelar</span></button>` : ""}
     </div>` : "";
@@ -3383,6 +3388,7 @@ function cablearOrd(root, grupos){
     const g = grupos.find(x=> x.key === b.dataset.id); if(!g) return;
     if(b.dataset.act === "fotos") return hojaFotos(g);
     if(b.dataset.act === "mover") return hojaMoverCita(g);
+    if(b.dataset.act === "nombre") return hojaNombreCliente(g.cliente);
     if(b.dataset.act === "done"){
       b.disabled = true;
       await sb.from("citas").update({estado:"completada"}).in("id", g.ids);
@@ -3422,7 +3428,7 @@ function reciboTicketHtml(d, modo){
   return `<div class="tk-wrap ${modo}"><div class="tk-slot" aria-hidden="true"><i class="tk-led"></i></div>
     <article class="tk-paper" aria-label="Recibo">
       <div class="tk-brand"><b>${esc(d.negocio)}</b><span>RECIBO</span></div><div class="tk-hr"></div>
-      <div class="tk-row"><span>CLIENTE</span><b>${esc(primerNombre(d.cliente))}</b></div>
+      <div class="tk-row"><span>CLIENTE</span><b>${esc(d.cliente)}</b></div>
       <div class="tk-row"><span>FECHA</span><b>${esc(fmtFechaLarga(d.fecha))}</b></div><div class="tk-hr"></div>
       ${d.lineas.map(l=>`<div class="tk-row"><span>${esc(l[0])}</span><span>${money(l[1])}</span></div>`).join("")}
       <div class="tk-hr"></div><div class="tk-total"><span>TOTAL</span><b>${money(d.total)}</b></div><div class="tk-hr"></div>
@@ -3431,9 +3437,11 @@ function reciboTicketHtml(d, modo){
 }
 async function dibujarRecibo(d){
   try{ await Promise.all([document.fonts.load("100px Anton"), document.fonts.load("700 30px 'Plus Jakarta Sans'")]); }catch(e){}
-  const W = 1080, m = 90, mono = "ui-monospace, 'SF Mono', Menlo, Consolas, monospace", disp = "Anton, Impact, sans-serif";
-  const alto = 810 + d.lineas.length * 84 + (d.dir ? 60 : 0) + (d.wa ? 50 : 0), H = alto + 2 * 90;
-  const cv = document.createElement("canvas"); cv.width = W; cv.height = H; const ctx = cv.getContext("2d");
+  const K = 1.2, W = Math.round(1080 / K), m = 90, mono = "ui-monospace, 'SF Mono', Menlo, Consolas, monospace", disp = "Anton, Impact, sans-serif";
+  const medir = document.createElement("canvas").getContext("2d"); medir.font = `600 28px ${mono}`;
+  const dirLin = d.dir ? lineasTexto(medir, d.dir, W - 140 - 120) : [];
+  const alto = 810 + d.lineas.length * 84 + dirLin.length * 42 + (d.wa ? 50 : 0), H = alto + 2 * 90;
+  const cv = document.createElement("canvas"); cv.width = 1080; cv.height = Math.round(H * K); const ctx = cv.getContext("2d"); ctx.scale(K, K);
   ctx.fillStyle = "#101316"; ctx.fillRect(0, 0, W, H);
   const x0 = 70, w = W - 140, y0 = 70, h = H - 140;
   ctx.save(); ctx.shadowColor = "rgba(0,0,0,.5)"; ctx.shadowBlur = 40; ctx.shadowOffsetY = 20; ctx.fillStyle = "#f4eee2";
@@ -3444,12 +3452,13 @@ async function dibujarRecibo(d){
   ctx.font = `700 28px ${mono}`; ctx.fillText("R E C I B O", W/2, y); y += 50;
   const linea = ()=>{ ctx.save(); ctx.strokeStyle = "#b4ab9b"; ctx.lineWidth = 3; ctx.setLineDash([14, 10]); ctx.beginPath(); ctx.moveTo(x0 + 50, y); ctx.lineTo(x0 + w - 50, y); ctx.stroke(); ctx.restore(); y += 56; };
   linea(); ctx.textAlign = "left"; ctx.font = `600 34px ${mono}`;
-  const fila = (a, b, bold)=>{ ctx.font = `${bold ? 800 : 600} 34px ${mono}`; ctx.textAlign = "left"; ctx.fillStyle = "#1b1713"; let t = a; while(ctx.measureText(t).width > w - 400 && t.length > 4) t = t.slice(0, -2); if(t !== a) t += "…"; ctx.fillText(t, x0 + 50, y); ctx.textAlign = "right"; ctx.fillText(b, x0 + w - 50, y); y += 84; };
-  fila("CLIENTE", primerNombre(d.cliente)); fila("FECHA", fmtFechaLarga(d.fecha)); y -= 20; linea();
+  const fila = (a, b, bold)=>{ ctx.font = `${bold ? 800 : 600} 34px ${mono}`; ctx.textAlign = "left"; ctx.fillStyle = "#1b1713"; let t = a; while(ctx.measureText(t).width > w - 400 && t.length > 4) t = t.slice(0, -2); if(t !== a) t += "…"; ctx.fillText(t, x0 + 50, y);
+    let px = 34; ctx.textAlign = "right"; while(ctx.measureText(b).width > w - 100 - ctx.measureText(t).width - 40 && px > 20){ px -= 2; ctx.font = `${bold ? 800 : 600} ${px}px ${mono}`; } ctx.fillText(b, x0 + w - 50, y); y += 84; };
+  fila("CLIENTE", d.cliente); fila("FECHA", fmtFechaLarga(d.fecha)); y -= 20; linea();
   d.lineas.forEach(l=> fila(l[0], money(l[1]))); y -= 20; linea(); y += 50;
   ctx.textAlign = "left"; ctx.font = `800 34px ${mono}`; ctx.fillText("TOTAL", x0 + 50, y + 30); ctx.textAlign = "right"; ctx.font = `400 120px ${disp}`; ctx.fillStyle = "#8a5a1f"; ctx.fillText(money(d.total), x0 + w - 50, y + 40); y += 130;
   ctx.textAlign = "center"; ctx.fillStyle = "#1b1713"; ctx.font = `700 34px ${mono}`; ctx.fillText("¡Gracias por tu visita!", W/2, y); y += 56;
-  ctx.font = `600 28px ${mono}`; ctx.fillStyle = "#5a5144"; if(d.dir){ ctx.fillText(d.dir, W/2, y); y += 46; } if(d.wa) ctx.fillText("WhatsApp " + d.wa, W/2, y);
+  ctx.font = `600 28px ${mono}`; ctx.fillStyle = "#5a5144"; dirLin.forEach(l=>{ ctx.fillText(l, W/2, y); y += 42; }); if(d.wa) ctx.fillText("WhatsApp " + d.wa, W/2, y);
   return cv;
 }
 function hojaFinalizarVisita(g){
@@ -3598,7 +3607,7 @@ async function tabHoy(box){
   $("#qkGasto").onclick = ()=> irTab("finanzas");
   $("#qkBloq").onclick = ()=> irTab("horario");
   $("#qkServ").onclick = ()=> hojaServicio(null);
-  $("#qkQr").onclick = ()=> irTab("ajustes");
+  $("#qkQr").onclick = hojaQrAgendar;
 }
 
 /* ---------------- AGENDA ---------------- */
@@ -3761,6 +3770,7 @@ async function hojaCliente(c){
     <div class="sh-actions">
       <a class="pill pill-ghost" href="${waLink(c.telefono)}" target="_blank" rel="noopener">${IC.wa} WhatsApp</a>
       <button class="pill pill-ghost" id="hcCita">${IC.plus} Cita</button>
+      <button class="pill pill-ghost" id="hcUnir">Unir ficha</button>
     </div>
     <button class="pill pill-white pill-block" id="hcOk" style="margin-top:10px">Guardar cambios</button>
     <button class="pill pill-ghost pill-block danger-txt" id="hcDel" style="margin-top:10px">${IC.trash} Eliminar cliente</button>`, sh=>{
@@ -3781,6 +3791,7 @@ async function hojaCliente(c){
           toast("Cliente eliminado"); S.citasAt = 0; S.churn = null; pintarTab();
         }), 420);
     };
+    $("#hcUnir",sh).onclick = ()=>{ closeSheet(); setTimeout(()=> hojaUnirClientes(c), 400); };
     $("#hcCita",sh).onclick = ()=>{ closeSheet(); setTimeout(()=> hojaNuevaCita({nombre:c.nombre, telefono:c.telefono, fecha:S.agFecha}), 400); };
     $("#hcOk",sh).onclick = async ()=>{
       const cu = leerCumple("hcCumD","hcCumM"); if(!cu.ok) return toast(cu.msg);
@@ -4121,13 +4132,14 @@ async function tabResenas(box){
 
 /* ---------------- FINANZAS ---------------- */
 async function tabFinanzas(box){
-  box.innerHTML = `<div class="fin-tabs" id="finTabs">${[7,30].map(n=>`<button data-r="${n}" class="${S.finRango===n?"on":""}">${n} días</button>`).join("")}<button data-r="mes" class="${S.finRango==="mes"?"on":""}">Este mes</button></div>
+  box.innerHTML = `<div class="fin-tabs" id="finTabs">${[7,30].map(n=>`<button data-r="${n}" class="${S.finRango===n?"on":""}">${n} días</button>`).join("")}<button data-r="mes" class="${S.finRango==="mes"?"on":""}">Este mes</button><button data-r="todo" class="${S.finRango==="todo"?"on":""}">Todo</button></div>
     <div id="finBody"></div>`;
   $("#finTabs").onclick = e=>{ const b = e.target.closest("[data-r]"); if(!b) return; S.finRango = isNaN(b.dataset.r) ? b.dataset.r : Number(b.dataset.r); pintarTab(); };
   await pintarFinanzas();
 }
 function rangoFechas(){
   const hoy = new Date();
+  if(S.finRango === "todo") return {desde: "2020-01-01", hasta: isoDate(hoy), dias: 1};
   if(S.finRango === "mes") return {desde: isoDate(new Date(hoy.getFullYear(), hoy.getMonth(), 1)), hasta: isoDate(hoy), dias: hoy.getDate()};
   const n = Number(S.finRango)||7, desde = new Date(hoy); desde.setDate(hoy.getDate() - (n-1));
   return {desde: isoDate(desde), hasta: isoDate(hoy), dias: n};
@@ -4151,13 +4163,17 @@ function hojaGasto(){
   });
 }
 async function pintarFinanzas(){
-  const {desde, hasta, dias} = rangoFechas();
+  let {desde, hasta, dias} = rangoFechas();
   const [{data:citas}, {data:ventas}, {data:gastos}, {data:previas}] = await Promise.all([
     sb.from("citas").select("fecha,hora_inicio,cliente_id,servicios(nombre,precio),clientes(nombre)").eq("estado","completada").gte("fecha",desde).lte("fecha",hasta),
     sb.from("ventas_producto").select("fecha,cantidad,precio_unit,cliente_id,clientes(nombre)").gte("fecha",desde).lte("fecha",hasta),
     sb.from("gastos").select("*").gte("fecha",desde).lte("fecha",hasta).order("fecha",{ascending:false}),
     sb.from("citas").select("cliente_id").eq("estado","completada").lt("fecha",desde).not("cliente_id","is",null).limit(5000),
   ]);
+  if(S.finRango === "todo"){
+    const fs = [...(citas||[]), ...(ventas||[]), ...(gastos||[])].map(x=> x.fecha).sort();
+    desde = fs[0] || hasta; dias = Math.max(1, Math.round((parseIso(hasta) - parseIso(desde)) / 86400000) + 1);
+  }
   S.finDatos = {citas: citas||[], ventas: ventas||[], gastos: gastos||[], desde, hasta};
   const rep_ = (()=>{
     const serv = {}, horas = {}, antes = new Set((previas||[]).map(c=> c.cliente_id)), enRango = new Set();
@@ -4170,9 +4186,9 @@ async function pintarFinanzas(){
   const ingresos = ingServ + ingProd;
   const totalGastos = (gastos||[]).reduce((a,g)=> a + Number(g.monto), 0);
   const neto = ingresos - totalGastos;
-  const etiqueta = S.finRango === "mes" ? "este mes" : `${dias} días`;
+  const etiqueta = S.finRango === "mes" ? "este mes" : S.finRango === "todo" ? "todo el tiempo" : `${dias} días`;
 
-  const bucket = {}; for(let i=0;i<dias;i++){ const d = new Date(rangoFechas().desde+"T00:00:00"); d.setDate(d.getDate()+i); bucket[isoDate(d)] = {ing:0,gas:0}; }
+  const bucket = {}; for(let i=0;i<dias;i++){ const d = new Date(desde+"T00:00:00"); d.setDate(d.getDate()+i); bucket[isoDate(d)] = {ing:0,gas:0}; }
   (citas||[]).forEach(c=>{ if(bucket[c.fecha]) bucket[c.fecha].ing += Number((c.servicios||{}).precio)||0; });
   (ventas||[]).forEach(v=>{ if(bucket[v.fecha]) bucket[v.fecha].ing += Number(v.cantidad)*Number(v.precio_unit); });
   (gastos||[]).forEach(g=>{ if(bucket[g.fecha]) bucket[g.fecha].gas += Number(g.monto); });
@@ -4203,13 +4219,68 @@ async function pintarFinanzas(){
       ${sbar([["Nuevos", rep_.nuevos, "ok"], ["Recurrentes", rep_.recurrentes]])}</section>
     <section class="grp">${grpHd("Mejores clientes")}
       ${top.length ? top.map((c,i)=>`<div class="rc" style="--i:${i}"><span class="av rank">${i+1}</span><div class="rc-b"><b>${esc(c.nombre)}</b><span>${c.visitas} visita${c.visitas===1?"":"s"}</span></div><span class="rc-amt">${money(c.total)}</span></div>`).join("") : `<div class="adm-empty">Sin ingresos en este rango.</div>`}</section>
-    <div class="sh-actions" style="margin:0 0 18px;flex-wrap:wrap"><button class="pill pill-white" id="fnCierre">${IC.chart} Cierre de caja de hoy</button><button class="pill pill-ghost" id="fnCsv">${IC.download} Exportar CSV</button></div>
+    <div class="sh-actions" style="margin:0 0 18px;flex-wrap:wrap"><button class="pill pill-white" id="fnCierre">${IC.chart} Cierre de caja de hoy</button><button class="pill pill-ghost" id="fnDet">Ver detalle</button><button class="pill pill-ghost" id="fnCsv">${IC.download} Exportar CSV</button></div>
     <section class="grp">${grpHd("Gastos", `<button class="pill pill-white pill-sm" id="gaNew">${IC.plus} Agregar</button>`)}
       ${(gastos||[]).length ? gastos.map((g,i)=>`<div class="rc" style="--i:${i}"><span class="av">${IC.box}</span><div class="rc-b"><b>${esc(g.concepto)}</b><span>${fmtFecha(g.fecha)}${g.categoria?" · "+esc(g.categoria):""}</span></div><span class="rc-amt neg">${money(g.monto)}</span><button class="circ danger" data-delg="${g.id}" style="width:36px;height:36px" aria-label="Eliminar gasto">${IC.x}</button></div>`).join("") : `<div class="adm-empty">Sin gastos registrados en este rango.</div>`}</section>`;
   $("#gaNew").onclick = hojaGasto;
   $("#fnCsv").onclick = exportarCsv;
+  $("#fnDet").onclick = hojaDetalleFinanzas;
   $("#fnCierre").onclick = hojaCierre;
   $$("[data-delg]").forEach(b=> b.onclick = ()=> confirmar("¿Eliminar este gasto?", "Se quitará de tus cuentas.", "Eliminar", async ()=>{ await sb.from("gastos").delete().eq("id", b.dataset.delg); toast("Gasto eliminado"); pintarFinanzas(); }));
+}
+
+/* ---------- editar nombre y unir fichas (solo el barbero) ---------- */
+function hojaNombreCliente(c){
+  openSheet(`<h3>Corregir nombre</h3><p class="sub">${esc(c.telefono || "")}</p>
+    <div class="field"><label>Nombre del cliente</label><input id="ncNom" value="${esc(c.nombre)}" autocomplete="off"></div>
+    <div class="sh-actions"><button class="pill pill-ghost" id="ncUnir">Unir con otra ficha</button><button class="pill pill-white" id="ncOk">Guardar</button></div>`, sh=>{
+    setTimeout(()=>{ const i = $("#ncNom", sh); i.focus(); i.select(); }, 350);
+    $("#ncOk", sh).onclick = async ()=>{
+      const nombre = $("#ncNom", sh).value.trim(); if(!nombre) return toast("Escribe el nombre");
+      const {error} = await sb.from("clientes").update({nombre}).eq("id", c.id);
+      if(error) return toast("No se pudo guardar");
+      closeSheet(); toast("Nombre actualizado"); S.citasAt = 0; refrescarAdmin();
+    };
+    $("#ncUnir", sh).onclick = ()=>{ closeSheet(); setTimeout(()=> hojaUnirClientes(c), 400); };
+  });
+}
+function hojaUnirClientes(c){
+  openSheet(`<h3>Unir fichas</h3><p class="sub">Busca la otra ficha de <b>${esc(c.nombre)}</b>. Sus citas, puntos y notas pasarán a esta ficha, y la otra se elimina.</p>
+    <div class="field"><label>Buscar por nombre o teléfono</label><input id="unQ" autocomplete="off" placeholder="Ej. 5512 o Antonio"></div>
+    <div id="unRes"></div>`, sh=>{
+    let t = 0;
+    $("#unQ", sh).oninput = ()=>{
+      const q = $("#unQ", sh).value.trim(), n = ++t; if(q.length < 2){ $("#unRes", sh).innerHTML = ""; return; }
+      setTimeout(async ()=>{
+        if(n !== t) return;
+        const dig = soloDigitos(q), safe = q.replace(/[%,()]/g, "");
+        const {data} = await sb.from("clientes").select("id,nombre,telefono,puntos_actuales").neq("id", c.id).or(`nombre.ilike.%${safe}%${dig ? `,telefono.ilike.%${dig}%` : ""}`).limit(8);
+        if(n !== t) return;
+        $("#unRes", sh).innerHTML = (data||[]).length ? data.map(x=>`<button class="rc btn" data-un="${x.id}"><span class="av">${esc(iniciales(x.nombre))}</span><div class="rc-b"><b>${esc(x.nombre)}</b><span>${esc(x.telefono)}</span></div></button>`).join("") : `<div class="adm-empty">Sin resultados.</div>`;
+        $$("[data-un]", sh).forEach(b=> b.onclick = ()=>{
+          const o = data.find(x=> x.id === b.dataset.un);
+          closeSheet();
+          setTimeout(()=> confirmar(`¿Unir a ${o.nombre} con ${c.nombre}?`, `Todo lo de ${o.nombre} (${o.telefono}) pasa a la ficha de ${c.nombre} (${c.telefono}). La ficha de ${o.nombre} se elimina y no se puede deshacer.`, "Sí, unir", async ()=>{
+            const {error} = await sb.rpc("unir_clientes", {p_origen: o.id, p_destino: c.id});
+            if(error){ toast(/function|schema cache/i.test(error.message||"") ? "Falta el SQL de unir fichas" : "No se pudo unir las fichas"); return; }
+            toast("Fichas unidas"); S.citasAt = 0; S.churn = null; refrescarAdmin(); pintarTab();
+          }), 400);
+        });
+      }, 250);
+    };
+    setTimeout(()=> $("#unQ", sh).focus(), 350);
+  });
+}
+
+/* ---------- QR para mostrar al cliente ---------- */
+function hojaQrAgendar(){
+  const link = urlBase() + "#agendar";
+  openSheet(`<h3>Escanea para agendar</h3>
+    <div style="display:grid;place-items:center;margin:6px 0 16px"><img src="${qrUrl(link, 640)}" alt="QR para agendar" style="width:min(78vw,320px);height:auto;aspect-ratio:1;background:#fff;padding:14px;border-radius:18px"></div>
+    <p class="sub" style="text-align:center;margin:0 0 16px;word-break:break-all">${esc(link.replace(/^https?:\/\//,""))}</p>
+    <div class="sh-actions"><button class="pill pill-ghost" id="qrCopy">${IC.copy} Copiar link</button><a class="pill pill-white" href="${qrUrl(link, 1000)}" target="_blank" rel="noopener">${IC.download} Imprimir</a></div>`, sh=>{
+    $("#qrCopy", sh).onclick = async ()=>{ try{ await navigator.clipboard.writeText(link); toast("Link copiado"); }catch(e){ toast("No se pudo copiar"); } };
+  });
 }
 
 /* ---------- exportar y cierre de caja ---------- */
@@ -4222,6 +4293,18 @@ function exportarCsv(){
   filas.sort((a,b)=> a[0] === "Fecha" ? -1 : b[0] === "Fecha" ? 1 : String(a[0]).localeCompare(String(b[0])));
   descargarBlob(new Blob(["﻿" + filas.map(f=> f.map(q).join(",")).join("\n")], {type:"text/csv;charset=utf-8"}), `finanzas-${d.desde}_a_${d.hasta}.csv`);
   toast("CSV descargado");
+}
+function hojaDetalleFinanzas(){
+  const d = S.finDatos; if(!d) return;
+  const mov = [
+    ...d.citas.map(c=> ({f:c.fecha, h:hhmm(c.hora_inicio), t:"Servicio", n:(c.servicios||{}).nombre||"Servicio", c:(c.clientes||{}).nombre||"", m:Number((c.servicios||{}).precio)||0})),
+    ...d.ventas.map(v=> ({f:v.fecha, h:"", t:"Producto", n:"Venta ×" + v.cantidad, c:(v.clientes||{}).nombre||"", m:Number(v.cantidad)*Number(v.precio_unit)})),
+    ...d.gastos.map(g=> ({f:g.fecha, h:"", t:"Gasto", n:g.concepto, c:g.categoria||"", m:-Number(g.monto)}))].sort((a,b)=> (b.f + b.h).localeCompare(a.f + a.h));
+  const dias = {}; mov.forEach(x=> (dias[x.f] = dias[x.f] || []).push(x));
+  const total = mov.reduce((a,x)=> a + x.m, 0);
+  openSheet(`<h3>Detalle · ${mov.length} movimientos</h3><p class="sub" style="margin:0 0 12px">Ganancia neta del periodo: <b>${(total<0?"−":"")+money(Math.abs(total))}</b></p>
+    <div class="det-list">${Object.keys(dias).length ? Object.entries(dias).map(([f,l])=>`<div class="det-dia"><b>${esc(fmtFecha(f))}</b><span>${(t=> (t<0?"−":"")+money(Math.abs(t)))(l.reduce((a,x)=> a + x.m, 0))}</span></div>${l.map(x=>`<div class="det-row"><div><b>${esc(x.n)}</b><small>${x.t}${x.c ? " · " + esc(x.c) : ""}${x.h ? " · " + x.h : ""}</small></div><span class="${x.m < 0 ? "neg" : ""}">${x.m < 0 ? "−" : ""}${money(Math.abs(x.m))}</span></div>`).join("")}`).join("") : `<div class="adm-empty">Sin movimientos.</div>`}</div>
+    <div class="sh-actions"><button class="pill pill-white" id="dtCsv">${IC.download} Exportar CSV</button></div>`, sh=>{ $("#dtCsv", sh).onclick = exportarCsv; });
 }
 async function hojaCierre(){
   const hoy = isoDate(new Date());
