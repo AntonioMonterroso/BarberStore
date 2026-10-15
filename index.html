@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Imperio Store Barber — Agenda tu cita</title>
 <meta name="description" content="Imperio Store Barber: cortes, fades y barba. Agenda tu cita en línea en menos de un minuto.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Imperio Store Barber">
+<meta property="og:title" content="Imperio Store Barber · Agenda tu cita">
+<meta property="og:description" content="Cortes, fades y barba. Reserva en línea en menos de un minuto.">
+<meta property="og:image" content="https://antoniomonterroso.github.io/BarberStore/img/og.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:url" content="https://antoniomonterroso.github.io/BarberStore/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://antoniomonterroso.github.io/BarberStore/img/og.jpg">
 <meta name="theme-color" content="#101012">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
@@ -1342,6 +1351,70 @@ body[data-route=admin] .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px)
 /* sin textos de instrucciones: ajustar espacios */
 .fcard>h3{margin-bottom:16px}
 .sh h3+*:not(.sub){margin-top:18px}
+
+.ref-premio{margin:10px 2px 0;font-size:13px;color:var(--copper-2);line-height:1.5}
+
+/* recordar el día y filas con hora */
+.rc .av.tm{width:60px;font-size:13px;letter-spacing:.02em}
+.rc.hecho{opacity:.6}
+#rdLista .rc,#elLista .rc{background:var(--card)}
+
+/* descansos, combos y días */
+.dias-chips{display:flex;gap:6px;margin-bottom:18px}
+.dias-chips button{flex:1;height:44px;border-radius:12px;background:var(--card);font-size:12.5px;font-weight:700;color:var(--text-2);transition:background .2s,color .2s}
+.dias-chips button.on{background:var(--cream);color:#111}
+.rc.pausado{opacity:.55}
+.cb-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.cb-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--card);cursor:pointer}
+.cb-row input{width:20px;height:20px;accent-color:#cb9440;flex:0 0 auto}
+.cb-row b{display:block;font-size:14.5px}
+.cb-row small{display:block;font-size:12.5px;color:var(--text-2);margin-top:2px}
+.cb-sum{margin:0 2px 16px;font-size:13.5px;color:var(--text-2)}
+.cb-sum b{color:var(--cream)}
+
+/* antes y después */
+.ba-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:760px){.ba-grid{grid-template-columns:repeat(2,1fr)}}
+.ba{position:relative;margin:0;aspect-ratio:4/5;overflow:hidden;border-radius:6px;background:#000;--p:50%;touch-action:pan-y}
+.ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ba-a{clip-path:inset(0 0 0 var(--p))}
+.ba-bar{position:absolute;top:0;bottom:0;left:var(--p);width:3px;margin-left:-1.5px;background:var(--copper-2);pointer-events:none}
+.ba-bar::after{content:"";position:absolute;top:50%;left:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:var(--copper);box-shadow:0 4px 18px rgba(0,0,0,.5)}
+.ba input[type=range]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
+.ba-tag{position:absolute;top:14px;padding:5px 10px;border-radius:3px;background:rgba(0,0,0,.6);font-family:var(--disp);font-size:15px;letter-spacing:.06em;text-transform:uppercase;pointer-events:none}
+.ba-tag.l{left:14px}.ba-tag.r{right:14px}
+.ba figcaption{position:absolute;left:0;right:0;bottom:0;padding:34px 16px 14px;background:linear-gradient(transparent,rgba(0,0,0,.75));font-weight:700;pointer-events:none}
+/* estudio de promos y reportes */
+.promo-prev{display:grid;place-items:center;padding:14px;margin-bottom:14px;border-radius:18px;background:var(--card)}
+.promo-prev canvas{width:auto;max-width:100%;max-height:58vh;border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.colors{grid-template-columns:repeat(4,1fr)}
+.colors input[type=color]{width:100%;height:44px;padding:3px;border-radius:12px;border:0;background:var(--card)}
+.mbar{height:6px;border-radius:99px;background:var(--card);margin-top:8px;overflow:hidden}
+.mbar i{display:block;height:100%;background:var(--copper);border-radius:99px}
+/* recibo con animación de impresión */
+.tk-wrap{position:relative;max-width:320px;margin:18px auto;text-align:left;filter:drop-shadow(0 14px 24px rgba(0,0,0,.5))}
+.tk-slot{position:relative;z-index:2;height:14px;margin:0 -10px;border-radius:999px;background:#050505;box-shadow:inset 0 3px 5px #000}
+.tk-led{position:absolute;right:14px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#4ec27a;animation:tkLed 1.2s infinite}
+.tk-wrap.done .tk-led,.tk-wrap.static .tk-led{animation:none;background:#777}
+@keyframes tkLed{50%{opacity:.25}}
+.tk-paper{position:relative;margin:-7px 10px 0;padding:26px 20px 22px;background:#f4eee2;color:#1b1713;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:13px;line-height:1.55}
+.tk-wrap.printing .tk-paper{clip-path:inset(0 0 100% 0)}
+.tk-wrap.printing.run .tk-paper{animation:tkPrint 2.8s steps(42,end) .3s forwards}
+.tk-wrap.printing.done .tk-paper{animation:none;clip-path:none}
+@keyframes tkPrint{to{clip-path:inset(0 0 0 0)}}
+.tk-brand{text-align:center}
+.tk-brand b{display:block;font-family:var(--disp);font-weight:400;font-size:28px;letter-spacing:.06em;line-height:1.05;text-transform:uppercase}
+.tk-brand span{display:block;margin-top:6px;font-size:11px;font-weight:700;letter-spacing:.3em}
+.tk-hr{border-top:1.5px dashed #b4ab9b;margin:12px 0}
+.tk-row{display:flex;justify-content:space-between;align-items:baseline;gap:14px}
+.tk-row>b,.tk-row>span:last-child{text-align:right;font-weight:700}
+.tk-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.tk-total span{font-weight:700;letter-spacing:.16em}
+.tk-total b{font-family:var(--disp);font-weight:400;font-size:38px;line-height:1;color:#8a5a1f}
+.tk-c{margin:4px 0;text-align:center;font-size:12px}
+.tk-tear{height:12px;margin:0 10px;opacity:0;transition:opacity .4s;background:linear-gradient(135deg,#f4eee2 50%,transparent 50%) 0 0/12px 12px repeat-x,linear-gradient(225deg,#f4eee2 50%,transparent 50%) 0 0/12px 12px repeat-x}
+.tk-wrap.done .tk-tear,.tk-wrap.static .tk-tear{opacity:1}
+@media (prefers-reduced-motion:reduce){.tk-wrap.printing.run .tk-paper{animation-duration:.01s}.tk-led{animation:none}}
 </style>
 </head>
 <body data-route="inicio">
@@ -1555,24 +1628,26 @@ async function cargarDatosBase(){
     S.productos = prod || [];
   }catch(e){ S.productos = S.productos || []; }
   try{
-    let r = await sb.from("resenas").select("calificacion,comentario,nombre,creado_en,citas(clientes(nombre))").order("creado_en",{ascending:false});
-    if(r.error) r = await sb.from("resenas").select("calificacion,comentario,creado_en,citas(clientes(nombre))").order("creado_en",{ascending:false});
-    const todas = r.data || [];
-    S.totalResenas = todas.length;
-    S.promedio = todas.length ? (todas.reduce((a,x)=>a + x.calificacion, 0) / todas.length).toFixed(1) : null;
-    S.resenas = todas.filter(x=> x.calificacion >= 4 && String(x.comentario||"").trim()).slice(0,12).map(x=>({
-      calificacion:x.calificacion, comentario:x.comentario,
-      nombre: x.nombre || (x.citas && x.citas.clientes ? primerNombre(x.citas.clientes.nombre) : "")
-    }));
+    const {data:todas, error} = await sb.rpc("resenas_publicas");
+    if(error) throw error;
+    const l = todas || [];
+    S.totalResenas = l.length;
+    S.promedio = l.length ? (l.reduce((a,x)=> a + x.calificacion, 0) / l.length).toFixed(1) : null;
+    S.resenas = l.filter(x=> x.calificacion >= 4 && String(x.comentario||"").trim()).slice(0,12).map(x=>({calificacion:x.calificacion, comentario:x.comentario, nombre:x.nombre || ""}));
   }catch(e){ console.error(e); }
+  try{
+    const [d, t] = await Promise.all([sb.from("descansos").select("*").eq("activo", true), sb.from("trabajos").select("*").eq("activo", true).order("orden")]);
+    S.descansos = d.data || []; S.trabajos = t.data || [];
+  }catch(e){ S.descansos = S.descansos || []; S.trabajos = S.trabajos || []; }
 }
-async function cargarCitasRango(force){
-  if(!force && Date.now() - S.citasAt < 45000) return;
+async function cargarCitasRango(force, excluirVisita){
+  if(!excluirVisita && !force && Date.now() - S.citasAt < 45000) return S.citasMap;
   const hoy = new Date(), fin = new Date(); fin.setDate(hoy.getDate() + VENTANA_DIAS + 1);
-  const {data} = await sb.from("citas").select("id,fecha,hora_inicio,hora_fin,estado").gte("fecha", isoDate(hoy)).lte("fecha", isoDate(fin)).neq("estado","cancelada");
-  S.citasMap = {};
-  (data||[]).forEach(c=>{ (S.citasMap[c.fecha] = S.citasMap[c.fecha] || []).push({id:c.id, hora_inicio:hhmm(c.hora_inicio), hora_fin:hhmm(c.hora_fin), estado:c.estado}); });
-  S.citasAt = Date.now();
+  const {data} = await sb.rpc("horarios_ocupados", {p_desde: isoDate(hoy), p_hasta: isoDate(fin), p_excluir_visita: excluirVisita || null});
+  const mapa = {};
+  (data||[]).forEach(c=>{ (mapa[c.fecha] = mapa[c.fecha] || []).push({hora_inicio:hhmm(c.hora_inicio), hora_fin:hhmm(c.hora_fin), estado:c.estado}); });
+  if(!excluirVisita){ S.citasMap = mapa; S.citasAt = Date.now(); }
+  return mapa;
 }
 
 /* ---------------- disponibilidad ---------------- */
@@ -1587,7 +1662,7 @@ function diasVentana(n=VENTANA_DIAS){
   }
   return out;
 }
-function calcularSlots(fechaIso, dur, excluir=[]){
+function calcularSlots(fechaIso, dur, mapa){
   const dow = parseIso(fechaIso).getDay();
   const h = S.horarios.find(x=>x.dia_semana === dow);
   if(!h || !h.activo || !dur) return [];
@@ -1595,7 +1670,8 @@ function calcularSlots(fechaIso, dur, excluir=[]){
   const paso = Number(h.intervalo_minutos) || 30;
   const ini = toMin(h.hora_inicio), fin = toMin(h.hora_fin);
   const bloqueos = S.bloqueos.filter(b=> b.fecha === fechaIso && !b.todo_el_dia && b.hora_inicio && b.hora_fin);
-  const citas = S.citasMap[fechaIso] || [];
+  const citas = (mapa || S.citasMap)[fechaIso] || [];
+  const descansos = (S.descansos||[]).filter(d=> d.activo !== false && (d.dias||[]).includes(dow));
   const esHoy = fechaIso === isoDate(new Date());
   const ahora = toMin(ahoraHHMM()) + 15;
   const slots = [];
@@ -1603,7 +1679,8 @@ function calcularSlots(fechaIso, dur, excluir=[]){
     if(esHoy && m < ahora) continue;
     const f = m + dur;
     const choca = bloqueos.some(b=> m < toMin(b.hora_fin) && f > toMin(b.hora_inicio)) ||
-                  citas.some(c=> !excluir.includes(c.id) && c.estado !== "cancelada" && m < toMin(c.hora_fin) && f > toMin(c.hora_inicio));
+                  descansos.some(d=> m < toMin(d.hora_fin) && f > toMin(d.hora_inicio)) ||
+                  citas.some(c=> c.estado !== "cancelada" && m < toMin(c.hora_fin) && f > toMin(c.hora_inicio));
     slots.push({hora: pad(Math.floor(m/60)) + ":" + pad(m%60), ocupado: choca});
   }
   return slots;
@@ -1772,7 +1849,7 @@ function pintarMarco(){
   const c = S.config, sociales = socialLinks("fsoc");
   $("#ftr").innerHTML = `<div class="ftr-in">
     <div class="ftr-col ftr-brand"><img src="${LOGO}" alt=""><div><b>${esc(c.nombre||"Imperio Store Barber")}</b><span>${esc(c.direccion||"")}</span></div></div>
-    <div class="ftr-col"><h5>Explora</h5><button data-anchor="servicios">Servicios</button>${hayEstilos() ? `<button data-anchor="estilos">Estilos</button>` : ""}${hayTienda ? `<button data-anchor="tienda">Tienda</button>` : ""}<button data-anchor="ubicacion">Ubicación y horario</button><button data-go="mis-citas">Mis citas</button></div>
+    <div class="ftr-col"><h5>Explora</h5><button data-anchor="servicios">Servicios</button>${hayEstilos() ? `<button data-anchor="estilos">Estilos</button>` : ""}${hayTrabajos() ? `<button data-anchor="trabajos">Antes y después</button>` : ""}${hayTienda ? `<button data-anchor="tienda">Tienda</button>` : ""}<button data-anchor="ubicacion">Ubicación y horario</button><button data-go="mis-citas">Mis citas</button></div>
     <div class="ftr-col"><h5>Contacto</h5>${wa ? `<a href="${wa}" target="_blank" rel="noopener">WhatsApp</a>` : ""}${c.maps_link ? `<a href="${esc(c.maps_link)}" target="_blank" rel="noopener">Cómo llegar</a>` : ""}<div class="fsoc-row">${sociales}</div></div>
     <div class="ftr-col ftr-cta"><button class="pill pill-white pill-sm" data-reservar>Agendar cita ${IC.arrowR}</button></div>
     <div class="ftr-legal"><span>© ${new Date().getFullYear()} ${esc(c.nombre||"Imperio Store Barber")}</span></div>
@@ -1847,6 +1924,8 @@ function renderInicio(app){
   </section>
 
   ${seccionEstilos()}
+
+  ${seccionTrabajos()}
 
   ${seccionTienda()}
 
@@ -2002,7 +2081,7 @@ function mediaHtml(url, alt, ph){
 }
 function cardServicio(s, i=0){
   return `<article class="pc" style="--i:${i}">
-    <div class="pc-top">${mediaHtml(s.foto_url, s.nombre, IC.scissors)}${s.categoria ? `<span class="pc-badge">${esc(s.categoria)}</span>` : ""}</div>
+    <div class="pc-top">${mediaHtml(s.foto_url, s.nombre, IC.scissors)}${s.es_combo ? `<span class="pc-badge warn">Combo</span>` : (s.categoria ? `<span class="pc-badge">${esc(s.categoria)}</span>` : "")}</div>
     <div class="pc-body">
       <h3 class="pc-nm">${esc(s.nombre)}</h3>
       ${s.descripcion ? `<p class="pc-ds">${esc(s.descripcion)}</p>` : ""}
@@ -2086,6 +2165,20 @@ document.addEventListener("click", e=>{
   $$("#estCats .chip").forEach(x=> x.classList.toggle("on", x.dataset.ecat === S.estCat));
   const g = $("#estGrid"); if(g) g.innerHTML = cardsEstilos();
 });
+function hayTrabajos(){ return !!((S.trabajos||[]).length); }
+function seccionTrabajos(){
+  if(!hayTrabajos()) return "";
+  return `<section class="sec" id="trabajos">
+    <div class="sec-head reveal"><span class="kicker">Resultados</span><h2 class="h-xl">Antes y <em>después</em></h2></div>
+    <div class="ba-grid reveal" data-d="1">${S.trabajos.map(t=>`<figure class="ba" style="--p:50%">
+      <img class="ba-b" src="${esc(t.antes_url)}" alt="Antes${t.titulo ? " · " + esc(t.titulo) : ""}" loading="lazy">
+      <img class="ba-a" src="${esc(t.despues_url)}" alt="Después${t.titulo ? " · " + esc(t.titulo) : ""}" loading="lazy">
+      <span class="ba-tag l">Antes</span><span class="ba-tag r">Después</span><i class="ba-bar" aria-hidden="true"></i>
+      <input type="range" min="0" max="100" value="50" aria-label="Deslizar para comparar el antes y el después">
+      ${t.titulo ? `<figcaption>${esc(t.titulo)}</figcaption>` : ""}</figure>`).join("")}</div>
+  </section>`;
+}
+document.addEventListener("input", e=>{ const r = e.target.closest(".ba input[type=range]"); if(r) r.closest(".ba").style.setProperty("--p", r.value + "%"); });
 function seccionResenas(){
   if(!hayResenas()) return "";
   return `<section class="sec" id="resenas">
@@ -2163,37 +2256,37 @@ async function comprimirReferencia(file){
   if(!blob || blob.size > 1400000) throw new Error("foto-pesada");
   return blob;
 }
-async function subirReferencias(visitaId, clienteId, files){
+async function subirReferencias(visitaId, telefono, files){
   let ok = 0, fail = 0;
   for(const f of files){
     try{
       const blob = await comprimirReferencia(f), ruta = `${visitaId}/${uid()}.jpg`;
       const {error} = await sb.storage.from("referencias").upload(ruta, blob, {contentType:"image/jpeg", cacheControl:"3600", upsert:false});
       if(error) throw error;
-      const {error:e2} = await sb.from("cita_fotos").insert({visita_id:visitaId, cliente_id:clienteId, ruta});
-      if(e2) throw e2;
+      const {data:rr, error:e2} = await sb.rpc("registrar_foto", {p_visita: visitaId, p_telefono: telefono, p_ruta: ruta});
+      if(e2 || (rr && rr.error)) throw (e2 || new Error(rr.error));
       ok++;
     }catch(e){ console.warn("foto", e); fail++; }
   }
   return {ok, fail};
 }
 function hojaSubirFotos(g, cl){
-  openSheet(`<h3>Fotos de lo que quieres</h3><p class="sub">Para tu cita del ${fmtFechaLarga(g.fecha)}. Hasta 3 fotos. Solo las ve el barbero y se borran automáticamente cuando termina tu cita.</p>
+  openSheet(`<h3>Fotos de lo que quieres</h3><p class="sub">Para tu cita del ${fmtFechaLarga(g.fecha)}. Hasta 3 fotos.</p>
     <input type="file" id="mfIn" accept="image/*" multiple hidden>
     <button class="pill pill-white pill-block" id="mfPick">${IC.image} Elegir fotos</button>`, sh=>{
     $("#mfPick", sh).onclick = ()=> $("#mfIn", sh).click();
     $("#mfIn", sh).onchange = async e=>{
       const files = [...e.target.files].filter(f=> /^image\//.test(f.type)).slice(0,3); if(!files.length) return;
       const btn = $("#mfPick", sh); btn.disabled = true; btn.textContent = "Subiendo…";
-      const r = await subirReferencias(g.key, cl.id, files);
+      const r = await subirReferencias(g.key, cl.telefono, files);
       closeSheet();
       toast(r.ok ? (r.fail ? `Subimos ${r.ok} foto${r.ok===1?"":"s"}; ${r.fail} no se pudo` : "¡Listo! El barbero verá tus fotos") : "No se pudieron subir (máximo 3 por cita)");
     };
   });
 }
 function cumpleCampo(cumple){
-  if(cumple) return `<label>Tu cumpleaños</label><div class="cum-fixed">${IC.gift} ${esc(cumple)}</div><small>Ya está guardado. Si necesitas cambiarlo, solo el barbero puede hacerlo.</small>`;
-  return `<label>Tu cumpleaños (opcional)</label>${selectCumple("fCumD","fCumM")}<small>Solo día y mes. Se guarda una sola vez; si luego necesitas cambiarlo, solo el barbero puede hacerlo.</small>`;
+  if(cumple) return "";
+  return `<label>Tu cumpleaños (opcional)</label>${selectCumple("fCumD","fCumM")}`;
 }
 function nuevaReserva(){ const l = leerLocal(); return {items:[], estilo:null, sorprende:false, fecha:null, hora:null, nombre:l.nombre||"", telefono:l.telefono||"", productos:[]}; }
 function productosActivos(){ return (S.productos||[]).filter(p=> p.activo); }
@@ -2291,7 +2384,7 @@ function renderWizard(app){
       <div class="field" style="--i:1"><label for="fTel">WhatsApp</label><input id="fTel" type="tel" inputmode="tel" autocomplete="tel" value="${esc(b.telefono)}" placeholder="Ej. 5512 3456"><small>Aquí te llega la confirmación y el recordatorio.</small></div>
       ${S.config.referidos_activo && !l.telefono ? `<div class="field" style="--i:2"><label for="fRef">Código de referido (opcional)</label><input id="fRef" autocapitalize="characters" placeholder="Si alguien te invitó"></div>` : ""}
       <div class="field" style="--i:2" id="cumBox">${cumpleCampo(l.cumple)}</div>
-      <div class="field" style="--i:2"><label>Fotos de lo que quieres (opcional)</label><div class="ref-up" id="refUp"></div><input type="file" id="fFotos" accept="image/*" multiple hidden><small>Hasta 3 fotos. Solo las ve el barbero y se borran automáticamente cuando termina tu cita.</small></div>
+      <div class="field" style="--i:2"><label>Fotos de lo que quieres (opcional)</label><div class="ref-up" id="refUp"></div><input type="file" id="fFotos" accept="image/*" multiple hidden><small>Hasta 3 fotos.</small></div>
       <div class="sum-card" style="--i:3">
         ${b.items.map(it=> `<div class="sum-row"><span>${esc(it.servicio.nombre)}${it.etiqueta?` <i style="color:var(--text-3);font-style:normal">· ${esc(it.etiqueta)}</i>`:""}</span><b>${precioTxt(it.servicio)}</b></div>`).join("")}
         <div class="sum-row"><span>Estilo</span><b>${b.estilo ? esc(b.estilo.nombre) : "El barbero decide"}${pasoEstilo?`<button data-wgo="${pasoEstilo}">Cambiar</button>`:""}</b></div>
@@ -2369,8 +2462,8 @@ function renderWizard(app){
     $("#fTel").onblur = async ()=>{
       const tel = soloDigitos($("#fTel").value); if(tel.length < 8 || !$("#fCumD")) return;
       try{
-        const {data} = await sb.from("clientes").select("cumple_dia,cumple_mes").eq("telefono", tel).maybeSingle();
-        if(data && data.cumple_mes){ const t = cumpleTxt(data.cumple_dia, data.cumple_mes); guardarLocal({cumple:t}); $("#cumBox").innerHTML = cumpleCampo(t); }
+        const {data} = await sb.rpc("tiene_cumple", {p_telefono: tel});
+        if(data === true){ guardarLocal({cumple:true}); $("#cumBox").innerHTML = ""; }
       }catch(e){}
     };
   }
@@ -2386,91 +2479,78 @@ function cartHtml(items){
     </div>`).join("") + `<div class="cart-total"><span>${items.length} servicio${items.length===1?"":"s"} · ${durTxt(sumaDuracion(items))}</span><b>${totalTxt(items, sumaPrecio(items))}</b></div>`;
 }
 
-async function obtenerCliente(nombre, telefono, codigoRef, cu){
+function mensajeReserva(code){
+  return ({ocupado:"Ese horario acaba de ocuparse. Elige otro.", fuera_de_horario:"Ese horario ya no está disponible.", cerrado:"Ese día no atendemos.",
+    bloqueado:"Ese horario no está disponible.", descanso:"Ese horario es de descanso. Elige otro.", hora_pasada:"Esa hora ya pasó. Elige otra.",
+    fecha_invalida:"Esa fecha ya no está disponible.", servicio_invalido:"Uno de los servicios ya no está disponible.",
+    producto_invalido:"Uno de los productos ya no está disponible.", sin_stock:"Un producto se agotó. Quítalo e intenta de nuevo.",
+    limite_citas:"Ya tienes varias citas pendientes. Escríbele al barbero.", datos_invalidos:"Revisa tus datos e intenta de nuevo.",
+    demasiados_intentos:"Demasiados intentos. Espera unos minutos.", muy_tarde:"Faltan pocas horas: escríbele al barbero.",
+    no_encontrada:"No encontramos esa cita.", no_permitido:"No se pudo completar."})[code] || "No pudimos completar la acción. Intenta de nuevo.";
+}
+const HORARIO_CAMBIO = ["ocupado","descanso","bloqueado","fuera_de_horario","hora_pasada","cerrado","fecha_invalida"];
+
+/* clientes creados a mano desde el panel (el barbero ya tiene sesión iniciada) */
+async function obtenerClienteAdmin(nombre, telefono){
   const tel = soloDigitos(telefono);
   const {data:existe} = await sb.from("clientes").select("*").eq("telefono", tel).maybeSingle();
-  if(existe){
-    if(nombre && nombre !== existe.nombre) await sb.from("clientes").update({nombre}).eq("id", existe.id);
-    if(!existe.cumple_mes && cu && cu.m){
-      const {error:eC} = await sb.from("clientes").update({cumple_dia:cu.d, cumple_mes:cu.m}).eq("id", existe.id);
-      if(!eC){ existe.cumple_dia = cu.d; existe.cumple_mes = cu.m; guardarLocal({cumple: cumpleTxt(cu.d, cu.m)}); }
-    }
-    return {...existe, nombre: nombre || existe.nombre};
-  }
-  let referido_por = null;
-  if(codigoRef){ const {data:r} = await sb.from("clientes").select("id").eq("codigo_referido", codigoRef.toUpperCase()).maybeSingle(); if(r) referido_por = r.id; }
-  const fila = {nombre, telefono: tel, codigo_referido: genCodigo(nombre), referido_por};
-  if(cu && cu.m){ fila.cumple_dia = cu.d; fila.cumple_mes = cu.m; }
-  let r = await sb.from("clientes").insert(fila).select().single();
-  if(r.error && fila.cumple_mes && /cumple/.test(r.error.message||"")){ delete fila.cumple_dia; delete fila.cumple_mes; r = await sb.from("clientes").insert(fila).select().single(); }
-  if(r.error) throw r.error;
-  if(r.data && r.data.cumple_mes) guardarLocal({cumple: cumpleTxt(r.data.cumple_dia, r.data.cumple_mes)});
-  return r.data;
+  if(existe) return existe;
+  const {data:nuevo, error} = await sb.from("clientes").insert({nombre, telefono: tel, codigo_referido: genCodigo(nombre)}).select().single();
+  if(error) throw error;
+  return nuevo;
 }
 
 async function confirmarCita(){
-  const b = S.booking, btn = $("#wNext");
+  const b = S.booking;
   b.nombre = $("#fNombre").value.trim(); b.telefono = $("#fTel").value.trim();
-  const ref = $("#fRef") ? $("#fRef").value.trim() : "";
+  b.ref = $("#fRef") ? $("#fRef").value.trim() : "";
   if(b.nombre.length < 2){ toast("Escribe tu nombre"); return $("#fNombre").focus(); }
   if(soloDigitos(b.telefono).length < 8){ toast("Revisa tu número de WhatsApp"); return $("#fTel").focus(); }
   const cu = $("#fCumD") ? leerCumple("fCumD","fCumM") : {ok:true, d:null, m:null};
   if(!cu.ok){ toast(cu.msg); return $("#fCumD").focus(); }
-  btn.disabled = true; btn.innerHTML = "Confirmando…";
+  b.cumple = cu;
+  return hacerReserva(false);
+}
+async function hacerReserva(forzar){
+  const b = S.booking, btn = $("#wNext");
+  if(btn){ btn.disabled = true; btn.innerHTML = "Confirmando…"; }
+  const reiniciar = ()=>{ if(btn){ btn.disabled = false; btn.innerHTML = `Confirmar cita ${IC.arrowR}`; } };
   try{
-    const cliente = await obtenerCliente(b.nombre, b.telefono, ref, cu);
-    const {data:choques} = await sb.from("citas").select("hora_inicio, servicios(nombre)").eq("cliente_id", cliente.id).eq("fecha", b.fecha).eq("estado","confirmada");
-    if(choques && choques.length){
-      const primero = choques[0];
-      openSheet(`<h3>Ya tienes una cita ese día</h3><p class="sub">El ${fmtFechaLarga(b.fecha)} a las ${hhmm(primero.hora_inicio)} ya tienes agendado ${esc((primero.servicios||{}).nombre || "un servicio")}${choques.length>1?` (y ${choques.length-1} más)`:""}. ¿Quieres agendar esta también?</p>
+    const productos = b.productos.filter(x=> x.cantidad > 0);
+    const {data:r, error} = await sb.rpc("reservar", {
+      p_nombre:b.nombre, p_telefono:b.telefono, p_codigo_ref:b.ref || "", p_estilo_id: b.estilo ? b.estilo.id : null,
+      p_fecha:b.fecha, p_hora:b.hora, p_items: b.items.map(it=> ({servicio_id: it.servicio.id, etiqueta: it.etiqueta || ""})),
+      p_productos: productos.map(x=> ({producto_id: x.producto.id, cantidad: x.cantidad})),
+      p_cumple_dia: b.cumple ? b.cumple.d : null, p_cumple_mes: b.cumple ? b.cumple.m : null, p_forzar: !!forzar});
+    if(error){ console.error(error); toast(mensajeReserva((error.message||"").trim())); return reiniciar(); }
+    if(r.conflicto){
+      const c = r.conflicto;
+      openSheet(`<h3>Ya tienes una cita ese día</h3><p class="sub">El ${fmtFechaLarga(b.fecha)} a las ${hhmm(c.hora_inicio)} ya tienes agendado ${esc(c.servicio || "un servicio")}${c.cantidad>1?` (y ${c.cantidad-1} más)`:""}.</p>
         <div class="sh-actions"><button class="pill pill-ghost" id="dbNo">Cancelar</button><button class="pill pill-white" id="dbSi">Sí, agendar otra</button></div>`, sh=>{
-        $("#dbNo",sh).onclick = ()=>{ closeSheet(); btn.disabled = false; btn.innerHTML = `Confirmar cita ${IC.arrowR}`; };
-        $("#dbSi",sh).onclick = ()=>{ closeSheet(); procederConfirmar(cliente, ref); };
+        $("#dbNo",sh).onclick = ()=>{ closeSheet(); reiniciar(); };
+        $("#dbSi",sh).onclick = ()=>{ closeSheet(); hacerReserva(true); };
       });
       return;
     }
-    await procederConfirmar(cliente, ref);
-  }catch(e){
-    console.error(e); toast("No pudimos confirmar. Revisa tu conexión e intenta de nuevo.");
-    btn.disabled = false; btn.innerHTML = `Confirmar cita ${IC.arrowR}`;
-  }
-}
-async function procederConfirmar(cliente, ref){
-  const b = S.booking, btn = $("#wNext"); if(btn){ btn.disabled = true; btn.innerHTML = "Confirmando…"; }
-  const dur = sumaDuracion(b.items);
-  const volverAHorario = ()=>{ b.hora = null; S.wizardStep = pasosReserva().indexOf("horario")+1; S.lastStep = 0; renderWizard($("#app")); };
-  try{
-    await cargarCitasRango(true);
-    if(!calcularSlots(b.fecha, dur).some(s=> s.hora === b.hora && !s.ocupado)){
-      toast("Ese horario acaba de ocuparse. Elige otro."); return volverAHorario();
-    }
-    if(b.estilo) await sb.from("clientes").update({estilo_preferido_id: b.estilo.id}).eq("id", cliente.id);
-    const {data:visita, error:errV} = await sb.from("visitas").insert({cliente_id: cliente.id, fecha: b.fecha}).select().single();
-    if(errV) throw errV;
-    let cursor = b.hora;
-    const filas = b.items.map(it=>{
-      const fin = addMin(cursor, it.servicio.duracion_minutos);
-      const fila = {cliente_id: cliente.id, servicio_id: it.servicio.id, estilo_id: b.estilo ? b.estilo.id : null, etiqueta: it.etiqueta || "", visita_id: visita.id, fecha: b.fecha, hora_inicio: cursor, hora_fin: fin, estado:"confirmada"};
-      cursor = fin; return fila;
-    });
-    const {data:citas, error} = await sb.from("citas").insert(filas).select();
-    if(error){ toast("Ese horario ya no está disponible. Elige otro."); S.citasAt = 0; return volverAHorario(); }
-    const productos = b.productos.filter(x=> x.cantidad > 0);
-    if(productos.length){
-      await sb.from("ventas_producto").insert(productos.map(it=> ({producto_id: it.producto.id, visita_id: visita.id, cliente_id: cliente.id, cantidad: it.cantidad, precio_unit: it.producto.precio, fecha: b.fecha})));
-      for(const it of productos){ if(it.producto.stock != null) await sb.from("productos").update({stock: Math.max(0, it.producto.stock - it.cantidad)}).eq("id", it.producto.id); }
+    if(r.error){
+      toast(mensajeReserva(r.error));
+      if(HORARIO_CAMBIO.includes(r.error)){ S.citasAt = 0; b.hora = null; S.wizardStep = pasosReserva().indexOf("horario")+1; S.lastStep = 0; renderWizard($("#app")); }
+      else reiniciar();
+      return;
     }
     if(b.fotos && b.fotos.length){
-      const rf = await subirReferencias(visita.id, cliente.id, b.fotos);
+      const rf = await subirReferencias(r.visita_id, b.telefono, b.fotos);
       if(rf.fail) toast(rf.ok ? `Subimos ${rf.ok} foto${rf.ok===1?"":"s"}; ${rf.fail} no se pudo` : "No se pudieron subir las fotos, pero tu cita sí quedó confirmada");
     }
-    guardarLocal({nombre: b.nombre, telefono: soloDigitos(b.telefono)});
-    S.lastCita = {visita, cliente, estilo: b.estilo, items: b.items, productos, fecha: b.fecha, hora_inicio: b.hora, hora_fin: cursor, citaId: citas[0].id};
+    guardarLocal({nombre: r.cliente.nombre, telefono: soloDigitos(b.telefono)});
+    if(b.cumple && b.cumple.m) guardarLocal({cumple:true});
+    S.lastCita = {visita:{id:r.visita_id}, cliente:r.cliente, estilo: b.estilo, items: b.items, productos, fecha: b.fecha, hora_inicio: b.hora, hora_fin: r.hora_fin, citaId: r.cita_id};
     S.booking = null; S.citasAt = 0; S.quick.hora = null;
+    cargarDatosBase().catch(()=>{});
     go("confirmacion", {replace:true});
   }catch(e){
     console.error(e); toast("No pudimos confirmar. Revisa tu conexión e intenta de nuevo.");
-    if(btn){ btn.disabled = false; btn.innerHTML = `Confirmar cita ${IC.arrowR}`; }
+    reiniciar();
   }
 }
 
@@ -2541,13 +2621,10 @@ function abrirEspera(fecha){
       const nom = $("#wlNom",sh).value.trim(), tel = $("#wlTel",sh).value.trim();
       if(nom.length < 2 || soloDigitos(tel).length < 8) return toast("Completa tu nombre y WhatsApp");
       $("#wlOk",sh).disabled = true;
-      try{
-        const cl = await obtenerCliente(nom, tel);
-        const {data:ya} = await sb.from("waitlist").select("id").eq("cliente_id", cl.id).eq("fecha_deseada", fecha).eq("estado","esperando").maybeSingle();
-        if(!ya) await sb.from("waitlist").insert({cliente_id: cl.id, fecha_deseada: fecha, estado:"esperando"});
-        guardarLocal({nombre: nom, telefono: soloDigitos(tel)});
-        closeSheet(); toast(ya ? "Ya estabas en la lista para ese día" : "Listo, te avisaremos por WhatsApp");
-      }catch(e){ console.error(e); toast("No se pudo guardar, intenta de nuevo"); $("#wlOk",sh).disabled = false; }
+      const {data:r, error} = await sb.rpc("anotar_espera", {p_nombre: nom, p_telefono: tel, p_fecha: fecha});
+      if(error || !r || r.error){ toast(mensajeReserva((error && error.message) || (r && r.error))); $("#wlOk",sh).disabled = false; return; }
+      guardarLocal({nombre: nom, telefono: soloDigitos(tel)});
+      closeSheet(); toast(r.ya ? "Ya estabas en la lista para ese día" : "Listo, te avisaremos por WhatsApp");
     };
   });
 }
@@ -2608,12 +2685,10 @@ function renderMisCitas(app){
       </div>`; }).join("")
       : `<div class="note">No tienes citas próximas.</div><button class="pill pill-white pill-block" data-reservar style="margin-top:8px">Agendar una cita ${IC.arrowR}</button>`}
     ${espera.length ? `<p class="sub-lbl">Lista de espera</p>${espera.map(w=>`<div class="note">Anotado para el ${fmtFechaLarga(w.fecha_deseada)}. Te avisamos por WhatsApp si se libera un espacio.</div>`).join("")}` : ""}
-    <p class="sub-lbl">Tu cumpleaños</p>
-    ${cl.cumple_mes ? `<div class="note cum-note">${IC.gift}<div><b>${cumpleTxt(cl.cumple_dia, cl.cumple_mes)}</b><span>Solo el barbero puede cambiarlo.</span></div></div>`
-      : `<div class="note"><p style="margin:0 0 12px">Cuéntanos cuándo es y el barbero te felicitará. Solo se puede ingresar una vez.</p>${selectCumple("mcCumD","mcCumM")}<button class="pill pill-white pill-sm" id="mcCumOk" style="margin-top:12px">Guardar cumpleaños</button></div>`}
+    ${cl.tiene_cumple ? "" : `<p class="sub-lbl">Tu cumpleaños (opcional)</p><div class="note">${selectCumple("mcCumD","mcCumM")}<button class="pill pill-white pill-sm" id="mcCumOk" style="margin-top:12px">Guardar</button></div>`}
     ${cfg.fidelidad_activa ? `<p class="sub-lbl">Fidelidad</p><div class="points"><b>${pts}<span style="display:inline;font-size:18px;color:#d9c3a3"> / ${meta}</span></b><span>${pts >= meta ? "¡Tienes un premio disponible! Pídelo en tu próxima visita." : `Te faltan ${meta-pts} visitas para: ${esc(cfg.premio_texto || "tu premio")}`}</span><div class="pbar"><i style="--w:${Math.min(100, Math.round(pts/meta*100))}%"></i></div></div>` : ""}
     ${pref ? `<p class="sub-lbl">Tu estilo preferido</p><div class="note" style="color:var(--cream)">${esc(pref.nombre)}</div>` : ""}
-    ${cfg.referidos_activo && cl.codigo_referido ? `<p class="sub-lbl">Invita amigos</p><div class="ref-card"><div><span>Tu código de referido</span><b>${esc(cl.codigo_referido)}</b></div><button class="pill pill-ghost pill-sm" id="mcCopy">${IC.copy} Copiar</button></div>` : ""}
+    ${cfg.referidos_activo && cl.codigo_referido ? `<p class="sub-lbl">Invita amigos</p><div class="ref-card"><div><span>Tu código de referido</span><b>${esc(cl.codigo_referido)}</b></div><button class="pill pill-ghost pill-sm" id="mcCopy">${IC.copy} Copiar</button></div>${cfg.referido_recompensa_activa && cfg.referido_texto ? `<p class="ref-premio">${esc(cfg.referido_texto)}</p>` : ""}` : ""}
     ${hechas.length > 1 ? `<p class="sub-lbl">Historial</p><div class="hist">${hechas.slice(0,8).map(g=>`<span>${fmtFecha(g.fecha)} · ${esc(nombresGrupo(g))}</span>`).join("")}</div>` : ""}
     <p style="margin-top:34px;text-align:center"><button class="link-btn" id="mcOtro">Buscar con otro número</button> &nbsp;·&nbsp; <button class="link-btn" id="mcOlvidar">Olvidar este dispositivo</button></p>
   </div>`;
@@ -2631,9 +2706,9 @@ function renderMisCitas(app){
     const cu = leerCumple("mcCumD","mcCumM"); if(!cu.ok) return toast(cu.msg);
     if(!cu.d) return toast("Elige el día y el mes");
     cumOk.disabled = true;
-    const {error} = await sb.from("clientes").update({cumple_dia:cu.d, cumple_mes:cu.m}).eq("id", cl.id);
-    if(error){ cumOk.disabled = false; return toast("No se pudo guardar el cumpleaños"); }
-    guardarLocal({cumple: cumpleTxt(cu.d, cu.m)}); toast("¡Listo! Tu cumpleaños quedó guardado");
+    const {data:okC, error} = await sb.rpc("guardar_cumple", {p_telefono: cl.telefono, p_dia: cu.d, p_mes: cu.m});
+    if(error || okC === false){ cumOk.disabled = false; return toast("No se pudo guardar"); }
+    guardarLocal({cumple:true}); toast("¡Gracias!");
     S.citasAt = 0; await buscarCliente(cl.telefono, true);
   };
   const cp = $("#mcCopy"); if(cp) cp.onclick = ()=> navigator.clipboard && navigator.clipboard.writeText(cl.codigo_referido).then(()=> toast("Código copiado"));
@@ -2642,8 +2717,8 @@ function renderMisCitas(app){
   $$("[data-confirm]", app).forEach(b=> b.onclick = async ()=>{
     const g = prox.find(x=> x.key === b.dataset.confirm); if(!g) return;
     b.disabled = true;
-    const {error} = await sb.from("citas").update({asistencia_confirmada:true, confirmada_en:new Date().toISOString()}).in("id", g.ids);
-    if(error){ b.disabled = false; return toast("No se pudo confirmar. Avísale al barbero por WhatsApp."); }
+    const {data:rc, error} = await sb.rpc("cita_accion", {p_telefono: cl.telefono, p_visita: g.key, p_accion: "confirmar"});
+    if(error || !rc || rc.error){ b.disabled = false; return toast("No se pudo confirmar. Avísale al barbero por WhatsApp."); }
     S.citasAt = 0; await buscarCliente(cl.telefono, true);
     toast("¡Gracias! Tu asistencia quedó confirmada");
   });
@@ -2653,7 +2728,8 @@ function renderMisCitas(app){
     const g = prox.find(x=> x.key === b.dataset.cancel);
     if(!puedeCambiar(g)) return toast("Faltan pocas horas: escríbele al barbero");
     confirmar("¿Cancelar esta cita?", `${nombresGrupo(g)} · ${fmtFechaLarga(g.fecha)} a las ${hhmm(g.hora_inicio)}. El espacio se liberará para otro cliente.`, "Sí, cancelar", async ()=>{
-      await sb.from("citas").update({estado:"cancelada"}).in("id", g.ids);
+      const {data:rx, error:ex} = await sb.rpc("cita_accion", {p_telefono: cl.telefono, p_visita: g.key, p_accion: "cancelar"});
+      if(ex || !rx || rx.error) return toast(mensajeReserva(rx && rx.error));
       S.citasAt = 0; await buscarCliente(cl.telefono, true);
       const wa = waLink(S.config.whatsapp, `Hola, soy ${cl.nombre}. Cancelé mi cita del ${fmtFechaLarga(g.fecha)} a las ${hhmm(g.hora_inicio)}.`);
       setTimeout(()=> openSheet(`<h3>Cita cancelada</h3><p class="sub">Si quieres, avísale al barbero para que pueda ofrecer tu espacio.</p>
@@ -2666,11 +2742,11 @@ function horasCambio(){ const h = Number(S.config.horas_cambio); return Number.i
 function puedeCambiar(g){ return (new Date(g.fecha + "T" + hhmm(g.hora_inicio) + ":00").getTime() - Date.now()) >= horasCambio() * 3600000; }
 
 async function hojaReprogramar(g, cl){
-  await cargarCitasRango(true);
+  let mapa = await cargarCitasRango(true, g.key);
   const dur = toMin(g.hora_fin) - toMin(g.hora_inicio);
   const dias = diasVentana().filter(d=> d.disponible);
   const st = {fecha: dias.some(d=> d.iso === g.fecha) ? g.fecha : (dias[0]||{}).iso, hora: null};
-  const slotsDe = f=> f ? calcularSlots(f, dur, g.ids).filter(x=> !x.ocupado && !(f === g.fecha && x.hora === hhmm(g.hora_inicio))) : [];
+  const slotsDe = f=> f ? calcularSlots(f, dur, mapa).filter(x=> !x.ocupado && !(f === g.fecha && x.hora === hhmm(g.hora_inicio))) : [];
   const pintar = sh=>{
     const slots = slotsDe(st.fecha);
     if(st.hora && !slots.some(x=> x.hora === st.hora)) st.hora = null;
@@ -2696,19 +2772,11 @@ async function hojaReprogramar(g, cl){
     $("#rpOk", sh).onclick = async ()=>{
       if(!st.hora) return;
       const btn = $("#rpOk", sh); btn.disabled = true; btn.textContent = "Moviendo…";
-      // revisa de nuevo que el horario siga libre (alguien pudo reservarlo en este rato)
-      await cargarCitasRango(true);
-      if(!calcularSlots(st.fecha, dur, g.ids).some(x=> x.hora === st.hora && !x.ocupado)){ toast("Ese horario se acaba de ocupar. Elige otro."); st.hora = null; return pintar(sh); }
-      const delta = toMin(st.hora) - toMin(g.hora_inicio);
-      const filas = S.citasCliente.filter(c=> g.ids.includes(c.id));
-      let fallo = false;
-      for(const c of filas){
-        const {error} = await sb.from("citas").update({fecha: st.fecha, hora_inicio: addMin(hhmm(c.hora_inicio), delta), hora_fin: addMin(hhmm(c.hora_fin), delta)}).eq("id", c.id);
-        if(error) fallo = true;
+      const {data:rr, error} = await sb.rpc("cita_accion", {p_telefono: cl.telefono, p_visita: g.key, p_accion: "reprogramar", p_fecha: st.fecha, p_hora: st.hora});
+      if(error || !rr || rr.error){
+        toast(mensajeReserva(rr && rr.error));
+        mapa = await cargarCitasRango(true, g.key); st.hora = null; return pintar(sh);
       }
-      if(fallo){ toast("No se pudo mover la cita. Avísale al barbero por WhatsApp."); return closeSheet(); }
-      // quien reprograma por su cuenta confirma de paso (si la columna aún no existe, no pasa nada)
-      await sb.from("citas").update({asistencia_confirmada:true, confirmada_en:new Date().toISOString()}).in("id", g.ids);
       S.citasAt = 0; await buscarCliente(cl.telefono, true);
       const nuevaG = {...g, fecha: st.fecha, hora_inicio: st.hora, hora_fin: addMin(st.hora, dur)};
       const wa = waLink(S.config.whatsapp, `Hola, soy ${cl.nombre}. Reprogramé mi cita: ahora es el ${fmtFechaLarga(st.fecha)} a las ${st.hora}.`);
@@ -2722,16 +2790,11 @@ async function hojaReprogramar(g, cl){
 async function buscarCliente(telefono, silencioso){
   const tel = soloDigitos(telefono);
   if(tel.length < 8){ if(!silencioso) toast("Escribe tu número completo"); return; }
-  const {data:cl} = await sb.from("clientes").select("*").eq("telefono", tel).maybeSingle();
-  if(!cl){ if(!silencioso) toast("No encontramos citas con ese número"); return; }
-  const [{data:citas}, {data:wl}] = await Promise.all([
-    sb.from("citas").select("*, servicios(nombre,precio), estilos_corte(nombre)").eq("cliente_id", cl.id).order("fecha",{ascending:false}),
-    sb.from("waitlist").select("*").eq("cliente_id", cl.id),
-  ]);
-  S.cliente = cl;
-  S.citasCliente = citas || [];
-  S.waitCliente = wl || [];
-  guardarLocal({nombre: cl.nombre, telefono: tel});
+  const {data, error} = await sb.rpc("mis_datos", {p_telefono: tel});
+  if(error){ if(!silencioso) toast(/demasiados/.test(error.message||"") ? mensajeReserva("demasiados_intentos") : "No se pudo consultar. Intenta de nuevo."); return; }
+  if(!data){ if(!silencioso) toast("No encontramos citas con ese número"); return; }
+  S.cliente = data.cliente; S.citasCliente = data.citas || []; S.waitCliente = data.espera || [];
+  guardarLocal({nombre: data.cliente.nombre, telefono: tel});
   if(S.route === "mis-citas") renderMisCitas($("#app"));
 }
 
@@ -2752,9 +2815,7 @@ function renderResena(app){
   $("#rOk").onclick = async ()=>{
     if(!cal) return toast("Elige de 1 a 5 estrellas");
     $("#rOk").disabled = true;
-    const row = {calificacion: cal, comentario: $("#rCom").value.trim().slice(0,600), nombre: $("#rNom").value.trim().slice(0,40)};
-    let {error} = await sb.from("resenas").insert(row);
-    if(error){ delete row.nombre; ({error} = await sb.from("resenas").insert(row)); }
+    const {error} = await sb.rpc("enviar_resena", {p_calificacion: cal, p_comentario: $("#rCom").value.trim().slice(0,600), p_nombre: $("#rNom").value.trim().slice(0,40)});
     if(error){ $("#rOk").disabled = false; return toast("No se pudo enviar, intenta de nuevo"); }
     app.innerHTML = `<div class="appv center"><div class="ok-anim"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M24 41l11 11 21-23"/></svg></div>
       <h1 class="app-title">¡Gracias!</h1><p class="app-sub">Tu reseña fue enviada.</p><button class="pill pill-white" data-reservar>Agendar mi próximo corte ${IC.arrowR}</button></div>`;
@@ -2766,7 +2827,7 @@ function renderResena(app){
 /* ============================================================
    PANEL DEL NEGOCIO (referencia: POS de iPad)
    ============================================================ */
-const TABS = [["hoy","Hoy"],["agenda","Agenda"],["clientes","Clientes"],["servicios","Servicios"],["productos","Productos"],["estilos","Estilos"],["horario","Horario"],["pagina","Página"],["espera","Espera"],["resenas","Reseñas"],["finanzas","Finanzas"],["ajustes","Ajustes"]];
+const TABS = [["hoy","Hoy"],["agenda","Agenda"],["clientes","Clientes"],["servicios","Servicios"],["productos","Productos"],["estilos","Estilos"],["horario","Horario"],["pagina","Página"],["espera","Espera"],["resenas","Reseñas"],["finanzas","Finanzas"],["trabajos","Trabajos"],["promos","Promos"],["ajustes","Ajustes"]];
 /* cumpleaños: solo día y mes */
 function cumpleTxt(d, m){ return d && m ? `${d} de ${MESES[m-1]}` : ""; }
 function selectCumple(idD, idM, d, m){
@@ -2798,7 +2859,7 @@ function tsum(l, v, sub, l2, v2, chips, cls=""){
 function sbar(items){ return `<div class="sbar">${items.map(([l,v,c],i)=>`<div class="sb ${c||""}" style="--i:${i}"><span>${l}</span><b>${v}</b></div>`).join("")}</div>`; }
 function grpHd(titulo, extra=""){ return `<header class="grp-hd"><h3>${titulo}</h3>${extra}</header>`; }
 const NAV_MOVIL = [["hoy","Hoy","home"],["agenda","Agenda","cal"],["clientes","Clientes","users"],["espera","Espera","clock"]];
-const NAV_MAS = [["servicios","Servicios","scissors"],["productos","Productos","box"],["estilos","Estilos","image"],["horario","Horario","clock"],["pagina","Página","eye"],["finanzas","Finanzas","chart"],["resenas","Reseñas","star"],["ajustes","Ajustes","gear"]];
+const NAV_MAS = [["servicios","Servicios","scissors"],["productos","Productos","box"],["estilos","Estilos","image"],["trabajos","Antes y después","image"],["promos","Promos","gift"],["horario","Horario","clock"],["pagina","Página","eye"],["finanzas","Finanzas","chart"],["resenas","Reseñas","star"],["ajustes","Ajustes","gear"]];
 const ESTADOS = {confirmada:["Confirmada","c"], completada:["Completada","ok"], cancelada:["Cancelada","bad"], no_asistio:["No asistió","bad"]};
 
 async function renderAdmin(app){
@@ -2867,7 +2928,7 @@ async function refrescarAdmin(){ await Promise.all([pintarTab(), pintarLateral()
 async function pintarTab(){
   const box = $("#admBody"); if(!box) return;
   box.style.animation = "none"; void box.offsetWidth; box.style.animation = "";
-  const f = {hoy:tabHoy, agenda:tabAgenda, clientes:tabClientes, servicios:tabServicios, productos:tabProductos, estilos:tabEstilos, horario:tabHorario, pagina:tabPagina, espera:tabEspera, resenas:tabResenas, finanzas:tabFinanzas, ajustes:tabAjustes}[S.adminTab];
+  const f = {hoy:tabHoy, agenda:tabAgenda, clientes:tabClientes, servicios:tabServicios, productos:tabProductos, estilos:tabEstilos, horario:tabHorario, pagina:tabPagina, espera:tabEspera, resenas:tabResenas, finanzas:tabFinanzas, trabajos:tabTrabajos, promos:tabPromos, ajustes:tabAjustes}[S.adminTab];
   try{ await f(box); }catch(e){ console.error(e); box.innerHTML = `<div class="adm-empty">No se pudo cargar esta sección. Revisa tu conexión o que ejecutaste el SQL.</div>`; }
 }
 
@@ -2897,9 +2958,364 @@ function renderLogin(app){
 /* ---------------- citas: datos y acciones ---------------- */
 async function citasDelDia(fecha){
   const base = "*, servicios(nombre,precio,duracion_minutos), estilos_corte(nombre)";
-  let r = await sb.from("citas").select(`${base}, clientes(id,nombre,telefono,notas,puntos_actuales,preferencias,temas_conversacion,forma_trabajo)`).eq("fecha", fecha).order("hora_inicio");
+  let r = await sb.from("citas").select(`${base}, clientes(id,nombre,telefono,notas,puntos_actuales,preferencias,temas_conversacion,forma_trabajo,cumple_dia,cumple_mes,cumple_promo_anio,referido_por,referido_recompensado)`).eq("fecha", fecha).order("hora_inicio");
   if(r.error) r = await sb.from("citas").select(`${base}, clientes(id,nombre,telefono,notas,puntos_actuales)`).eq("fecha", fecha).order("hora_inicio");
   return r.data || [];
+}
+/* faltas (no vino) de cada cliente con cita en el día */
+async function adjuntarFaltas(grupos){
+  const ids = [...new Set(grupos.map(g=> (g.cliente||{}).id).filter(Boolean))]; if(!ids.length) return;
+  try{
+    const {data} = await sb.from("citas").select("cliente_id").eq("estado","no_asistio").in("cliente_id", ids);
+    const m = {}; (data||[]).forEach(c=> m[c.cliente_id] = (m[c.cliente_id]||0) + 1);
+    grupos.forEach(g=> g.faltas = m[(g.cliente||{}).id] || 0);
+  }catch(e){}
+}
+async function adjuntarExtras(grupos){ await Promise.all([adjuntarFotos(grupos), adjuntarFaltas(grupos)]); }
+
+/* ---------- promoción de cumpleaños y recompensas por referido ---------- */
+function promoCumple(c){
+  const cfg = S.config;
+  if(!c || !c.cumple_mes || !cfg.cumple_promo_activa || !String(cfg.cumple_promo_texto||"").trim()) return {vigente:false, canjeada:false};
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  let f = new Date(hoy.getFullYear(), c.cumple_mes-1, c.cumple_dia); if(f > hoy) f = new Date(hoy.getFullYear()-1, c.cumple_mes-1, c.cumple_dia);
+  const dias = Math.round((hoy - f) / 86400000), anio = f.getFullYear(), dentro = dias <= (Number(cfg.cumple_promo_dias) || 7), canjeada = Number(c.cumple_promo_anio) === anio;
+  return {vigente: dentro && !canjeada, canjeada: dentro && canjeada, anio, dias};
+}
+function promoCumpleBadge(cl){ return promoCumple(cl).vigente ? `<span class="badge c">${IC.gift} Promo de cumpleaños</span>` : ""; }
+function msgCumple(c){ return plantilla(S.config.msg_cumple || DEF_CUMPLE, {nombre: primerNombre(c.nombre), negocio: S.config.nombre||"", promo: S.config.cumple_promo_activa ? (S.config.cumple_promo_texto||"") : ""}).replace(/\s+$/,""); }
+async function recompensaReferido(g){
+  const cfg = S.config, cl = g.cliente || {};
+  if(!cfg.referido_recompensa_activa || !cl.referido_por || cl.referido_recompensado) return;
+  const {data:ref} = await sb.from("clientes").select("id,nombre,puntos_actuales,premios_referido").eq("id", cl.referido_por).maybeSingle();
+  if(!ref) return;
+  const conPuntos = cfg.fidelidad_activa && Number(cfg.referido_puntos) > 0, upd = {};
+  if(conPuntos) upd.puntos_actuales = (Number(ref.puntos_actuales)||0) + Number(cfg.referido_puntos);
+  else upd.premios_referido = (Number(ref.premios_referido)||0) + 1;
+  await sb.from("clientes").update(upd).eq("id", ref.id);
+  await sb.from("clientes").update({referido_recompensado:true}).eq("id", cl.id);
+  toast(conPuntos ? `${primerNombre(ref.nombre)} ganó ${cfg.referido_puntos} puntos por traer a ${primerNombre(cl.nombre)}` : `${primerNombre(ref.nombre)} tiene un premio por referido`);
+}
+
+/* ---------- descansos recurrentes ---------- */
+function diasTxt(arr){
+  const a = [...(arr||[])]; if(a.length === 7) return "Todos los días"; if(!a.length) return "Ningún día";
+  return [1,2,3,4,5,6,0].filter(n=> a.includes(n)).map(n=> DIAS_C[n]).join(", ");
+}
+function hojaDescanso(d){
+  const nuevo = !d; d = d || {etiqueta:"Almuerzo", hora_inicio:"13:00", hora_fin:"14:00", dias:[0,1,2,3,4,5,6], activo:true};
+  const sel = new Set(d.dias || []);
+  openSheet(`<h3>${nuevo ? "Nuevo descanso" : "Editar descanso"}</h3>
+    <div class="field"><label>Nombre</label><input id="dsNom" value="${esc(d.etiqueta||"")}" placeholder="Ej. Almuerzo"></div>
+    <div class="grid2"><div class="field"><label>Desde</label><input type="time" id="dsIni" value="${hhmm(d.hora_inicio)}"></div><div class="field"><label>Hasta</label><input type="time" id="dsFin" value="${hhmm(d.hora_fin)}"></div></div>
+    <p class="lbl">Días</p><div class="dias-chips" id="dsDias">${[1,2,3,4,5,6,0].map(n=>`<button type="button" class="${sel.has(n)?"on":""}" data-d="${n}">${DIAS_C[n]}</button>`).join("")}</div>
+    <div class="sw-row"><div>Activo</div><label class="sw"><input type="checkbox" id="dsAct" ${d.activo?"checked":""}><span></span></label></div>
+    <div class="sh-actions">${nuevo ? "" : `<button class="pill pill-ghost danger-txt" id="dsDel">${IC.trash} Eliminar</button>`}<button class="pill pill-white" id="dsOk">Guardar</button></div>`, sh=>{
+    $("#dsDias", sh).onclick = e=>{ const b = e.target.closest("[data-d]"); if(b) b.classList.toggle("on"); };
+    $("#dsOk", sh).onclick = async ()=>{
+      const dias = $$("#dsDias .on", sh).map(b=> Number(b.dataset.d)), ini = $("#dsIni", sh).value, fin = $("#dsFin", sh).value;
+      if(!ini || !fin || toMin(fin) <= toMin(ini)) return toast("La hora final debe ser después de la inicial");
+      if(!dias.length) return toast("Elige al menos un día");
+      const row = {etiqueta: $("#dsNom", sh).value.trim() || "Descanso", hora_inicio: ini, hora_fin: fin, dias, activo: $("#dsAct", sh).checked};
+      const {error} = nuevo ? await sb.from("descansos").insert(row) : await sb.from("descansos").update(row).eq("id", d.id);
+      if(error) return toast("No se pudo guardar el descanso");
+      closeSheet(); toast("Descanso guardado"); await cargarDatosBase(); pintarTab();
+    };
+    const del = $("#dsDel", sh);
+    if(del) del.onclick = async ()=>{ await sb.from("descansos").delete().eq("id", d.id); closeSheet(); toast("Descanso eliminado"); await cargarDatosBase(); pintarTab(); };
+  });
+}
+
+/* ---------- combos (un servicio con precio especial que incluye varios) ---------- */
+function hojaCombo(s){
+  const nuevo = !s, base = S.servicios.filter(x=> !x.es_combo), incl = new Set(nuevo ? [] : String(s.incluye||"").split(" + ").map(x=> x.trim()));
+  openSheet(`<h3>${nuevo ? "Nuevo combo" : "Editar combo"}</h3>
+    <div class="field"><label>Nombre</label><input id="cbNom" value="${esc(s ? s.nombre : "")}" placeholder="Ej. Corte + barba"></div>
+    <p class="lbl">Qué incluye</p>
+    <div class="cb-list">${base.map(x=>`<label class="cb-row"><input type="checkbox" data-cb="${x.id}" ${incl.has(x.nombre) ? "checked" : ""}><span><b>${esc(x.nombre)}</b><small>${durTxt(x.duracion_minutos)} · ${money(x.precio)}</small></span></label>`).join("") || `<div class="empty-note">Primero crea los servicios sueltos.</div>`}</div>
+    <div class="cb-sum" id="cbSum"></div>
+    <div class="grid2"><div class="field"><label>Precio del combo (Q)</label><input id="cbPre" type="number" inputmode="decimal" min="0" step="0.01" value="${s ? esc(s.precio) : ""}"></div>
+      <div class="field"><label>Duración</label><input id="cbDur" readonly></div></div>
+    ${imgField("cbFoto", "Foto (opcional)", s ? s.foto_url : "")}
+    <div class="sw-row"><div>Visible para clientes</div><label class="sw"><input type="checkbox" id="cbAct" ${!s || s.activo ? "checked" : ""}><span></span></label></div>
+    <div class="sh-actions">${nuevo ? "" : `<button class="pill pill-ghost danger-txt" id="cbDel">${IC.trash} Eliminar</button>`}<button class="pill pill-white" id="cbOk">Guardar</button></div>`, sh=>{
+    cablearFotos(sh);
+    let tocoPrecio = !nuevo;
+    const elegidos = ()=> base.filter(x=> $(`[data-cb="${x.id}"]`, sh).checked);
+    const calcular = ()=>{
+      const l = elegidos(), suma = l.reduce((a,x)=> a + Number(x.precio), 0), dur = l.reduce((a,x)=> a + Number(x.duracion_minutos), 0);
+      $("#cbDur", sh).value = dur ? durTxt(dur) : "";
+      if(!tocoPrecio) $("#cbPre", sh).value = l.length > 1 ? Math.round(suma * 0.9) : "";
+      const pr = Number($("#cbPre", sh).value) || 0;
+      $("#cbSum", sh).innerHTML = l.length ? `Por separado: <b>${money(suma)}</b>${pr && pr < suma ? ` · el cliente ahorra <b>${money(suma - pr)}</b>` : ""}` : "";
+    };
+    $$("[data-cb]", sh).forEach(i=> i.onchange = calcular);
+    $("#cbPre", sh).oninput = ()=>{ tocoPrecio = true; calcular(); };
+    calcular();
+    $("#cbOk", sh).onclick = async ()=>{
+      const l = elegidos(), nombre = $("#cbNom", sh).value.trim(), precio = Number($("#cbPre", sh).value);
+      if(!nombre) return toast("Falta el nombre");
+      if(l.length < 2) return toast("Elige al menos 2 servicios");
+      if(!(precio > 0)) return toast("Revisa el precio");
+      const incluye = l.map(x=> x.nombre).join(" + ");
+      const row = {nombre, descripcion: "Incluye: " + incluye, incluye, precio, duracion_minutos: l.reduce((a,x)=> a + Number(x.duracion_minutos), 0), categoria:"Combos", es_combo:true, precio_desde:false,
+        foto_url: $("#cbFoto", sh).value.trim(), activo: $("#cbAct", sh).checked, orden: s ? s.orden : S.servicios.length};
+      const {error} = nuevo ? await sb.from("servicios").insert(row) : await sb.from("servicios").update(row).eq("id", s.id);
+      if(error) return toast("No se pudo guardar el combo");
+      closeSheet(); toast(nuevo ? "Combo creado" : "Combo actualizado"); await cargarDatosBase(); pintarTab();
+    };
+    const del = $("#cbDel", sh);
+    if(del) del.onclick = async ()=>{
+      const {error} = await sb.from("servicios").delete().eq("id", s.id);
+      if(error) return toast("Tiene citas registradas: mejor ocúltalo");
+      closeSheet(); toast("Combo eliminado"); await cargarDatosBase(); pintarTab();
+    };
+  });
+}
+
+/* ---------- trabajos: antes y después ---------- */
+async function tabTrabajos(box){
+  const {data} = await sb.from("trabajos").select("*").order("orden");
+  const todos = data || [];
+  box.innerHTML = `${sbar([["Trabajos", todos.length], ["Visibles", todos.filter(t=> t.activo).length, "ok"]])}
+    <div class="port-grid">
+      <button class="port-item tile add" id="trNew" style="aspect-ratio:3/4">${IC.plus}Nuevo trabajo</button>
+      ${todos.map((t,i)=>`<button class="port-item" data-tr="${t.id}" style="--i:${i+1};${t.activo?"":"opacity:.45"}">
+        <img src="${esc(t.despues_url)}" alt="" loading="lazy"><div class="cap"><span>${t.activo ? "Visible" : "Oculto"}</span><b>${esc(t.titulo || "Trabajo")}</b></div></button>`).join("")}
+    </div>`;
+  $("#trNew").onclick = ()=> hojaTrabajo(null);
+  $$("[data-tr]", box).forEach(b=> b.onclick = ()=> hojaTrabajo(todos.find(t=> String(t.id) === b.dataset.tr)));
+}
+function hojaTrabajo(t){
+  const nuevo = !t; t = t || {titulo:"", antes_url:"", despues_url:"", orden:0, activo:true};
+  openSheet(`<h3>${nuevo ? "Nuevo trabajo" : "Editar trabajo"}</h3>
+    <div class="field"><label>Título (opcional)</label><input id="ftTit" value="${esc(t.titulo||"")}" placeholder="Ej. Low fade con barba"></div>
+    ${imgField("ftAntes", "Foto de antes", t.antes_url)}
+    ${imgField("ftDesp", "Foto de después", t.despues_url)}
+    <div class="sw-row"><div>Visible en la página</div><label class="sw"><input type="checkbox" id="ftAct" ${t.activo?"checked":""}><span></span></label></div>
+    <div class="sh-actions">${nuevo ? "" : `<button class="pill pill-ghost danger-txt" id="ftDel">${IC.trash} Eliminar</button>`}<button class="pill pill-white" id="ftOk">Guardar</button></div>`, sh=>{
+    cablearFotos(sh);
+    $("#ftOk", sh).onclick = async ()=>{
+      const row = {titulo: $("#ftTit", sh).value.trim(), antes_url: $("#ftAntes", sh).value.trim(), despues_url: $("#ftDesp", sh).value.trim(), activo: $("#ftAct", sh).checked, orden: nuevo ? Date.now() % 100000 : t.orden};
+      if(!row.antes_url || !row.despues_url) return toast("Faltan las dos fotos");
+      const {error} = nuevo ? await sb.from("trabajos").insert(row) : await sb.from("trabajos").update(row).eq("id", t.id);
+      if(error) return toast("No se pudo guardar");
+      closeSheet(); toast("Trabajo guardado"); await cargarDatosBase(); pintarTab();
+    };
+    const del = $("#ftDel", sh);
+    if(del) del.onclick = async ()=>{ await sb.from("trabajos").delete().eq("id", t.id); closeSheet(); toast("Trabajo eliminado"); await cargarDatosBase(); pintarTab(); };
+  });
+}
+
+/* ---------- estudio de promociones (imágenes para estados de WhatsApp) ---------- */
+const PROMO_FORMATOS = {status:{w:1080,h:1920,n:"Estado"}, cuadrado:{w:1080,h:1080,n:"Cuadrado"}, vertical:{w:1080,h:1350,n:"Vertical"}};
+const PROMO_PLANTILLAS = {
+  clasico:{n:"Clásico", c1:"#0e1114", c2:"#1b1f24", acento:"#e1a95f", texto:"#f3efe7"},
+  cobre:{n:"Cobre", c1:"#c98a3e", c2:"#8a5a1f", acento:"#140d05", texto:"#140d05"},
+  marfil:{n:"Marfil", c1:"#f4eee2", c2:"#e5dccb", acento:"#8a5a1f", texto:"#17130e"},
+  foto:{n:"Con foto", c1:"#0e1114", c2:"#0e1114", acento:"#e1a95f", texto:"#ffffff"},
+};
+function promoNuevo(){ const c = S.config; return {formato:"status", plantilla:"clasico", ...PROMO_PLANTILLAS.clasico, titulo:"Esta semana\n20% en tu corte", sub:"Agenda tu cita antes del sábado", precio:"", cta:"Reserva en línea", foto:"", qr:false, fuente:"Anton", nombre:"Promo"}; }
+let QR_LISTO = null;
+function cargarQR(){
+  if(window.qrcode) return Promise.resolve();
+  return QR_LISTO || (QR_LISTO = new Promise((ok, no)=>{ const sc = document.createElement("script"); sc.src = "vendor/qrcode.js"; sc.onload = ok; sc.onerror = ()=>{ QR_LISTO = null; no(); }; document.head.appendChild(sc); }));
+}
+function cargarImg(url){ return new Promise(ok=>{ if(!url) return ok(null); const im = new Image(); im.crossOrigin = "anonymous"; im.onload = ()=> ok(im); im.onerror = ()=> ok(null); im.src = url; }); }
+function lineasTexto(ctx, txt, maxW){
+  const out = [];
+  String(txt||"").split("\n").forEach(par=>{
+    let linea = "";
+    par.split(/\s+/).filter(Boolean).forEach(w=>{ const prueba = linea ? linea + " " + w : w; if(ctx.measureText(prueba).width > maxW && linea){ out.push(linea); linea = w; } else linea = prueba; });
+    out.push(linea);
+  });
+  return out;
+}
+async function dibujarPromo(cv, st){
+  const F = PROMO_FORMATOS[st.formato] || PROMO_FORMATOS.status, W = F.w, H = F.h;
+  cv.width = W; cv.height = H; const ctx = cv.getContext("2d");
+  try{ await Promise.all([document.fonts.load("120px Anton"), document.fonts.load("700 40px 'Plus Jakarta Sans'")]); }catch(e){}
+  const disp = st.fuente === "Anton" ? "Anton, Impact, sans-serif" : "'Plus Jakarta Sans', system-ui, sans-serif", cuerpo = "'Plus Jakarta Sans', system-ui, sans-serif";
+  const g = ctx.createLinearGradient(0, 0, W*.4, H); g.addColorStop(0, st.c1); g.addColorStop(1, st.c2); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  const img = await cargarImg(st.foto);
+  if(img){
+    const k = Math.max(W / img.width, H / img.height), w = img.width * k, h = img.height * k; ctx.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
+    const ov = ctx.createLinearGradient(0, 0, 0, H); ov.addColorStop(0, "rgba(0,0,0,.55)"); ov.addColorStop(.45, "rgba(0,0,0,.35)"); ov.addColorStop(1, "rgba(0,0,0,.85)"); ctx.fillStyle = ov; ctx.fillRect(0, 0, W, H);
+  }
+  const m = 90, ancho = W - m * 2, alto = H / 1920;
+  // marco fino
+  ctx.strokeStyle = st.acento; ctx.globalAlpha = .55; ctx.lineWidth = 3; ctx.strokeRect(m/2, m/2, W - m, H - m); ctx.globalAlpha = 1;
+  // negocio
+  ctx.textBaseline = "alphabetic"; ctx.textAlign = "left"; ctx.fillStyle = st.acento; ctx.font = `400 ${52}px ${disp}`;
+  ctx.fillText(String(S.config.nombre || "Imperio Store Barber").toUpperCase(), m, m + 70);
+  // título
+  const tam = st.formato === "status" ? 190 : st.formato === "vertical" ? 160 : 140;
+  ctx.fillStyle = st.texto; ctx.font = `400 ${tam}px ${disp}`;
+  let lin = lineasTexto(ctx, String(st.titulo||"").toUpperCase(), ancho), lh = tam * 1.0;
+  let y = st.formato === "status" ? H * .3 : H * .27;
+  lin.forEach(l=>{ ctx.fillText(l, m, y); y += lh; });
+  // subtítulo
+  ctx.fillStyle = st.texto; ctx.globalAlpha = .85; ctx.font = `600 ${st.formato === "status" ? 54 : 46}px ${cuerpo}`;
+  y += 20; lineasTexto(ctx, st.sub, ancho).forEach(l=>{ ctx.fillText(l, m, y); y += 70; }); ctx.globalAlpha = 1;
+  // precio
+  if(String(st.precio||"").trim()){
+    ctx.font = `400 ${st.formato === "status" ? 230 : 180}px ${disp}`; ctx.fillStyle = st.acento; y += 40; ctx.fillText(String(st.precio).toUpperCase(), m, y + (st.formato === "status" ? 180 : 140));
+  }
+  // pie: botón + link + QR
+  const base = H - m - 20; let xq = W - m;
+  if(st.qr){
+    try{ await cargarQR(); const q = qrcode(0, "M"); q.addData(urlBase() + "#agendar"); q.make(); const n = q.getModuleCount(), T = 250, c = T / (n + 4);
+      const qx = W - m - T, qy = base - T; ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.roundRect(qx, qy, T, T, 18); ctx.fill(); ctx.fillStyle = "#111";
+      for(let r = 0; r < n; r++) for(let k = 0; k < n; k++) if(q.isDark(r, k)) ctx.fillRect(qx + (k + 2) * c, qy + (r + 2) * c, Math.ceil(c), Math.ceil(c)); xq = qx - 40; }catch(e){}
+  }
+  const bw = Math.min(xq - m, 640), by = base - 120;
+  ctx.fillStyle = st.acento; ctx.beginPath(); ctx.roundRect(m, by, bw, 110, 55); ctx.fill();
+  ctx.fillStyle = st.plantilla === "cobre" ? "#f4eee2" : (st.acento.toLowerCase() === "#140d05" ? "#fff" : "#111"); ctx.font = `800 44px ${cuerpo}`; ctx.textAlign = "center"; ctx.fillText(st.cta, m + bw / 2, by + 71);
+  ctx.textAlign = "left"; ctx.fillStyle = st.texto; ctx.globalAlpha = .75; ctx.font = `600 34px ${cuerpo}`; ctx.fillText(urlBase().replace(/^https?:\/\//, "").replace(/\/$/, ""), m, base + 20 + 20);
+  ctx.globalAlpha = 1;
+}
+function textoPromo(st){ return `${String(st.titulo||"").replace(/\n/g, " ")}\n${st.sub}\n\nAgenda aquí: ${urlBase()}#agendar`; }
+function blobCanvas(cv, tipo="image/png"){ return new Promise(r=> cv.toBlob(r, tipo, .92)); }
+async function compartirImagen(cv, nombre, texto){
+  const blob = await blobCanvas(cv), file = new File([blob], nombre, {type: blob.type});
+  try{
+    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], text: texto}); return true; }
+  }catch(e){ if(e && e.name === "AbortError") return true; }
+  descargarBlob(blob, nombre); toast("Imagen descargada"); return false;
+}
+function descargarBlob(blob, nombre){ const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nombre; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1500); }
+
+async function tabPromos(box){
+  const {data} = await sb.from("promos").select("*").order("orden");
+  const guardadas = data || [];
+  let st = S.promoEd || (S.promoEd = promoNuevo()), idCarga = S.promoId || null;
+  box.innerHTML = `
+    <div class="promo-prev"><canvas id="prCv"></canvas></div>
+    <div class="fcard"><h3>Diseño</h3>
+      <div class="fin-tabs" id="prFmt">${Object.entries(PROMO_FORMATOS).map(([k,f])=>`<button data-f="${k}" class="${st.formato===k?"on":""}">${f.n}</button>`).join("")}</div>
+      <div class="fin-tabs" id="prPla" style="margin-top:8px">${Object.entries(PROMO_PLANTILLAS).map(([k,f])=>`<button data-p="${k}" class="${st.plantilla===k?"on":""}">${f.n}</button>`).join("")}</div>
+      <div class="field" style="margin-top:14px"><label>Título (una línea por renglón)</label><textarea id="prTit">${esc(st.titulo)}</textarea></div>
+      <div class="field"><label>Texto de apoyo</label><input id="prSub" value="${esc(st.sub)}"></div>
+      <div class="grid2"><div class="field"><label>Precio u oferta</label><input id="prPre" value="${esc(st.precio)}" placeholder="Ej. Q50"></div><div class="field"><label>Botón</label><input id="prCta" value="${esc(st.cta)}"></div></div>
+      ${imgField("prFoto", "Foto de fondo (opcional)", st.foto)}
+      <div class="grid2 colors"><div class="field"><label>Fondo</label><input type="color" id="prC1" value="${st.c1}"></div><div class="field"><label>Fondo 2</label><input type="color" id="prC2" value="${st.c2}"></div>
+        <div class="field"><label>Acento</label><input type="color" id="prAc" value="${st.acento}"></div><div class="field"><label>Texto</label><input type="color" id="prTx" value="${st.texto}"></div></div>
+      <div class="sw-row"><div>Letra gruesa (Anton)</div><label class="sw"><input type="checkbox" id="prFu" ${st.fuente==="Anton"?"checked":""}><span></span></label></div>
+      <div class="sw-row"><div>Código QR para agendar</div><label class="sw"><input type="checkbox" id="prQr" ${st.qr?"checked":""}><span></span></label></div>
+    </div>
+    <div class="fcard"><h3>Compartir</h3>
+      <div class="sh-actions" style="flex-wrap:wrap"><button class="pill pill-white" id="prShare">${IC.wa} Compartir imagen</button><button class="pill pill-ghost" id="prDown">${IC.download} Descargar</button><button class="pill pill-ghost" id="prCopy">${IC.copy} Copiar texto</button></div>
+      <div class="field" style="margin-top:14px"><label>Nombre para guardarla</label><input id="prNom" value="${esc(st.nombre||"Promo")}"></div>
+      <div class="sh-actions"><button class="pill pill-ghost" id="prNuevo">Nueva</button><button class="pill pill-white" id="prSave">${idCarga ? "Actualizar diseño" : "Guardar diseño"}</button></div>
+    </div>
+    <section class="grp">${grpHd("Diseños guardados")}${guardadas.length ? guardadas.map((d,i)=>`<div class="rc" style="--i:${i}"><span class="av">${IC.image}</span><button class="rc-b" data-load="${d.id}" style="text-align:left"><b>${esc(d.nombre)}</b><span>${PROMO_FORMATOS[(d.config||{}).formato]?.n || ""} · ${esc(String((d.config||{}).titulo||"").split("\n")[0])}</span></button>
+      <button class="circ" data-up="${d.id}" style="width:36px;height:36px" aria-label="Subir" ${i===0?"disabled":""}>↑</button><button class="circ danger" data-del="${d.id}" style="width:36px;height:36px" aria-label="Eliminar diseño">${IC.x}</button></div>`).join("") : `<div class="adm-empty">Aún no guardas ningún diseño.</div>`}</section>`;
+  const cv = $("#prCv"); let tk = 0;
+  const pintar = ()=>{ const t = ++tk; setTimeout(()=>{ if(t === tk) dibujarPromo(cv, st); }, 120); };
+  const leer = ()=>{ Object.assign(st, {titulo: $("#prTit").value, sub: $("#prSub").value, precio: $("#prPre").value, cta: $("#prCta").value || "Reserva en línea", foto: $("#prFoto").value.trim(), c1: $("#prC1").value, c2: $("#prC2").value, acento: $("#prAc").value, texto: $("#prTx").value, fuente: $("#prFu").checked ? "Anton" : "Jakarta", qr: $("#prQr").checked, nombre: $("#prNom").value}); pintar(); };
+  $$("#prTit,#prSub,#prPre,#prCta,#prFoto,#prC1,#prC2,#prAc,#prTx,#prFu,#prQr,#prNom").forEach(i=>{ i.oninput = leer; i.onchange = leer; });
+  $("#prFmt").onclick = e=>{ const b = e.target.closest("[data-f]"); if(!b) return; st.formato = b.dataset.f; $$("#prFmt button").forEach(x=> x.classList.toggle("on", x === b)); pintar(); };
+  $("#prPla").onclick = e=>{ const b = e.target.closest("[data-p]"); if(!b) return; leer(); const pl = PROMO_PLANTILLAS[b.dataset.p]; Object.assign(st, {plantilla: b.dataset.p, c1: pl.c1, c2: pl.c2, acento: pl.acento, texto: pl.texto}); S.promoEd = st; pintarTab(); };
+  const nombreArchivo = ()=> "promo-" + (st.nombre||"imperio").toLowerCase().replace(/[^a-z0-9]+/g, "-") + ".png";
+  $("#prShare").onclick = async ()=>{ await dibujarPromo(cv, st); await compartirImagen(cv, nombreArchivo(), textoPromo(st)); };
+  $("#prDown").onclick = async ()=>{ await dibujarPromo(cv, st); descargarBlob(await blobCanvas(cv), nombreArchivo()); };
+  $("#prCopy").onclick = async ()=>{ try{ await navigator.clipboard.writeText(textoPromo(st)); toast("Texto copiado"); }catch(e){ toast("No se pudo copiar"); } };
+  $("#prNuevo").onclick = ()=>{ S.promoEd = promoNuevo(); S.promoId = null; pintarTab(); };
+  $("#prSave").onclick = async ()=>{
+    leer(); const row = {nombre: st.nombre || "Promo", config: {...st}};
+    const {error} = idCarga ? await sb.from("promos").update(row).eq("id", idCarga) : await sb.from("promos").insert({...row, orden: guardadas.length});
+    if(error) return toast("No se pudo guardar (¿ejecutaste el SQL?)");
+    toast("Diseño guardado"); S.promoId = idCarga; pintarTab();
+  };
+  $$("[data-load]", box).forEach(b=> b.onclick = ()=>{ const d = guardadas.find(x=> String(x.id) === b.dataset.load); S.promoEd = {...promoNuevo(), ...d.config, nombre: d.nombre}; S.promoId = d.id; pintarTab(); });
+  $$("[data-up]", box).forEach(b=> b.onclick = async ()=>{ const i = guardadas.findIndex(x=> String(x.id) === b.dataset.up); if(i < 1) return; const a = guardadas[i], c = guardadas[i-1]; await Promise.all([sb.from("promos").update({orden:i-1}).eq("id", a.id), sb.from("promos").update({orden:i}).eq("id", c.id)]); pintarTab(); });
+  $$("[data-del]", box).forEach(b=> b.onclick = ()=> confirmar("¿Eliminar este diseño?", "No se puede deshacer.", "Eliminar", async ()=>{ await sb.from("promos").delete().eq("id", b.dataset.del); if(String(S.promoId) === b.dataset.del) S.promoId = null; toast("Diseño eliminado"); pintarTab(); }));
+  cablearFotos(box);
+  dibujarPromo(cv, st);
+}
+
+/* ---------- mover una cita (el barbero) ---------- */
+const DEF_MOVER = "Hola {nombre}, moví tu cita a {fecha} a las {hora}. ¿Te funciona? Si no, dime y buscamos otra hora.";
+async function hojaMoverCita(g){
+  const dur = toMin(g.hora_fin) - toMin(g.hora_inicio);
+  let mapa = await cargarCitasRango(true, g.key);
+  const dias = diasVentana(45).filter(d=> d.disponible);
+  const st = {fecha: dias.some(d=> d.iso === g.fecha) ? g.fecha : (dias[0]||{}).iso, hora: null};
+  const libres = f=> f ? calcularSlots(f, dur, mapa).filter(x=> !x.ocupado && !(f === g.fecha && x.hora === hhmm(g.hora_inicio))) : [];
+  const etiquetaBoton = sh=>{ const ok = $("#mvOk", sh); ok.disabled = !st.hora; ok.textContent = st.hora ? `Mover a ${fmtFecha(st.fecha)} · ${st.hora}` : "Elige una hora"; };
+  const pintar = sh=>{
+    const slots = libres(st.fecha);
+    if(st.hora && !$("#mvHora", sh).value && !slots.some(x=> x.hora === st.hora)) st.hora = null;
+    $("#mvBody", sh).innerHTML = `
+      <p class="lbl">Día</p>
+      <div class="date-row" id="mvDates">${dias.map(d=>`<button class="dchip ${d.iso===st.fecha?"on":""}" data-md="${d.iso}" aria-label="${fmtFechaLarga(d.iso)}"><b>${d.dia}</b><span>${DIAS_C[d.dow]}</span></button>`).join("")}</div>
+      <p class="lbl">Hora nueva</p>
+      <div class="time-row">${slots.length ? slots.map(x=>`<button class="tpill ${x.hora===st.hora?"on":""}" data-mh="${x.hora}">${x.hora}</button>`).join("") : `<div class="empty-note">No quedan horarios libres ese día.</div>`}</div>`;
+    etiquetaBoton(sh);
+  };
+  openSheet(`<h3>Mover cita</h3><p class="sub">${esc((g.cliente||{}).nombre || "Cliente")} · ahora: ${fmtFechaLarga(g.fecha)} a las ${hhmm(g.hora_inicio)}</p>
+    <div id="mvBody"></div>
+    <div class="field" style="margin-top:6px"><label>O escribe otra hora</label><input type="time" id="mvHora"></div>
+    <div class="sh-actions"><button class="pill pill-ghost" id="mvNo">Cancelar</button><button class="pill pill-white" id="mvOk" disabled>Elige una hora</button></div>`, sh=>{
+    pintar(sh);
+    sh.addEventListener("click", e=>{
+      const d = e.target.closest("[data-md]"), h = e.target.closest("[data-mh]");
+      if(!d && !h) return;
+      const x = $("#mvDates", sh).scrollLeft;
+      if(d){ st.fecha = d.dataset.md; st.hora = null; } else { st.hora = h.dataset.mh; }
+      $("#mvHora", sh).value = ""; pintar(sh); $("#mvDates", sh).scrollLeft = x;
+    });
+    $("#mvHora", sh).onchange = e=>{ st.hora = e.target.value || null; etiquetaBoton(sh); $$("#mvBody .tpill", sh).forEach(b=> b.classList.remove("on")); };
+    $("#mvNo", sh).onclick = closeSheet;
+    $("#mvOk", sh).onclick = async ()=>{
+      if(!st.hora) return;
+      const btn = $("#mvOk", sh); btn.disabled = true; btn.textContent = "Moviendo…";
+      mapa = await cargarCitasRango(true, g.key);
+      const ini = toMin(st.hora), fin = ini + dur;
+      if((mapa[st.fecha]||[]).some(c=> c.estado !== "cancelada" && ini < toMin(c.hora_fin) && fin > toMin(c.hora_inicio))){ toast("Esa hora choca con otra cita"); return pintar(sh); }
+      const {data:filas} = await sb.from("citas").select("id,hora_inicio,hora_fin").in("id", g.ids);
+      const delta = ini - toMin(g.hora_inicio);
+      const orden = [...(filas||[])].sort((a,b)=> delta > 0 ? toMin(b.hora_inicio) - toMin(a.hora_inicio) : toMin(a.hora_inicio) - toMin(b.hora_inicio));
+      for(const c of orden){
+        const {error} = await sb.from("citas").update({fecha: st.fecha, hora_inicio: addMin(hhmm(c.hora_inicio), delta), hora_fin: addMin(hhmm(c.hora_fin), delta), asistencia_confirmada: false, confirmada_en: null}).eq("id", c.id);
+        if(error){ toast("No se pudo mover la cita"); return refrescarAdmin(); }
+      }
+      S.citasAt = 0; closeSheet(); refrescarAdmin();
+      const cl = g.cliente || {}, wa = cl.telefono ? waLink(cl.telefono, plantilla(DEF_MOVER, {nombre: primerNombre(cl.nombre), fecha: fmtFechaLarga(st.fecha), hora: st.hora})) : "";
+      setTimeout(()=> openSheet(`<h3>Cita movida</h3><p class="sub">${esc(cl.nombre||"Cliente")} · ${fmtFechaLarga(st.fecha)} a las ${st.hora}</p>
+        <div class="sh-actions">${wa ? `<a class="pill pill-white" href="${wa}" target="_blank" rel="noopener">${IC.wa} Avisar al cliente</a>` : ""}<button class="pill pill-ghost" id="mvListo">Listo</button></div>`, s2=>{ $("#mvListo", s2).onclick = closeSheet; }), 420);
+    };
+  });
+}
+
+/* ---------- recordar a todos los de un día, uno por uno ---------- */
+async function hojaRecordarDia(fecha){
+  const citas = await citasDelDia(fecha), grupos = agruparCitas(citas).filter(g=> g.estado === "confirmada");
+  if(!grupos.length) return toast("No hay citas para recordar ese día");
+  const enviados = new Set();
+  const pintar = sh=>{
+    $("#rdLista", sh).innerHTML = grupos.map(g=>{
+      const cl = g.cliente || {}, hecho = enviados.has(g.key);
+      return `<div class="rc ${hecho ? "hecho" : ""}"><span class="av tm">${hhmm(g.hora_inicio)}</span><div class="rc-b"><b>${esc(cl.nombre || "Cliente")}</b><span>${esc(nombresGrupo(g))}${g.confirmo ? " · ya confirmó" : ""}</span></div>
+        ${cl.telefono ? `<a class="pill ${hecho ? "pill-ghost" : "pill-white"} pill-sm" data-env="${g.key}" href="${linkRecordatorio(g)}" target="_blank" rel="noopener">${hecho ? IC.check + " Enviado" : IC.wa + " Enviar"}</a>` : `<span class="badge">Sin teléfono</span>`}</div>`; }).join("");
+    $("#rdCont", sh).textContent = `${enviados.size} de ${grupos.length} enviados`;
+  };
+  openSheet(`<h3>Recordar · ${fmtFecha(fecha)}</h3><p class="sub" id="rdCont"></p><div id="rdLista"></div>`, sh=>{
+    pintar(sh);
+    $("#rdLista", sh).onclick = e=>{ const a = e.target.closest("[data-env]"); if(!a) return; enviados.add(a.dataset.env); setTimeout(()=> pintar(sh), 250); };
+  });
+}
+
+/* ---------- se canceló una cita: avisar a quien espera ese día ---------- */
+async function hojaEspacioLiberado(fecha, hora){
+  const {data} = await sb.from("waitlist").select("*, clientes(nombre,telefono)").eq("fecha_deseada", fecha).eq("estado","esperando").order("creado_en");
+  const lista = data || []; if(!lista.length) return;
+  openSheet(`<h3>Se liberó un espacio</h3><p class="sub">${fmtFechaLarga(fecha)}${hora ? " a las " + hora : ""}. Avisa al primero de la lista:</p>
+    <div id="elLista">${lista.map((w,i)=>{ const cl = w.clientes || {}, msg = plantilla(S.config.msg_espera || DEF_ESPERA, {nombre: primerNombre(cl.nombre), fecha: fmtFechaLarga(fecha), negocio: S.config.nombre || ""});
+      return `<div class="rc"><span class="av">${i+1}</span><div class="rc-b"><b>${esc(cl.nombre || "Cliente")}</b><span>${esc(cl.telefono || "")}</span></div>
+        ${cl.telefono ? `<a class="pill pill-white pill-sm" data-avisar="${w.id}" href="${waLink(cl.telefono, msg)}" target="_blank" rel="noopener">${IC.wa} Avisar</a>` : ""}</div>`; }).join("")}</div>`, sh=>{
+    $("#elLista", sh).onclick = e=>{ const a = e.target.closest("[data-avisar]"); if(!a) return; setTimeout(async ()=>{ await sb.from("waitlist").update({estado:"notificado"}).eq("id", a.dataset.avisar); a.outerHTML = `<span class="badge c">Avisado</span>`; }, 300); };
+  });
 }
 /* cuántas fotos de referencia tiene cada cita del día */
 async function adjuntarFotos(grupos){
@@ -2934,6 +3350,8 @@ function ordHtml(g, i, opt={}){
     opt.next ? `<span class="badge c">Siguiente</span>` : "",
     riesgo ? `<span class="badge risk">En riesgo</span>` : "",
     g.nFotos ? `<span class="badge">${IC.image} ${g.nFotos} ${g.nFotos === 1 ? "foto" : "fotos"}</span>` : "",
+    g.faltas ? `<span class="badge ${g.faltas >= (Number(S.config.faltas_aviso)||2) ? "risk" : ""}">Faltó ${g.faltas} ${g.faltas === 1 ? "vez" : "veces"}</span>` : "",
+    promoCumpleBadge(cl),
   ].join("");
   const ficha = [["Corte", cl.preferencias], ["Charla", cl.temas_conversacion], ["Trabajo", cl.forma_trabajo]].filter(x=> x[1]);
   const acciones = activa ? `<div class="ord-acts">
@@ -2941,6 +3359,7 @@ function ordHtml(g, i, opt={}){
       ${g.nFotos ? `<button class="oa" data-act="fotos" data-id="${g.key}">${IC.image}<span>Fotos ${g.nFotos}</span></button>` : ""}
       <button class="oa ok" data-act="done" data-id="${g.key}">${IC.check}<span>Listo</span></button>
       ${g.confirmo ? "" : `<button class="oa" data-act="confirm" data-id="${g.key}">${IC.cal}<span>Confirmó</span></button>`}
+      <button class="oa" data-act="mover" data-id="${g.key}">${IC.cal}<span>Mover</span></button>
       <button class="oa" data-act="noshow" data-id="${g.key}">${IC.x}<span>No vino</span></button>
       ${opt.full ? `<button class="oa bad" data-act="cancel" data-id="${g.key}">${IC.trash}<span>Cancelar</span></button>` : ""}
     </div>` : "";
@@ -2963,12 +3382,14 @@ function cablearOrd(root, grupos){
     const b = e.target.closest("[data-act]"); if(!b) return;
     const g = grupos.find(x=> x.key === b.dataset.id); if(!g) return;
     if(b.dataset.act === "fotos") return hojaFotos(g);
+    if(b.dataset.act === "mover") return hojaMoverCita(g);
     if(b.dataset.act === "done"){
       b.disabled = true;
       await sb.from("citas").update({estado:"completada"}).in("id", g.ids);
       if(S.config.fidelidad_activa && g.cliente && g.cliente.id){
         await sb.from("clientes").update({puntos_actuales: (Number(g.cliente.puntos_actuales)||0) + (Number(S.config.puntos_por_visita)||1)}).eq("id", g.cliente.id);
       }
+      await recompensaReferido(g);
       S.citasAt = 0; S.churn = null; refrescarAdmin();
       hojaFinalizarVisita(g);
     }
@@ -2992,36 +3413,74 @@ function cablearOrd(root, grupos){
 }
 
 /* ---------------- al marcar "Listo": productos vendidos + recibo (siempre opcionales) ---------------- */
+function datosRecibo(g, cant){
+  const lineas = g.items.map(it=> [`${it.nombre}${it.etiqueta ? ` (${it.etiqueta})` : ""}`, it.precio]);
+  Object.entries(cant).filter(([,n])=> n>0).forEach(([id,n])=>{ const p = S.productos.find(x=> String(x.id)===id); if(p) lineas.push([`${p.nombre} ×${n}`, p.precio*n]); });
+  return {negocio: S.config.nombre || "Imperio Store Barber", cliente: (g.cliente||{}).nombre || "", fecha: g.fecha, lineas, total: lineas.reduce((a,l)=> a + Number(l[1]), 0), dir: S.config.direccion || "", wa: S.config.whatsapp || ""};
+}
+function reciboTicketHtml(d, modo){
+  return `<div class="tk-wrap ${modo}"><div class="tk-slot" aria-hidden="true"><i class="tk-led"></i></div>
+    <article class="tk-paper" aria-label="Recibo">
+      <div class="tk-brand"><b>${esc(d.negocio)}</b><span>RECIBO</span></div><div class="tk-hr"></div>
+      <div class="tk-row"><span>CLIENTE</span><b>${esc(primerNombre(d.cliente))}</b></div>
+      <div class="tk-row"><span>FECHA</span><b>${esc(fmtFechaLarga(d.fecha))}</b></div><div class="tk-hr"></div>
+      ${d.lineas.map(l=>`<div class="tk-row"><span>${esc(l[0])}</span><span>${money(l[1])}</span></div>`).join("")}
+      <div class="tk-hr"></div><div class="tk-total"><span>TOTAL</span><b>${money(d.total)}</b></div><div class="tk-hr"></div>
+      <p class="tk-c">¡Gracias por tu visita!</p>
+    </article><div class="tk-tear" aria-hidden="true"></div></div>`;
+}
+async function dibujarRecibo(d){
+  try{ await Promise.all([document.fonts.load("100px Anton"), document.fonts.load("700 30px 'Plus Jakarta Sans'")]); }catch(e){}
+  const W = 1080, m = 90, mono = "ui-monospace, 'SF Mono', Menlo, Consolas, monospace", disp = "Anton, Impact, sans-serif";
+  const alto = 810 + d.lineas.length * 84 + (d.dir ? 60 : 0) + (d.wa ? 50 : 0), H = alto + 2 * 90;
+  const cv = document.createElement("canvas"); cv.width = W; cv.height = H; const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#101316"; ctx.fillRect(0, 0, W, H);
+  const x0 = 70, w = W - 140, y0 = 70, h = H - 140;
+  ctx.save(); ctx.shadowColor = "rgba(0,0,0,.5)"; ctx.shadowBlur = 40; ctx.shadowOffsetY = 20; ctx.fillStyle = "#f4eee2";
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0 + w, y0); const z = 22, pasos = Math.floor(w / z);
+  ctx.lineTo(x0 + w, y0 + h); for(let i = pasos; i >= 0; i--) ctx.lineTo(x0 + i * (w / pasos), y0 + h + (i % 2 ? 0 : 0) - (i % 2 ? 14 : 0)); ctx.lineTo(x0, y0 + h); ctx.closePath(); ctx.fill(); ctx.restore();
+  let y = y0 + 150; ctx.fillStyle = "#1b1713"; ctx.textAlign = "center";
+  ctx.font = `400 84px ${disp}`; ctx.fillText(d.negocio.toUpperCase(), W/2, y); y += 56;
+  ctx.font = `700 28px ${mono}`; ctx.fillText("R E C I B O", W/2, y); y += 50;
+  const linea = ()=>{ ctx.save(); ctx.strokeStyle = "#b4ab9b"; ctx.lineWidth = 3; ctx.setLineDash([14, 10]); ctx.beginPath(); ctx.moveTo(x0 + 50, y); ctx.lineTo(x0 + w - 50, y); ctx.stroke(); ctx.restore(); y += 56; };
+  linea(); ctx.textAlign = "left"; ctx.font = `600 34px ${mono}`;
+  const fila = (a, b, bold)=>{ ctx.font = `${bold ? 800 : 600} 34px ${mono}`; ctx.textAlign = "left"; ctx.fillStyle = "#1b1713"; let t = a; while(ctx.measureText(t).width > w - 400 && t.length > 4) t = t.slice(0, -2); if(t !== a) t += "…"; ctx.fillText(t, x0 + 50, y); ctx.textAlign = "right"; ctx.fillText(b, x0 + w - 50, y); y += 84; };
+  fila("CLIENTE", primerNombre(d.cliente)); fila("FECHA", fmtFechaLarga(d.fecha)); y -= 20; linea();
+  d.lineas.forEach(l=> fila(l[0], money(l[1]))); y -= 20; linea(); y += 50;
+  ctx.textAlign = "left"; ctx.font = `800 34px ${mono}`; ctx.fillText("TOTAL", x0 + 50, y + 30); ctx.textAlign = "right"; ctx.font = `400 120px ${disp}`; ctx.fillStyle = "#8a5a1f"; ctx.fillText(money(d.total), x0 + w - 50, y + 40); y += 130;
+  ctx.textAlign = "center"; ctx.fillStyle = "#1b1713"; ctx.font = `700 34px ${mono}`; ctx.fillText("¡Gracias por tu visita!", W/2, y); y += 56;
+  ctx.font = `600 28px ${mono}`; ctx.fillStyle = "#5a5144"; if(d.dir){ ctx.fillText(d.dir, W/2, y); y += 46; } if(d.wa) ctx.fillText("WhatsApp " + d.wa, W/2, y);
+  return cv;
+}
 function hojaFinalizarVisita(g){
-  if(!S.productos.length){
-    return toast("Cita completada" + (S.config.fidelidad_activa ? " · puntos sumados" : ""));
-  }
-  const cant = {};
-  const total = ()=> totalGrupo(g) + Object.entries(cant).reduce((a,[id,n])=> a + n * (S.productos.find(p=> String(p.id)===id)?.precio||0), 0);
-  const textoRecibo = ()=>{
-    const lineas = g.items.map(it=> `${it.nombre}${it.etiqueta?` (${it.etiqueta})`:""} — ${money(it.precio)}`);
-    Object.entries(cant).filter(([,n])=> n>0).forEach(([id,n])=>{ const p = S.productos.find(x=> String(x.id)===id); if(p) lineas.push(`${p.nombre} ×${n} — ${money(p.precio*n)}`); });
-    return `${DEF_RECIBO_TITULO} — ${S.config.nombre||"Imperio Store Barber"}\nCliente: ${(g.cliente||{}).nombre||""}\nFecha: ${fmtFechaLarga(g.fecha)}\n\n${lineas.join("\n")}\n\nTotal: ${money(total())}\n¡Gracias por tu visita!`;
-  };
-  const sh = openSheet(`<h3>Visita completada</h3>
-    <div id="fvProds">${S.productos.filter(p=> p.activo).map(p=> prodStepperRow(p, 0)).join("")}</div>
-    <p class="lbl" style="margin-top:18px">Vista previa del recibo</p>
-    <div class="recibo-box" id="fvRecibo">${esc(textoRecibo())}</div>
+  const cant = {}, hayProd = S.productos.some(p=> p.activo);
+  const textoRecibo = ()=>{ const d = datosRecibo(g, cant); return `${DEF_RECIBO_TITULO} — ${d.negocio}\nCliente: ${d.cliente}\nFecha: ${fmtFechaLarga(g.fecha)}\n\n${d.lineas.map(l=> `${l[0]} — ${money(l[1])}`).join("\n")}\n\nTotal: ${money(d.total)}\n¡Gracias por tu visita!`; };
+  openSheet(`<h3>Visita completada</h3>
+    ${hayProd ? `<div id="fvProds">${S.productos.filter(p=> p.activo).map(p=> prodStepperRow(p, 0)).join("")}</div>` : ""}
+    <div id="fvTk"></div>
     <div class="sh-actions">
-      <a class="pill pill-ghost" id="fvWa" target="_blank" rel="noopener">${IC.wa} Enviar recibo</a>
+      <button class="pill pill-ghost" id="fvImg">${IC.wa} Enviar imagen</button>
       <button class="pill pill-white" id="fvOk">Terminar</button>
     </div>`, sh=>{
-    const actualizar = ()=>{ $("#fvRecibo",sh).textContent = textoRecibo(); const wa = waLink((g.cliente||{}).telefono, textoRecibo()); const a = $("#fvWa",sh); if(wa){ a.href = wa; a.classList.remove("hidden"); } else a.classList.add("hidden"); };
-    $("#fvProds",sh).onclick = e=>{
+    const pintar = (modo)=>{ $("#fvTk", sh).innerHTML = reciboTicketHtml(datosRecibo(g, cant), modo); };
+    pintar("printing"); requestAnimationFrame(()=>{ const w = $("#fvTk .tk-wrap", sh); if(w){ w.classList.add("run"); setTimeout(()=> w.classList.add("done"), 3300); } });
+    const prods = $("#fvProds", sh);
+    if(prods) prods.onclick = e=>{
       const b = e.target.closest("[data-step]"); if(!b) return;
       const id = b.dataset.pid; cant[id] = Math.max(0, (cant[id]||0) + Number(b.dataset.step));
       $(`[data-qty="${id}"]`, sh).textContent = cant[id]||0;
       $(`[data-menos="${id}"]`, sh).disabled = !cant[id];
-      actualizar();
+      pintar("static");
     };
-    actualizar();
-    $("#fvOk",sh).onclick = async ()=>{
-      $("#fvOk",sh).disabled = true;
+    $("#fvImg", sh).onclick = async ()=>{
+      const btn = $("#fvImg", sh); btn.disabled = true;
+      try{
+        const cv = await dibujarRecibo(datosRecibo(g, cant)), tel = (g.cliente||{}).telefono, ok = await compartirImagen(cv, "recibo.png", textoRecibo());
+        if(!ok){ const wa = waLink(tel, textoRecibo()); if(wa) window.open(wa, "_blank", "noopener"); }
+      } finally { btn.disabled = false; }
+    };
+    $("#fvOk", sh).onclick = async ()=>{
+      $("#fvOk", sh).disabled = true;
       const filas = Object.entries(cant).filter(([,n])=> n>0).map(([id,n])=>{ const p = S.productos.find(x=> String(x.id)===id); return {producto_id: p.id, visita_id: g.key, cliente_id: (g.cliente||{}).id||null, cantidad:n, precio_unit:p.precio, fecha: isoDate(new Date())}; });
       if(filas.length){
         await sb.from("ventas_producto").insert(filas);
@@ -3045,7 +3504,7 @@ async function pintarLateral(){
   const side = $("#admSide"); if(!side || window.innerWidth < 1150) return;
   const hoy = isoDate(new Date()), citas = await citasDelDia(hoy);
   await calcularRiesgo();
-  const grupos = agruparCitas(citas); await adjuntarFotos(grupos);
+  const grupos = agruparCitas(citas); await adjuntarExtras(grupos);
   side.innerHTML = lateralHtml(grupos);
   cablearOrd(side, grupos);
   $("#sideAg", side).onclick = ()=>{ S.agFecha = hoy; irTab("agenda"); };
@@ -3065,19 +3524,22 @@ function lateralHtml(grupos){
 /* ---------------- HOY ---------------- */
 async function tabHoy(box){
   const hoy = isoDate(new Date());
-  const [citas, cls, esp, cum] = await Promise.all([
+  const mananaD = new Date(); mananaD.setDate(mananaD.getDate() + 1); const manana = isoDate(mananaD);
+  const [citas, cls, esp, cum, man] = await Promise.all([
     citasDelDia(hoy),
     sb.from("clientes").select("*", {count:"exact", head:true}),
     sb.from("waitlist").select("*", {count:"exact", head:true}).eq("estado","esperando"),
     sb.from("clientes").select("id,nombre,telefono,cumple_dia,cumple_mes").not("cumple_mes","is",null),
+    sb.from("citas").select("id,visita_id").eq("fecha", manana).eq("estado","confirmada"),
   ]);
+  const nMan = new Set((man.data||[]).map(c=> c.visita_id || c.id)).size;
   const cumSemana = (cum.data||[]).filter(c=> diasParaCumple(c.cumple_dia, c.cumple_mes) <= 7).length;
   const proxCum = (cum.data||[]).map(c=> ({...c, n: diasParaCumple(c.cumple_dia, c.cumple_mes)})).filter(c=> c.n <= 30).sort((a,b)=> a.n - b.n).slice(0,4);
   const cumSec = proxCum.length ? `<section class="grp">${grpHd("Próximos cumpleaños", `<button class="link-btn" id="verCum">Ver todos</button>`)}
     ${proxCum.map((c,i)=>`<div class="rc" style="--i:${i}"><span class="av">${IC.gift}</span><div class="rc-b"><b>${esc(c.nombre)}</b><span>${cumpleTxt(c.cumple_dia, c.cumple_mes)} · ${c.n === 0 ? "hoy" : c.n === 1 ? "mañana" : "en " + c.n + " días"}</span></div>
-      ${c.telefono && c.n <= 7 ? `<a class="circ rc-wa" href="${waLink(c.telefono, plantilla(DEF_CUMPLE, {nombre: primerNombre(c.nombre), negocio: S.config.nombre||""}))}" target="_blank" rel="noopener" aria-label="Felicitar por WhatsApp">${IC.wa}</a>` : ""}</div>`).join("")}</section>` : "";
+      ${c.telefono && c.n <= 7 ? `<a class="circ rc-wa" href="${waLink(c.telefono, msgCumple(c))}" target="_blank" rel="noopener" aria-label="Felicitar por WhatsApp">${IC.wa}</a>` : ""}</div>`).join("")}</section>` : "";
   await calcularRiesgo();
-  const grupos = agruparCitas(citas); await adjuntarFotos(grupos);
+  const grupos = agruparCitas(citas); await adjuntarExtras(grupos);
   const act = grupos.filter(g=> g.estado !== "cancelada" && g.estado !== "no_asistio");
   const pend = grupos.filter(g=> g.estado === "confirmada");
   const hechas = grupos.filter(g=> g.estado === "completada").length;
@@ -3090,6 +3552,7 @@ async function tabHoy(box){
   const hr = new Date().getHours(), saludo = hr < 12 ? "Buenos días" : hr < 19 ? "Buenas tardes" : "Buenas noches";
   const nom = primerNombre(S.config.barbero_nombre || "");
   const alertas = [
+    nMan ? `<button class="alert-pill" id="alMan">${IC.wa} ${nMan} ${nMan===1?"cita":"citas"} mañana · recordar</button>` : "",
     sinConf ? `<button class="alert-pill warn" id="alConf">${IC.clock} ${sinConf} sin confirmar</button>` : "",
     esp.count ? `<button class="alert-pill" id="alEsp">${IC.users} ${esp.count} en lista de espera</button>` : "",
     cumSemana ? `<button class="alert-pill" id="alCum">${IC.gift} ${cumSemana} ${cumSemana===1?"cumpleaños":"cumpleaños"} esta semana</button>` : "",
@@ -3125,6 +3588,7 @@ async function tabHoy(box){
   cablearOrd(box, grupos);
   const al = id=> $(id, box);
   if(al("#alConf")) al("#alConf").onclick = ()=>{ const m = $("#miDia"); if(m) m.scrollIntoView({behavior:"smooth", block:"start"}); };
+  if(al("#alMan")) al("#alMan").onclick = ()=> hojaRecordarDia(manana);
   if(al("#alEsp")) al("#alEsp").onclick = ()=> irTab("espera");
   if(al("#alRies")) al("#alRies").onclick = ()=> irTab("clientes");
   if(al("#verCum")) al("#verCum").onclick = ()=>{ S.clientesFiltro = "cumple"; irTab("clientes"); };
@@ -3141,7 +3605,7 @@ async function tabHoy(box){
 async function tabAgenda(box){
   const f = S.agFecha, citas = await citasDelDia(f);
   await calcularRiesgo();
-  const grupos = agruparCitas(citas); await adjuntarFotos(grupos);
+  const grupos = agruparCitas(citas); await adjuntarExtras(grupos);
   const act = grupos.filter(g=> g.estado !== "cancelada");
   const baseD = new Date(); baseD.setDate(baseD.getDate() - 2);
   const tira = Array.from({length:21}, (_,i)=>{ const d = new Date(baseD.getFullYear(), baseD.getMonth(), baseD.getDate()+i); return {iso:isoDate(d), dia:d.getDate(), dow:d.getDay()}; });
@@ -3152,6 +3616,7 @@ async function tabAgenda(box){
       <div class="ag-day"><b>${fmtFechaLarga(f)}</b><span>${act.length} ${act.length===1?"cita":"citas"} · ${money(act.reduce((a,g)=> a + totalGrupo(g), 0))}</span></div>
       <button class="circ" id="agNext" aria-label="Día siguiente">${IC.chevR}</button>
       <input type="date" id="agDate" value="${f}" aria-label="Elegir fecha">
+      ${f >= isoDate(new Date()) ? `<button class="pill pill-ghost pill-sm" id="agRec">${IC.wa} Recordar</button>` : ""}
       <button class="pill pill-white pill-sm" id="agNew">${IC.plus} Nueva cita</button>
     </div>
     <div id="agList">${grupos.length ? grupos.map((g,i)=> ordHtml(g, i, {full:true})).join("") : `<div class="adm-empty">No hay citas este día.</div>`}</div>`;
@@ -3159,6 +3624,7 @@ async function tabAgenda(box){
   $("#agPrev").onclick = ()=> mover(-1); $("#agNext").onclick = ()=> mover(1);
   $("#agDate").onchange = e=>{ if(e.target.value){ S.agFecha = e.target.value; pintarTab(); } };
   $("#agNew").onclick = ()=> hojaNuevaCita({fecha: S.agFecha});
+  if($("#agRec")) $("#agRec").onclick = ()=> hojaRecordarDia(S.agFecha);
   $("#agStrip").onclick = e=>{ const b = e.target.closest("[data-agd]"); if(!b) return; S.agFecha = b.dataset.agd; pintarTab(); };
   const stOn = $("#agStrip .on"); if(stOn) $("#agStrip").scrollLeft = stOn.offsetLeft - 24;
   cablearOrd($("#agList"), grupos);
@@ -3213,7 +3679,7 @@ async function hojaNuevaCita(pre={}){
       if(nom.length < 2 || soloDigitos(tel).length < 8) return toast("Completa nombre y WhatsApp del cliente");
       $("#ncOk",sh).disabled = true;
       try{
-        const cl = await obtenerCliente(nom, tel);
+        const cl = await obtenerClienteAdmin(nom, tel);
         const {data:choques} = await sb.from("citas").select("hora_inicio").eq("cliente_id", cl.id).eq("fecha", fecha).eq("estado","confirmada");
         if(choques && choques.length && !window.confirm(`${nom} ya tiene una cita ese día a las ${hhmm(choques[0].hora_inicio)}. ¿Agendar esta también?`)){
           $("#ncOk",sh).disabled = false; return;
@@ -3238,9 +3704,12 @@ async function tabClientes(box){
   const nRies = Object.values(S.churn||{}).filter(x=> x.riesgo).length, fid = !!S.config.fidelidad_activa;
   const prox = (conCumple||[]).filter(c=> diasParaCumple(c.cumple_dia, c.cumple_mes) <= 30), semana = prox.filter(c=> diasParaCumple(c.cumple_dia, c.cumple_mes) <= 7).length;
   let filtro = S.clientesFiltro || "todos"; S.clientesFiltro = null;
+  S.faltas = {};
+  try{ const {data:fl} = await sb.from("citas").select("cliente_id").eq("estado","no_asistio"); (fl||[]).forEach(c=> S.faltas[c.cliente_id] = (S.faltas[c.cliente_id]||0) + 1); }catch(e){}
+  const nFaltas = Object.keys(S.faltas).length, avisoF = Number(S.config.faltas_aviso) || 2;
   box.innerHTML = `${tsum("Tus clientes", count || 0, "registrados en total", "En riesgo", nRies, semana ? `<span class="badge c">${IC.gift} ${semana} ${semana === 1 ? "cumpleaños" : "cumpleaños"} esta semana</span>` : "")}
     <label class="search" style="max-width:none;margin-bottom:12px">${IC.search}<input id="clQ" placeholder="Buscar por nombre o teléfono" aria-label="Buscar cliente"></label>
-    <div class="fchips" id="clF"><button class="chip ${filtro==="todos"?"on":""}" data-f="todos">Todos</button><button class="chip ${filtro==="riesgo"?"on":""}" data-f="riesgo">En riesgo (${nRies})</button><button class="chip ${filtro==="cumple"?"on":""}" data-f="cumple">Cumpleaños (${prox.length})</button>${fid ? `<button class="chip ${filtro==="pts"?"on":""}" data-f="pts">Con puntos</button>` : ""}</div>
+    <div class="fchips" id="clF"><button class="chip ${filtro==="todos"?"on":""}" data-f="todos">Todos</button><button class="chip ${filtro==="riesgo"?"on":""}" data-f="riesgo">En riesgo (${nRies})</button><button class="chip ${filtro==="cumple"?"on":""}" data-f="cumple">Cumpleaños (${prox.length})</button><button class="chip ${filtro==="faltas"?"on":""}" data-f="faltas">Con faltas (${nFaltas})</button>${fid ? `<button class="chip ${filtro==="pts"?"on":""}" data-f="pts">Con puntos</button>` : ""}</div>
     <p class="grp-h" id="clCount" style="margin-top:6px"></p><div id="clList"></div>`;
   let t;
   const buscar = async ()=>{
@@ -3251,6 +3720,7 @@ async function tabClientes(box){
     let lista = data || [];
     if(filtro === "riesgo") lista = lista.filter(c=> S.churn[c.id] && S.churn[c.id].riesgo);
     if(filtro === "pts") lista = lista.filter(c=> Number(c.puntos_actuales) > 0);
+    if(filtro === "faltas") lista = lista.filter(c=> S.faltas[c.id]).sort((a,b)=> S.faltas[b.id] - S.faltas[a.id]);
     if(filtro === "cumple") lista = lista.filter(c=> c.cumple_mes && diasParaCumple(c.cumple_dia, c.cumple_mes) <= 30).sort((a,b)=> diasParaCumple(a.cumple_dia,a.cumple_mes) - diasParaCumple(b.cumple_dia,b.cumple_mes));
     $("#clCount").textContent = `${lista.length} ${lista.length === 1 ? "cliente" : "clientes"}`;
     $("#clList").innerHTML = lista.length ? lista.map((c,i)=>{
@@ -3258,7 +3728,7 @@ async function tabClientes(box){
       const r = S.churn && S.churn[c.id];
       return `<div class="rc btn" data-cl="${c.id}" style="--i:${Math.min(i,12)}" role="button" tabindex="0"><span class="av">${esc(iniciales(c.nombre))}</span>
         <div class="rc-b"><b>${esc(c.nombre)}</b><span>${esc(c.telefono)}${pref ? " · " + esc(pref.nombre) : ""}</span>${c.notas ? `<span class="rc-note">${esc(c.notas)}</span>` : ""}
-          ${(r && r.riesgo) || fid || c.cumple_mes ? `<div class="rc-tags">${r && r.riesgo ? `<span class="badge risk">${r.diasDesde} d sin venir</span>` : ""}${fid ? `<span class="badge c">${Number(c.puntos_actuales)||0} pts</span>` : ""}${cumpleBadge(c)}</div>` : ""}</div>
+          ${(r && r.riesgo) || fid || c.cumple_mes || S.faltas[c.id] || Number(c.premios_referido) > 0 ? `<div class="rc-tags">${S.faltas[c.id] ? `<span class="badge ${S.faltas[c.id] >= avisoF ? "risk" : ""}">Faltó ${S.faltas[c.id]} ${S.faltas[c.id]===1?"vez":"veces"}</span>` : ""}${r && r.riesgo ? `<span class="badge risk">${r.diasDesde} d sin venir</span>` : ""}${fid ? `<span class="badge c">${Number(c.puntos_actuales)||0} pts</span>` : ""}${cumpleBadge(c)}${Number(c.premios_referido) > 0 ? `<span class="badge c">${IC.gift} Premio ×${c.premios_referido}</span>` : ""}</div>` : ""}</div>
         ${c.telefono ? `<a class="circ rc-wa" href="${waLink(c.telefono)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">${IC.wa}</a>` : ""}</div>`; }).join("")
       : `<div class="adm-empty">${q || filtro !== "todos" ? "Sin resultados." : "Aún no hay clientes. Se crean solos cuando alguien agenda."}</div>`;
     $$("[data-cl]", box).forEach(b=> b.onclick = e=>{ if(e.target.closest("a")) return; hojaCliente(lista.find(x=> x.id === b.dataset.cl)); });
@@ -3272,9 +3742,11 @@ async function hojaCliente(c){
   const {data:todos} = await sb.from("estilos_corte").select("id,nombre").order("orden");
   const r = S.churn && S.churn[c.id];
   const msgReact = plantilla(S.config.msg_reactivar || DEF_REACTIVAR, {nombre: primerNombre(c.nombre), negocio: S.config.nombre||""});
-  openSheet(`<h3>${esc(c.nombre)}</h3><p class="sub">${esc(c.telefono)} · cliente desde ${c.creado_en ? fmtFecha(String(c.creado_en).slice(0,10)) : "—"}</p>
+  openSheet(`<h3>${esc(c.nombre)}</h3><p class="sub">${esc(c.telefono)} · cliente desde ${c.creado_en ? fmtFecha(String(c.creado_en).slice(0,10)) : "—"}${S.faltas && S.faltas[c.id] ? ` · faltó ${S.faltas[c.id]} ${S.faltas[c.id]===1?"vez":"veces"}` : ""}</p>
     ${r && r.riesgo ? `<div class="recibo-box" style="color:var(--danger);border-left:3px solid var(--danger)">Sin visitar hace ${r.diasDesde} días (suele volver cada ${r.promedioDias}). <a href="${waLink(c.telefono, msgReact)}" target="_blank" rel="noopener" style="color:var(--danger);text-decoration:underline">Enviar mensaje para reactivar →</a></div>` : ""}
-    ${(()=>{ const n = diasParaCumple(c.cumple_dia, c.cumple_mes); return n !== null && n <= 7 ? `<div class="recibo-box" style="color:var(--copper-2);border-left:3px solid var(--copper)">${IC.gift} ${n === 0 ? "¡Cumple años hoy!" : n === 1 ? "Cumple años mañana." : `Cumple años en ${n} días.`} <a href="${waLink(c.telefono, plantilla(DEF_CUMPLE, {nombre: primerNombre(c.nombre), negocio: S.config.nombre||""}))}" target="_blank" rel="noopener" style="color:var(--copper-2);text-decoration:underline">Enviar felicitación por WhatsApp</a></div>` : ""; })()}
+    ${(()=>{ const n = diasParaCumple(c.cumple_dia, c.cumple_mes); return n !== null && n <= 7 ? `<div class="recibo-box" style="color:var(--copper-2);border-left:3px solid var(--copper)">${IC.gift} ${n === 0 ? "¡Cumple años hoy!" : n === 1 ? "Cumple años mañana." : `Cumple años en ${n} días.`} <a href="${waLink(c.telefono, msgCumple(c))}" target="_blank" rel="noopener" style="color:var(--copper-2);text-decoration:underline">Enviar felicitación por WhatsApp</a></div>` : ""; })()}
+    ${(()=>{ const pc = promoCumple(c); return pc.vigente ? `<div class="recibo-box" style="color:var(--copper-2);border-left:3px solid var(--copper)">${IC.gift} Promo de cumpleaños vigente: <b>${esc(S.config.cumple_promo_texto)}</b> <button class="link-btn" id="hcCanje" type="button">Marcar como canjeada</button></div>` : pc.canjeada ? `<div class="recibo-box">${IC.gift} Promo de cumpleaños canjeada este año.</div>` : ""; })()}
+    ${Number(c.premios_referido) > 0 ? `<div class="recibo-box" style="color:var(--copper-2);border-left:3px solid var(--copper)">${IC.gift} Tiene <b>${c.premios_referido}</b> ${c.premios_referido === 1 ? "premio" : "premios"} por referidos${S.config.referido_texto ? ": " + esc(S.config.referido_texto) : ""}. <button class="link-btn" id="hcPremio" type="button">Marcar como entregado</button></div>` : ""}
     <div class="grid2">
       <div class="field"><label>Nombre</label><input id="hcNom" value="${esc(c.nombre)}"></div>
       <div class="field"><label>Estilo preferido</label><select id="hcEst"><option value="">Sin preferencia</option>${(todos||[]).map(e=>`<option value="${e.id}" ${e.id===c.estilo_preferido_id?"selected":""}>${esc(e.nombre)}</option>`).join("")}</select></div>
@@ -3292,6 +3764,10 @@ async function hojaCliente(c){
     </div>
     <button class="pill pill-white pill-block" id="hcOk" style="margin-top:10px">Guardar cambios</button>
     <button class="pill pill-ghost pill-block danger-txt" id="hcDel" style="margin-top:10px">${IC.trash} Eliminar cliente</button>`, sh=>{
+    const cj = $("#hcCanje", sh);
+    if(cj) cj.onclick = async ()=>{ const {error} = await sb.from("clientes").update({cumple_promo_anio: promoCumple(c).anio}).eq("id", c.id); if(error) return toast("No se pudo marcar"); closeSheet(); toast("Promo marcada como canjeada"); pintarTab(); };
+    const pr = $("#hcPremio", sh);
+    if(pr) pr.onclick = async ()=>{ const {error} = await sb.from("clientes").update({premios_referido: Math.max(0, (Number(c.premios_referido)||0) - 1)}).eq("id", c.id); if(error) return toast("No se pudo marcar"); closeSheet(); toast("Premio entregado"); pintarTab(); };
     $("#hcDel",sh).onclick = async ()=>{
       const [{count:nc}, {count:nh}] = await Promise.all([
         sb.from("citas").select("*", {count:"exact", head:true}).eq("cliente_id", c.id),
@@ -3331,10 +3807,11 @@ async function tabServicios(box){
   const pintar = ()=>{
     const q = $("#asQ").value.trim().toLowerCase(), cat = $("#asCat") ? $("#asCat").value : "";
     const l = todos.filter(s=> (!cat || (s.categoria||"").trim() === cat) && (!q || [s.nombre, s.precio, durTxt(s.duracion_minutos)].join(" ").toLowerCase().includes(q)));
-    $("#asTiles").innerHTML = `<button class="tile add" id="asNew" style="--i:0">${IC.plus}Nuevo servicio</button>` +
+    $("#asTiles").innerHTML = `<button class="tile add" id="asNew" style="--i:0">${IC.plus}Nuevo servicio</button><button class="tile add" id="asNewCombo" style="--i:0">${IC.plus}Nuevo combo</button>` +
       l.map((s,i)=> tileHtml(s, false, i+1, s.activo ? "" : "dim").replace('<span class="tick">', s.activo ? '<span class="tick">' : '<span class="badge" style="z-index:2">Oculto</span><span class="tick">')).join("");
     $("#asNew").onclick = ()=> hojaServicio(null, cats);
-    $$("[data-tile]", box).forEach(b=> b.onclick = ()=> hojaServicio(todos.find(s=> String(s.id) === b.dataset.tile), cats));
+    $("#asNewCombo").onclick = ()=> hojaCombo(null);
+    $$("[data-tile]", box).forEach(b=> b.onclick = ()=>{ const sv = todos.find(s=> String(s.id) === b.dataset.tile); sv.es_combo ? hojaCombo(sv) : hojaServicio(sv, cats); });
   };
   $("#asQ").oninput = pintar; if($("#asCat")) $("#asCat").onchange = pintar;
   pintar();
@@ -3420,7 +3897,7 @@ function hojaEstilo(e){
 async function tabProductos(box){
   const {data} = await sb.from("productos").select("*").order("orden");
   const todos = data || [];
-  const bajos = todos.filter(p=> p.stock != null && Number(p.stock) <= 3).length, valor = todos.reduce((a,p)=> a + (p.stock != null ? Number(p.stock) * Number(p.precio) : 0), 0);
+  const bajos = todos.filter(p=> p.stock != null && Number(p.stock) <= (Number(S.config.stock_alerta_minimo) || 3)).length, valor = todos.reduce((a,p)=> a + (p.stock != null ? Number(p.stock) * Number(p.precio) : 0), 0);
   box.innerHTML = `${sbar([["Productos", todos.length], ["Stock bajo", bajos, bajos ? "bad" : ""], ["En inventario", money(valor), "warn"]])}
     <div class="tiles stg" id="prTiles"></div>`;
   const pintar = ()=>{
@@ -3495,7 +3972,7 @@ function hojaProducto(p){
 
 /* ---------------- HORARIO ---------------- */
 async function tabHorario(box){
-  const [{data:hor}, {data:bl}] = await Promise.all([sb.from("horarios").select("*").order("dia_semana"), sb.from("bloqueos").select("*").gte("fecha", isoDate(new Date())).order("fecha")]);
+  const [{data:hor}, {data:bl}, {data:des}] = await Promise.all([sb.from("horarios").select("*").order("dia_semana"), sb.from("bloqueos").select("*").gte("fecha", isoDate(new Date())).order("fecha"), sb.from("descansos").select("*").order("hora_inicio")]);
   const abiertos = (hor||[]).filter(h=> h.activo), horasSem = abiertos.reduce((a,h)=> a + Math.max(0, toMin(h.hora_fin) - toMin(h.hora_inicio)) / 60, 0);
   box.innerHTML = `${sbar([["Días abiertos", abiertos.length + " de 7", "ok"], ["Horas / semana", Math.round(horasSem) + " h"], ["Bloqueos", (bl||[]).length, (bl||[]).length ? "warn" : ""]])}
     <div class="fcard"><h3>Días y horas de atención</h3>
@@ -3507,6 +3984,11 @@ async function tabHorario(box){
           <div class="segc">${[15,30,60].map(v=>`<button type="button" data-v="${v}" class="${iv===v?"on":""}">${v===60?"1 h":v+" min"}</button>`).join("")}</div></div>
       </div>`; }).join("")}
     <div class="hr-actions"><button class="pill pill-ghost pill-sm" id="hrCopy" type="button">${IC.copy} Copiar el lunes a los demás días abiertos</button><button class="pill pill-white" id="hrOk">Guardar horario</button></div></div>
+
+    <div class="fcard"><h3>Descansos</h3>
+      <div id="dsList">${(des||[]).length ? des.map(d=>`<div class="rc btn ${d.activo ? "" : "pausado"}" data-des="${d.id}" role="button" tabindex="0"><span class="av">${IC.clock}</span><div class="rc-b"><b>${esc(d.etiqueta || "Descanso")}</b><span>${hhmm(d.hora_inicio)} – ${hhmm(d.hora_fin)} · ${diasTxt(d.dias)}</span></div><span class="badge ${d.activo ? "ok" : ""}">${d.activo ? "Activo" : "Pausado"}</span></div>`).join("") : `<div class="adm-empty">Sin descansos todavía.</div>`}</div>
+      <button class="pill pill-ghost pill-sm" id="dsNew" style="margin-top:12px">${IC.plus} Agregar descanso</button>
+    </div>
 
     <div class="fcard"><h3>Bloqueos</h3>
       <div class="grid2">
@@ -3535,6 +4017,8 @@ async function tabHorario(box){
     if(error) return toast("No se pudo guardar el horario");
     toast("Horario guardado"); await cargarDatosBase();
   };
+  $("#dsNew").onclick = ()=> hojaDescanso(null);
+  $$("[data-des]", box).forEach(b=> b.onclick = ()=> hojaDescanso((des||[]).find(d=> String(d.id) === b.dataset.des)));
   $("#blTodo").onchange = e=> $("#blHoras").classList.toggle("hidden", e.target.checked);
   $("#blOk").onclick = async ()=>{
     const fecha = $("#blF").value, todo = $("#blTodo").checked;
@@ -3668,11 +4152,19 @@ function hojaGasto(){
 }
 async function pintarFinanzas(){
   const {desde, hasta, dias} = rangoFechas();
-  const [{data:citas}, {data:ventas}, {data:gastos}] = await Promise.all([
-    sb.from("citas").select("fecha,cliente_id,servicios(precio),clientes(nombre)").eq("estado","completada").gte("fecha",desde).lte("fecha",hasta),
+  const [{data:citas}, {data:ventas}, {data:gastos}, {data:previas}] = await Promise.all([
+    sb.from("citas").select("fecha,hora_inicio,cliente_id,servicios(nombre,precio),clientes(nombre)").eq("estado","completada").gte("fecha",desde).lte("fecha",hasta),
     sb.from("ventas_producto").select("fecha,cantidad,precio_unit,cliente_id,clientes(nombre)").gte("fecha",desde).lte("fecha",hasta),
     sb.from("gastos").select("*").gte("fecha",desde).lte("fecha",hasta).order("fecha",{ascending:false}),
+    sb.from("citas").select("cliente_id").eq("estado","completada").lt("fecha",desde).not("cliente_id","is",null).limit(5000),
   ]);
+  S.finDatos = {citas: citas||[], ventas: ventas||[], gastos: gastos||[], desde, hasta};
+  const rep_ = (()=>{
+    const serv = {}, horas = {}, antes = new Set((previas||[]).map(c=> c.cliente_id)), enRango = new Set();
+    (citas||[]).forEach(c=>{ const n = (c.servicios||{}).nombre || "Servicio"; serv[n] = serv[n] || {n:0, q:0}; serv[n].n++; serv[n].q += Number((c.servicios||{}).precio)||0; const h = Number(String(c.hora_inicio).slice(0,2)); horas[h] = (horas[h]||0) + 1; if(c.cliente_id) enRango.add(c.cliente_id); });
+    const nuevos = [...enRango].filter(id=> !antes.has(id)).length;
+    return {serv: Object.entries(serv).sort((a,b)=> b[1].n - a[1].n).slice(0,6), horas, nuevos, recurrentes: enRango.size - nuevos};
+  })();
   const ingServ = (citas||[]).reduce((a,c)=> a + Number((c.servicios||{}).precio)||0, 0);
   const ingProd = (ventas||[]).reduce((a,v)=> a + Number(v.cantidad)*Number(v.precio_unit), 0);
   const ingresos = ingServ + ingProd;
@@ -3703,12 +4195,46 @@ async function pintarFinanzas(){
     <section class="grp">${grpHd("Por día", `<div class="legend"><span><i class="dot-g"></i>Ingresos</span><span><i class="dot-r"></i>Gastos</span></div>`)}
       <div class="fin-chart">${claves.map(k=>{ const d = parseIso(k), b = bucket[k];
         return `<div class="fin-bar"><div class="bwrap"><i style="height:${Math.round(b.ing/maxV*100)}%" title="Ingresos ${money(b.ing)}"></i><i class="g" style="height:${Math.round(b.gas/maxV*100)}%" title="Gastos ${money(b.gas)}"></i></div><span>${d.getDate()}/${d.getMonth()+1}</span></div>`; }).join("")}</div></section>
+    <section class="grp">${grpHd("Servicios más pedidos")}
+      ${rep_.serv.length ? rep_.serv.map(([n,v],i)=>`<div class="rc" style="--i:${i}"><span class="av rank">${i+1}</span><div class="rc-b"><b>${esc(n)}</b><div class="mbar"><i style="width:${Math.round(v.n/rep_.serv[0][1].n*100)}%"></i></div></div><span class="rc-amt">${v.n}×</span></div>`).join("") : `<div class="adm-empty">Sin datos en este rango.</div>`}</section>
+    <section class="grp">${grpHd("Horas pico")}
+      ${(()=>{ const hs = Object.keys(rep_.horas).map(Number).sort((a,b)=>a-b); if(!hs.length) return `<div class="adm-empty">Sin datos en este rango.</div>`; const mx = Math.max(...Object.values(rep_.horas)); return `<div class="fin-chart">${hs.map(h=>`<div class="fin-bar"><div class="bwrap"><i style="height:${Math.round(rep_.horas[h]/mx*100)}%" title="${rep_.horas[h]} citas"></i></div><span>${h > 12 ? h-12 : h}${h >= 12 ? "p" : "a"}</span></div>`).join("")}</div>`; })()}</section>
+    <section class="grp">${grpHd("Clientes")}
+      ${sbar([["Nuevos", rep_.nuevos, "ok"], ["Recurrentes", rep_.recurrentes]])}</section>
     <section class="grp">${grpHd("Mejores clientes")}
       ${top.length ? top.map((c,i)=>`<div class="rc" style="--i:${i}"><span class="av rank">${i+1}</span><div class="rc-b"><b>${esc(c.nombre)}</b><span>${c.visitas} visita${c.visitas===1?"":"s"}</span></div><span class="rc-amt">${money(c.total)}</span></div>`).join("") : `<div class="adm-empty">Sin ingresos en este rango.</div>`}</section>
+    <div class="sh-actions" style="margin:0 0 18px;flex-wrap:wrap"><button class="pill pill-white" id="fnCierre">${IC.chart} Cierre de caja de hoy</button><button class="pill pill-ghost" id="fnCsv">${IC.download} Exportar CSV</button></div>
     <section class="grp">${grpHd("Gastos", `<button class="pill pill-white pill-sm" id="gaNew">${IC.plus} Agregar</button>`)}
       ${(gastos||[]).length ? gastos.map((g,i)=>`<div class="rc" style="--i:${i}"><span class="av">${IC.box}</span><div class="rc-b"><b>${esc(g.concepto)}</b><span>${fmtFecha(g.fecha)}${g.categoria?" · "+esc(g.categoria):""}</span></div><span class="rc-amt neg">${money(g.monto)}</span><button class="circ danger" data-delg="${g.id}" style="width:36px;height:36px" aria-label="Eliminar gasto">${IC.x}</button></div>`).join("") : `<div class="adm-empty">Sin gastos registrados en este rango.</div>`}</section>`;
   $("#gaNew").onclick = hojaGasto;
+  $("#fnCsv").onclick = exportarCsv;
+  $("#fnCierre").onclick = hojaCierre;
   $$("[data-delg]").forEach(b=> b.onclick = ()=> confirmar("¿Eliminar este gasto?", "Se quitará de tus cuentas.", "Eliminar", async ()=>{ await sb.from("gastos").delete().eq("id", b.dataset.delg); toast("Gasto eliminado"); pintarFinanzas(); }));
+}
+
+/* ---------- exportar y cierre de caja ---------- */
+function exportarCsv(){
+  const d = S.finDatos; if(!d) return;
+  const q = v=> `"${String(v ?? "").replace(/"/g, '""')}"`, filas = [["Fecha","Tipo","Detalle","Cliente","Monto"]];
+  d.citas.forEach(c=> filas.push([c.fecha, "Servicio", (c.servicios||{}).nombre||"", (c.clientes||{}).nombre||"", Number((c.servicios||{}).precio)||0]));
+  d.ventas.forEach(v=> filas.push([v.fecha, "Producto", "×" + v.cantidad, (v.clientes||{}).nombre||"", Number(v.cantidad)*Number(v.precio_unit)]));
+  d.gastos.forEach(g=> filas.push([g.fecha, "Gasto", g.concepto + (g.categoria ? " (" + g.categoria + ")" : ""), "", -Number(g.monto)]));
+  filas.sort((a,b)=> a[0] === "Fecha" ? -1 : b[0] === "Fecha" ? 1 : String(a[0]).localeCompare(String(b[0])));
+  descargarBlob(new Blob(["﻿" + filas.map(f=> f.map(q).join(",")).join("\n")], {type:"text/csv;charset=utf-8"}), `finanzas-${d.desde}_a_${d.hasta}.csv`);
+  toast("CSV descargado");
+}
+async function hojaCierre(){
+  const hoy = isoDate(new Date());
+  const [{data:citas}, {data:ventas}, {data:gastos}] = await Promise.all([
+    sb.from("citas").select("servicios(precio)").eq("estado","completada").eq("fecha", hoy),
+    sb.from("ventas_producto").select("cantidad,precio_unit").eq("fecha", hoy),
+    sb.from("gastos").select("monto").eq("fecha", hoy)]);
+  const iS = (citas||[]).reduce((a,c)=> a + (Number((c.servicios||{}).precio)||0), 0), iP = (ventas||[]).reduce((a,v)=> a + Number(v.cantidad)*Number(v.precio_unit), 0), gs = (gastos||[]).reduce((a,g)=> a + Number(g.monto), 0);
+  const texto = `Cierre de caja — ${S.config.nombre || "Imperio Store Barber"}\n${fmtFechaLarga(hoy)}\n\nServicios (${(citas||[]).length}): ${money(iS)}\nProductos: ${money(iP)}\nGastos: ${money(gs)}\n\nTotal del día: ${money(iS + iP - gs)}`;
+  openSheet(`<h3>Cierre de caja</h3><div class="recibo-box" id="ccTxt">${esc(texto)}</div>
+    <div class="sh-actions"><button class="pill pill-ghost" id="ccCopy">${IC.copy} Copiar</button><a class="pill pill-white" id="ccWa" href="https://wa.me/?text=${encodeURIComponent(texto)}" target="_blank" rel="noopener">${IC.wa} Enviar</a></div>`, sh=>{
+    $("#ccCopy", sh).onclick = async ()=>{ try{ await navigator.clipboard.writeText(texto); toast("Copiado"); }catch(e){ toast("No se pudo copiar"); } };
+  });
 }
 
 /* ---------------- AJUSTES ---------------- */
@@ -3737,6 +4263,26 @@ function tabAjustes(box){
       </div>
       <div class="field"><label>Premio</label><input id="ajPr" value="${v("premio_texto")}" placeholder="Ej. Corte gratis"></div>
       <div class="sw-row" style="border:0"><div>Códigos de referido</div><label class="sw"><input type="checkbox" id="ajRef" ${c.referidos_activo?"checked":""}><span></span></label></div>
+      <div class="sw-row" style="border:0"><div>Premiar a quien refiere</div><label class="sw"><input type="checkbox" id="ajRefPremio" ${c.referido_recompensa_activa?"checked":""}><span></span></label></div>
+      <div class="grid2" style="margin-top:6px">
+        <div class="field"><label>Puntos por referido</label><input id="ajRefPts" type="number" min="0" value="${Number(c.referido_puntos ?? 5)}"></div>
+        <div class="field"><label>Premio por referido</label><input id="ajRefTxt" value="${v("referido_texto")}" placeholder="Ej. Corte gratis"></div>
+      </div>
+    </div>
+    <div class="fcard"><h3>Cumpleaños</h3>
+      <div class="sw-row" style="border:0"><div>Promoción de cumpleaños</div><label class="sw"><input type="checkbox" id="ajCumPromo" ${c.cumple_promo_activa?"checked":""}><span></span></label></div>
+      <div class="grid2" style="margin-top:6px">
+        <div class="field"><label>Promoción</label><input id="ajCumTxt" value="${v("cumple_promo_texto")}" placeholder="Ej. 10% en tu corte"></div>
+        <div class="field"><label>Días de vigencia</label><input id="ajCumDias" type="number" min="1" value="${Number(c.cumple_promo_dias)||7}"></div>
+      </div>
+      <div class="field"><label>Mensaje de felicitación</label><textarea id="ajMC">${esc(c.msg_cumple || DEF_CUMPLE)}</textarea></div>
+    </div>
+    <div class="fcard"><h3>Control del negocio</h3>
+      <div class="field"><label>Faltas para marcar al cliente</label><input id="ajFaltas" type="number" min="1" value="${Number(c.faltas_aviso)||2}"></div>
+      <div class="sw-row"><div>Avisar cuando un producto se acabe</div><label class="sw"><input type="checkbox" id="ajStockAv" ${c.stock_alerta_activa !== false ? "checked" : ""}><span></span></label></div>
+      <div class="field" style="margin-top:14px"><label>Avisar cuando queden</label><input id="ajStockMin" type="number" min="0" value="${Number(c.stock_alerta_minimo ?? 3)}"></div>
+      <div class="sw-row"><div>Cierre de caja diario al teléfono</div><label class="sw"><input type="checkbox" id="ajCierre" ${c.cierre_caja_activo?"checked":""}><span></span></label></div>
+      <div class="field" style="margin-top:14px"><label>Hora del cierre</label><select id="ajCierreH">${Array.from({length:24}, (_,h)=>`<option value="${h}" ${Number(c.cierre_caja_hora ?? 21)===h?"selected":""}>${pad(h)}:00</option>`).join("")}</select></div>
     </div>
     <div class="fcard"><h3>Productos al agendar</h3>
       <div class="sw-row" style="border:0"><div>Mostrar este paso<small>${productosActivos().length ? productosActivos().length + " producto(s) activo(s)" : ""}</small></div><label class="sw"><input type="checkbox" id="ajPasoProd" ${c.mostrar_paso_productos?"checked":""}><span></span></label></div>
@@ -3748,7 +4294,12 @@ function tabAjustes(box){
     const base = {nombre: $("#ajNom").value.trim() || "Imperio Store Barber", direccion: $("#ajDir").value.trim(), maps_link: $("#ajMaps").value.trim(), whatsapp: soloDigitos($("#ajWa").value),
       fidelidad_activa: $("#ajFid").checked, puntos_por_visita: Math.max(1, Number($("#ajPV").value)||1), puntos_para_premio: Math.max(1, Number($("#ajPP").value)||10), referidos_activo: $("#ajRef").checked};
     const extra = {msg_recordatorio: $("#ajMR").value.trim(), msg_espera: $("#ajME").value.trim(), msg_reactivar: $("#ajMX").value.trim(), premio_texto: $("#ajPr").value.trim(), mostrar_paso_productos: $("#ajPasoProd").checked, texto_paso_productos: $("#ajTxtProd").value.trim()};
-    let {error} = await sb.from("config_negocio").update({...base, ...extra}).eq("id", 1);
+    const nuevos = {referido_recompensa_activa: $("#ajRefPremio").checked, referido_puntos: Math.max(0, Number($("#ajRefPts").value)||0), referido_texto: $("#ajRefTxt").value.trim(),
+      cumple_promo_activa: $("#ajCumPromo").checked, cumple_promo_texto: $("#ajCumTxt").value.trim(), cumple_promo_dias: Math.max(1, Number($("#ajCumDias").value)||7), msg_cumple: $("#ajMC").value.trim(),
+      faltas_aviso: Math.max(1, Number($("#ajFaltas").value)||2), stock_alerta_activa: $("#ajStockAv").checked, stock_alerta_minimo: Math.max(0, Number($("#ajStockMin").value)||0),
+      cierre_caja_activo: $("#ajCierre").checked, cierre_caja_hora: Number($("#ajCierreH").value)};
+    let {error} = await sb.from("config_negocio").update({...base, ...extra, ...nuevos}).eq("id", 1);
+    if(error) ({error} = await sb.from("config_negocio").update({...base, ...extra}).eq("id", 1));
     if(error) ({error} = await sb.from("config_negocio").update(base).eq("id", 1));
     if(error) return toast("No se pudo guardar");
     toast("Ajustes guardados"); await cargarDatosBase(); pintarMarco();
@@ -3770,7 +4321,7 @@ function cablearFotos(root){
     lbl.style.pointerEvents = "none"; lbl.firstChild && (lbl.childNodes[1].textContent = " Subiendo…");
     const url = await subirImagen(f);
     lbl.style.pointerEvents = ""; lbl.innerHTML = txt; cablearFotos(root);
-    if(url){ $("#"+id, root).value = url; pintarPrev(root, id, url); toast("Foto lista. No olvides guardar."); }
+    if(url){ const campo = $("#"+id, root); campo.value = url; pintarPrev(root, id, url); campo.dispatchEvent(new Event("input", {bubbles:true})); toast("Foto lista. No olvides guardar."); }
   });
   $$(".imgf-r > input", root).forEach(i=> i.oninput = ()=> pintarPrev(root, i.id, i.value.trim()));
 }
@@ -3910,7 +4461,7 @@ async function describirCambio(p){
   try{ const {data} = await sb.from("clientes").select("nombre").eq("id", n.cliente_id).maybeSingle(); if(data && data.nombre) nombre = data.nombre; }catch(e){}
   const sv = (S.servicios.find(s=> s.id === n.servicio_id) || {}).nombre || "Cita";
   const titulos = {nueva:"Nueva cita", cancelada:"Cita cancelada", reprogramada:"Cita reprogramada", confirmo:"Confirmó asistencia"};
-  return {tipo, titulo:titulos[tipo], cuerpo:`${nombre} · ${sv}\n${fmtFecha(n.fecha)} · ${hhmm(n.hora_inicio)}`, tag:String(n.visita_id || n.id)};
+  return {tipo, titulo:titulos[tipo], cuerpo:`${nombre} · ${sv}\n${fmtFecha(n.fecha)} · ${hhmm(n.hora_inicio)}`, tag:String(n.visita_id || n.id), fecha:n.fecha, hora:hhmm(n.hora_inicio)};
 }
 async function onCitaCambio(p){
   const ev = await describirCambio(p); if(!ev) return;
@@ -3918,7 +4469,7 @@ async function onCitaCambio(p){
   if(document.visibilityState === "visible"){
     toast(`${ev.titulo}: ${ev.cuerpo.replace("\n"," · ")}`); sonar();
     try{ navigator.vibrate && navigator.vibrate([120,60,120]); }catch(e){}
-    if(S.route === "admin") refrescarAdmin();
+    if(S.route === "admin"){ refrescarAdmin(); if(ev.tipo === "cancelada") setTimeout(()=> hojaEspacioLiberado(ev.fecha, ev.hora), 600); }
   }else if(estadoNotif() === "granted"){ mostrarAviso(ev.titulo, ev.cuerpo, ev.tag); }
 }
 function iniciarRealtime(){
