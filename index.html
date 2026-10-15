@@ -1314,6 +1314,34 @@ body[data-route=admin] .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px)
 .fin-tabs button{flex:1;white-space:nowrap}
 .fin-chart{background:none;padding:0;border-radius:0}
 @media(min-width:700px){.fin-tabs{display:inline-flex;width:auto}.tsum-v{font-size:72px}}
+
+/* cumpleaños */
+.cum-sel{display:grid;grid-template-columns:96px 1fr;gap:8px}
+.cum-fixed{display:flex;align-items:center;gap:10px;height:54px;padding:0 18px;border-radius:14px;background:var(--card);font-weight:700;text-transform:capitalize}
+.cum-fixed svg{color:var(--copper-2)}
+.cum-note{display:flex;align-items:center;gap:14px}
+.cum-note svg{width:22px;height:22px;color:var(--copper-2);flex:0 0 auto}
+.cum-note b{display:block;color:var(--cream);text-transform:capitalize}
+.cum-note span{display:block;font-size:12.5px;color:var(--text-3);margin-top:2px}
+.badge svg{width:12px;height:12px;margin-right:5px}
+
+/* ficha del cliente y fotos de referencia */
+.ord-ficha{display:flex;flex-direction:column;gap:6px;margin-top:10px;font-size:12.5px;line-height:1.45}
+.ord-ficha span{display:grid;grid-template-columns:62px 1fr;gap:8px;color:var(--text-2)}
+.ord-ficha b{color:var(--copper-2);font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding-top:2px}
+.ref-up{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2px}
+.ref-th{position:relative;width:86px;height:86px;border-radius:14px;overflow:hidden;background:var(--card-2)}
+.ref-th img{width:100%;height:100%;object-fit:cover}
+.ref-th button{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.72);color:#fff;display:grid;place-items:center}
+.ref-th button svg{width:14px;height:14px}
+.ref-add{width:86px;height:86px;border-radius:14px;box-shadow:inset 0 0 0 1.5px var(--line-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--text-2);font-size:12px;font-weight:700;transition:box-shadow .25s,color .25s}
+.ref-add:hover{color:var(--cream);box-shadow:inset 0 0 0 1.5px var(--text-3)}
+.ref-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.ref-grid img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:16px;background:var(--card-2)}
+
+/* sin textos de instrucciones: ajustar espacios */
+.fcard>h3{margin-bottom:16px}
+.sh h3+*:not(.sub){margin-top:18px}
 </style>
 </head>
 <body data-route="inicio">
@@ -1387,6 +1415,7 @@ const VENTANA_DIAS = 30;
 const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const DEF_RECORD = "Hola {nombre}, te recuerdo tu cita de {servicio} el {fecha} a las {hora} en {negocio}. ¡Te espero!";
 const DEF_ESPERA = "Hola {nombre}, se liberó un espacio el {fecha} en {negocio}. ¿Te interesa? Respóndeme y te lo aparto.";
+const DEF_CUMPLE = "¡Feliz cumpleaños {nombre}! Todo el equipo de {negocio} te desea un día increíble. Pásate cuando quieras por tu corte.";
 const DEF_REACTIVAR = "Hola {nombre}, ¡tiempo sin verte por {negocio}! ¿Agendamos tu próximo corte?";
 const DEF_RECIBO_TITULO = "Recibo de tu visita";
 function uid(){ return Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4); }
@@ -1425,7 +1454,7 @@ function waLink(num, text){
 function qrUrl(data, size=260){ return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&margin=0&data=${encodeURIComponent(data)}`; }
 function urlBase(){ return location.origin + location.pathname; }
 function genCodigo(nombre){ const b = String(nombre||"CLI").normalize("NFD").replace(/[^A-Za-z]/g,"").toUpperCase().slice(0,4) || "CLI"; return b + Math.floor(1000 + Math.random()*9000); }
-function guardarLocal(o){ try{ localStorage.setItem("imperio_cliente", JSON.stringify(o)); }catch(e){} }
+function guardarLocal(o){ try{ localStorage.setItem("imperio_cliente", JSON.stringify({...leerLocal(), ...o})); }catch(e){} }
 function leerLocal(){ try{ return JSON.parse(localStorage.getItem("imperio_cliente")||"null") || {}; }catch(e){ return {}; } }
 
 const sv = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
@@ -1468,6 +1497,7 @@ Object.assign(IC, {
   gear: sv('<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/>'),
   box: sv('<path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5zM3.5 7.5L12 12l8.5-4.5M12 12v9"/>'),
   download: sv('<path d="M12 4v11M7 11l5 5 5-5M4 20h16"/>'),
+  gift: sv('<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7M7.5 8a2.5 2.5 0 1 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 1 1 0 5"/>'),
   phoneI: sv('<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/>'),
 });
 function starsHtml(n){ const r = Math.round(Number(n)||0); let h = ""; for(let i=1;i<=5;i++) h += IC.star.replace("<svg", `<svg class="${i<=r?"":"off"}"`); return `<span class="stars" aria-label="${r} de 5 estrellas">${h}</span>`; }
@@ -2113,6 +2143,58 @@ function seccionUbicacion(){
 /* ============================================================
    APP DE RESERVA (referencia: Black Box)
    ============================================================ */
+function pintarRefs(){
+  const b = S.booking, box = $("#refUp"); if(!box || !b) return;
+  box.innerHTML = b.fotos.map((f,i)=>`<div class="ref-th"><img src="${URL.createObjectURL(f)}" alt="Foto de referencia"><button type="button" data-rmref="${i}" aria-label="Quitar foto">${IC.x}</button></div>`).join("")
+    + (b.fotos.length < 3 ? `<button class="ref-add" id="refAdd" type="button">${IC.image}<span>Agregar</span></button>` : "");
+  const add = $("#refAdd"); if(add) add.onclick = ()=> $("#fFotos").click();
+  $$("[data-rmref]", box).forEach(x=> x.onclick = ()=>{ b.fotos.splice(Number(x.dataset.rmref), 1); pintarRefs(); });
+}
+async function comprimirReferencia(file){
+  const bmp = await createImageBitmap(file);
+  const k = Math.min(1, 1280 / Math.max(bmp.width, bmp.height));
+  const cv = document.createElement("canvas"); cv.width = Math.round(bmp.width*k); cv.height = Math.round(bmp.height*k);
+  cv.getContext("2d").drawImage(bmp, 0, 0, cv.width, cv.height);
+  let blob = null;
+  for(let q = .78; q >= .46; q -= .08){
+    blob = await new Promise(r=> cv.toBlob(r, "image/jpeg", q));
+    if(blob && blob.size <= 330000) break;
+  }
+  if(!blob || blob.size > 1400000) throw new Error("foto-pesada");
+  return blob;
+}
+async function subirReferencias(visitaId, clienteId, files){
+  let ok = 0, fail = 0;
+  for(const f of files){
+    try{
+      const blob = await comprimirReferencia(f), ruta = `${visitaId}/${uid()}.jpg`;
+      const {error} = await sb.storage.from("referencias").upload(ruta, blob, {contentType:"image/jpeg", cacheControl:"3600", upsert:false});
+      if(error) throw error;
+      const {error:e2} = await sb.from("cita_fotos").insert({visita_id:visitaId, cliente_id:clienteId, ruta});
+      if(e2) throw e2;
+      ok++;
+    }catch(e){ console.warn("foto", e); fail++; }
+  }
+  return {ok, fail};
+}
+function hojaSubirFotos(g, cl){
+  openSheet(`<h3>Fotos de lo que quieres</h3><p class="sub">Para tu cita del ${fmtFechaLarga(g.fecha)}. Hasta 3 fotos. Solo las ve el barbero y se borran automáticamente cuando termina tu cita.</p>
+    <input type="file" id="mfIn" accept="image/*" multiple hidden>
+    <button class="pill pill-white pill-block" id="mfPick">${IC.image} Elegir fotos</button>`, sh=>{
+    $("#mfPick", sh).onclick = ()=> $("#mfIn", sh).click();
+    $("#mfIn", sh).onchange = async e=>{
+      const files = [...e.target.files].filter(f=> /^image\//.test(f.type)).slice(0,3); if(!files.length) return;
+      const btn = $("#mfPick", sh); btn.disabled = true; btn.textContent = "Subiendo…";
+      const r = await subirReferencias(g.key, cl.id, files);
+      closeSheet();
+      toast(r.ok ? (r.fail ? `Subimos ${r.ok} foto${r.ok===1?"":"s"}; ${r.fail} no se pudo` : "¡Listo! El barbero verá tus fotos") : "No se pudieron subir (máximo 3 por cita)");
+    };
+  });
+}
+function cumpleCampo(cumple){
+  if(cumple) return `<label>Tu cumpleaños</label><div class="cum-fixed">${IC.gift} ${esc(cumple)}</div><small>Ya está guardado. Si necesitas cambiarlo, solo el barbero puede hacerlo.</small>`;
+  return `<label>Tu cumpleaños (opcional)</label>${selectCumple("fCumD","fCumM")}<small>Solo día y mes. Se guarda una sola vez; si luego necesitas cambiarlo, solo el barbero puede hacerlo.</small>`;
+}
 function nuevaReserva(){ const l = leerLocal(); return {items:[], estilo:null, sorprende:false, fecha:null, hora:null, nombre:l.nombre||"", telefono:l.telefono||"", productos:[]}; }
 function productosActivos(){ return (S.productos||[]).filter(p=> p.activo); }
 function pasoProductosActivo(){ return !!(S.config.mostrar_paso_productos && productosActivos().length); }
@@ -2208,6 +2290,8 @@ function renderWizard(app){
       <div class="field" style="--i:0"><label for="fNombre">Nombre completo</label><input id="fNombre" autocomplete="name" value="${esc(b.nombre)}" placeholder="Ej. Carlos Pérez"></div>
       <div class="field" style="--i:1"><label for="fTel">WhatsApp</label><input id="fTel" type="tel" inputmode="tel" autocomplete="tel" value="${esc(b.telefono)}" placeholder="Ej. 5512 3456"><small>Aquí te llega la confirmación y el recordatorio.</small></div>
       ${S.config.referidos_activo && !l.telefono ? `<div class="field" style="--i:2"><label for="fRef">Código de referido (opcional)</label><input id="fRef" autocapitalize="characters" placeholder="Si alguien te invitó"></div>` : ""}
+      <div class="field" style="--i:2" id="cumBox">${cumpleCampo(l.cumple)}</div>
+      <div class="field" style="--i:2"><label>Fotos de lo que quieres (opcional)</label><div class="ref-up" id="refUp"></div><input type="file" id="fFotos" accept="image/*" multiple hidden><small>Hasta 3 fotos. Solo las ve el barbero y se borran automáticamente cuando termina tu cita.</small></div>
       <div class="sum-card" style="--i:3">
         ${b.items.map(it=> `<div class="sum-row"><span>${esc(it.servicio.nombre)}${it.etiqueta?` <i style="color:var(--text-3);font-style:normal">· ${esc(it.etiqueta)}</i>`:""}</span><b>${precioTxt(it.servicio)}</b></div>`).join("")}
         <div class="sum-row"><span>Estilo</span><b>${b.estilo ? esc(b.estilo.nombre) : "El barbero decide"}${pasoEstilo?`<button data-wgo="${pasoEstilo}">Cambiar</button>`:""}</b></div>
@@ -2271,6 +2355,24 @@ function renderWizard(app){
   if(key === "datos"){
     $("#fNombre").oninput = e=> b.nombre = e.target.value;
     $("#fTel").oninput = e=> b.telefono = e.target.value;
+    b.fotos = b.fotos || [];
+    pintarRefs();
+    $("#fFotos").onchange = e=>{
+      for(const f of [...e.target.files]){
+        if(b.fotos.length >= 3){ toast("Máximo 3 fotos"); break; }
+        if(!/^image\//.test(f.type)) continue;
+        if(f.size > 15*1024*1024){ toast("Una foto pesa demasiado (máx. 15 MB)"); continue; }
+        b.fotos.push(f);
+      }
+      e.target.value = ""; pintarRefs();
+    };
+    $("#fTel").onblur = async ()=>{
+      const tel = soloDigitos($("#fTel").value); if(tel.length < 8 || !$("#fCumD")) return;
+      try{
+        const {data} = await sb.from("clientes").select("cumple_dia,cumple_mes").eq("telefono", tel).maybeSingle();
+        if(data && data.cumple_mes){ const t = cumpleTxt(data.cumple_dia, data.cumple_mes); guardarLocal({cumple:t}); $("#cumBox").innerHTML = cumpleCampo(t); }
+      }catch(e){}
+    };
   }
   if(key === "estilo" && !S.estilos.length && !b.sorprende){ b.sorprende = true; renderWizard(app); }
 }
@@ -2284,18 +2386,26 @@ function cartHtml(items){
     </div>`).join("") + `<div class="cart-total"><span>${items.length} servicio${items.length===1?"":"s"} · ${durTxt(sumaDuracion(items))}</span><b>${totalTxt(items, sumaPrecio(items))}</b></div>`;
 }
 
-async function obtenerCliente(nombre, telefono, codigoRef){
+async function obtenerCliente(nombre, telefono, codigoRef, cu){
   const tel = soloDigitos(telefono);
   const {data:existe} = await sb.from("clientes").select("*").eq("telefono", tel).maybeSingle();
   if(existe){
     if(nombre && nombre !== existe.nombre) await sb.from("clientes").update({nombre}).eq("id", existe.id);
+    if(!existe.cumple_mes && cu && cu.m){
+      const {error:eC} = await sb.from("clientes").update({cumple_dia:cu.d, cumple_mes:cu.m}).eq("id", existe.id);
+      if(!eC){ existe.cumple_dia = cu.d; existe.cumple_mes = cu.m; guardarLocal({cumple: cumpleTxt(cu.d, cu.m)}); }
+    }
     return {...existe, nombre: nombre || existe.nombre};
   }
   let referido_por = null;
   if(codigoRef){ const {data:r} = await sb.from("clientes").select("id").eq("codigo_referido", codigoRef.toUpperCase()).maybeSingle(); if(r) referido_por = r.id; }
-  const {data:nuevo, error} = await sb.from("clientes").insert({nombre, telefono: tel, codigo_referido: genCodigo(nombre), referido_por}).select().single();
-  if(error) throw error;
-  return nuevo;
+  const fila = {nombre, telefono: tel, codigo_referido: genCodigo(nombre), referido_por};
+  if(cu && cu.m){ fila.cumple_dia = cu.d; fila.cumple_mes = cu.m; }
+  let r = await sb.from("clientes").insert(fila).select().single();
+  if(r.error && fila.cumple_mes && /cumple/.test(r.error.message||"")){ delete fila.cumple_dia; delete fila.cumple_mes; r = await sb.from("clientes").insert(fila).select().single(); }
+  if(r.error) throw r.error;
+  if(r.data && r.data.cumple_mes) guardarLocal({cumple: cumpleTxt(r.data.cumple_dia, r.data.cumple_mes)});
+  return r.data;
 }
 
 async function confirmarCita(){
@@ -2304,9 +2414,11 @@ async function confirmarCita(){
   const ref = $("#fRef") ? $("#fRef").value.trim() : "";
   if(b.nombre.length < 2){ toast("Escribe tu nombre"); return $("#fNombre").focus(); }
   if(soloDigitos(b.telefono).length < 8){ toast("Revisa tu número de WhatsApp"); return $("#fTel").focus(); }
+  const cu = $("#fCumD") ? leerCumple("fCumD","fCumM") : {ok:true, d:null, m:null};
+  if(!cu.ok){ toast(cu.msg); return $("#fCumD").focus(); }
   btn.disabled = true; btn.innerHTML = "Confirmando…";
   try{
-    const cliente = await obtenerCliente(b.nombre, b.telefono, ref);
+    const cliente = await obtenerCliente(b.nombre, b.telefono, ref, cu);
     const {data:choques} = await sb.from("citas").select("hora_inicio, servicios(nombre)").eq("cliente_id", cliente.id).eq("fecha", b.fecha).eq("estado","confirmada");
     if(choques && choques.length){
       const primero = choques[0];
@@ -2347,6 +2459,10 @@ async function procederConfirmar(cliente, ref){
     if(productos.length){
       await sb.from("ventas_producto").insert(productos.map(it=> ({producto_id: it.producto.id, visita_id: visita.id, cliente_id: cliente.id, cantidad: it.cantidad, precio_unit: it.producto.precio, fecha: b.fecha})));
       for(const it of productos){ if(it.producto.stock != null) await sb.from("productos").update({stock: Math.max(0, it.producto.stock - it.cantidad)}).eq("id", it.producto.id); }
+    }
+    if(b.fotos && b.fotos.length){
+      const rf = await subirReferencias(visita.id, cliente.id, b.fotos);
+      if(rf.fail) toast(rf.ok ? `Subimos ${rf.ok} foto${rf.ok===1?"":"s"}; ${rf.fail} no se pudo` : "No se pudieron subir las fotos, pero tu cita sí quedó confirmada");
     }
     guardarLocal({nombre: b.nombre, telefono: soloDigitos(b.telefono)});
     S.lastCita = {visita, cliente, estilo: b.estilo, items: b.items, productos, fecha: b.fecha, hora_inicio: b.hora, hora_fin: cursor, citaId: citas[0].id};
@@ -2484,6 +2600,7 @@ function renderMisCitas(app){
         <div class="up-act"><a class="circ" href="${gcalLink(g, nombresGrupo(g))}" target="_blank" rel="noopener" aria-label="Agregar al calendario">${IC.cal}</a></div>
         <div class="up-btns">
           ${g.confirmo ? "" : `<button class="pill pill-white pill-sm" data-confirm="${g.key}">${IC.check} Confirmar asistencia</button>`}
+          <button class="pill pill-ghost pill-sm" data-fotos="${g.key}">${IC.image} Fotos</button>
           ${pc ? `<button class="pill pill-ghost pill-sm" data-resch="${g.key}">${IC.cal} Reprogramar</button>
           <button class="pill pill-ghost pill-sm danger-txt" data-cancel="${g.key}">${IC.x} Cancelar</button>`
             : `<p class="up-lock">Faltan menos de ${horasCambio()} h para tu cita. Para cambiarla, escríbele al barbero${waLink(S.config.whatsapp,"") ? ` · <a href="${waLink(S.config.whatsapp, "Hola, soy "+cl.nombre+". Necesito cambiar mi cita del "+fmtFechaLarga(g.fecha)+" a las "+hhmm(g.hora_inicio)+".")}" target="_blank" rel="noopener">WhatsApp</a>` : ""}.</p>`}
@@ -2491,6 +2608,9 @@ function renderMisCitas(app){
       </div>`; }).join("")
       : `<div class="note">No tienes citas próximas.</div><button class="pill pill-white pill-block" data-reservar style="margin-top:8px">Agendar una cita ${IC.arrowR}</button>`}
     ${espera.length ? `<p class="sub-lbl">Lista de espera</p>${espera.map(w=>`<div class="note">Anotado para el ${fmtFechaLarga(w.fecha_deseada)}. Te avisamos por WhatsApp si se libera un espacio.</div>`).join("")}` : ""}
+    <p class="sub-lbl">Tu cumpleaños</p>
+    ${cl.cumple_mes ? `<div class="note cum-note">${IC.gift}<div><b>${cumpleTxt(cl.cumple_dia, cl.cumple_mes)}</b><span>Solo el barbero puede cambiarlo.</span></div></div>`
+      : `<div class="note"><p style="margin:0 0 12px">Cuéntanos cuándo es y el barbero te felicitará. Solo se puede ingresar una vez.</p>${selectCumple("mcCumD","mcCumM")}<button class="pill pill-white pill-sm" id="mcCumOk" style="margin-top:12px">Guardar cumpleaños</button></div>`}
     ${cfg.fidelidad_activa ? `<p class="sub-lbl">Fidelidad</p><div class="points"><b>${pts}<span style="display:inline;font-size:18px;color:#d9c3a3"> / ${meta}</span></b><span>${pts >= meta ? "¡Tienes un premio disponible! Pídelo en tu próxima visita." : `Te faltan ${meta-pts} visitas para: ${esc(cfg.premio_texto || "tu premio")}`}</span><div class="pbar"><i style="--w:${Math.min(100, Math.round(pts/meta*100))}%"></i></div></div>` : ""}
     ${pref ? `<p class="sub-lbl">Tu estilo preferido</p><div class="note" style="color:var(--cream)">${esc(pref.nombre)}</div>` : ""}
     ${cfg.referidos_activo && cl.codigo_referido ? `<p class="sub-lbl">Invita amigos</p><div class="ref-card"><div><span>Tu código de referido</span><b>${esc(cl.codigo_referido)}</b></div><button class="pill pill-ghost pill-sm" id="mcCopy">${IC.copy} Copiar</button></div>` : ""}
@@ -2507,6 +2627,15 @@ function renderMisCitas(app){
     if(!S.booking.estilo) S.booking.sorprende = true;
     S.wizardStep = 3; S.lastStep = 0; go("agendar");
   };
+  const cumOk = $("#mcCumOk"); if(cumOk) cumOk.onclick = async ()=>{
+    const cu = leerCumple("mcCumD","mcCumM"); if(!cu.ok) return toast(cu.msg);
+    if(!cu.d) return toast("Elige el día y el mes");
+    cumOk.disabled = true;
+    const {error} = await sb.from("clientes").update({cumple_dia:cu.d, cumple_mes:cu.m}).eq("id", cl.id);
+    if(error){ cumOk.disabled = false; return toast("No se pudo guardar el cumpleaños"); }
+    guardarLocal({cumple: cumpleTxt(cu.d, cu.m)}); toast("¡Listo! Tu cumpleaños quedó guardado");
+    S.citasAt = 0; await buscarCliente(cl.telefono, true);
+  };
   const cp = $("#mcCopy"); if(cp) cp.onclick = ()=> navigator.clipboard && navigator.clipboard.writeText(cl.codigo_referido).then(()=> toast("Código copiado"));
   $("#mcOtro").onclick = ()=>{ S.cliente = null; S.omitirAuto = true; renderMisCitas(app); };
   $("#mcOlvidar").onclick = ()=>{ try{ localStorage.removeItem("imperio_cliente"); }catch(e){} S.cliente = null; S.citasCliente = []; S.omitirAuto = true; toast("Listo, este dispositivo ya no recuerda tus datos"); renderMisCitas(app); };
@@ -2518,6 +2647,7 @@ function renderMisCitas(app){
     S.citasAt = 0; await buscarCliente(cl.telefono, true);
     toast("¡Gracias! Tu asistencia quedó confirmada");
   });
+  $$("[data-fotos]", app).forEach(b=> b.onclick = ()=>{ const g = prox.find(x=> x.key === b.dataset.fotos); if(g) hojaSubirFotos(g, cl); });
   $$("[data-resch]", app).forEach(b=> b.onclick = ()=>{ const g = prox.find(x=> x.key === b.dataset.resch); if(g) hojaReprogramar(g, cl); });
   $$("[data-cancel]", app).forEach(b=> b.onclick = ()=>{
     const g = prox.find(x=> x.key === b.dataset.cancel);
@@ -2637,6 +2767,30 @@ function renderResena(app){
    PANEL DEL NEGOCIO (referencia: POS de iPad)
    ============================================================ */
 const TABS = [["hoy","Hoy"],["agenda","Agenda"],["clientes","Clientes"],["servicios","Servicios"],["productos","Productos"],["estilos","Estilos"],["horario","Horario"],["pagina","Página"],["espera","Espera"],["resenas","Reseñas"],["finanzas","Finanzas"],["ajustes","Ajustes"]];
+/* cumpleaños: solo día y mes */
+function cumpleTxt(d, m){ return d && m ? `${d} de ${MESES[m-1]}` : ""; }
+function selectCumple(idD, idM, d, m){
+  return `<div class="cum-sel"><select id="${idD}" aria-label="Día">${`<option value="">Día</option>` + Array.from({length:31}, (_,i)=>`<option value="${i+1}" ${Number(d)===i+1?"selected":""}>${i+1}</option>`).join("")}</select>
+    <select id="${idM}" aria-label="Mes">${`<option value="">Mes</option>` + MESES.map((n,i)=>`<option value="${i+1}" ${Number(m)===i+1?"selected":""}>${n}</option>`).join("")}</select></div>`;
+}
+function leerCumple(idD, idM){
+  const d = Number($("#"+idD).value), m = Number($("#"+idM).value);
+  if(!d && !m) return {ok:true, d:null, m:null};
+  if(!d || !m) return {ok:false, msg:"Elige el día y el mes del cumpleaños"};
+  if(d > [31,29,31,30,31,30,31,31,30,31,30,31][m-1]) return {ok:false, msg:`${MESES[m-1]} no tiene ${d} días`};
+  return {ok:true, d, m};
+}
+function diasParaCumple(d, m){
+  if(!d || !m) return null;
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  let f = new Date(hoy.getFullYear(), m-1, d); if(f < hoy) f = new Date(hoy.getFullYear()+1, m-1, d);
+  return Math.round((f - hoy) / 86400000);
+}
+function cumpleBadge(c){
+  const n = diasParaCumple(c.cumple_dia, c.cumple_mes); if(n === null) return "";
+  const txt = n === 0 ? "Cumple hoy" : n === 1 ? "Cumple mañana" : n <= 7 ? `Cumple en ${n} d` : cumpleTxt(c.cumple_dia, c.cumple_mes);
+  return `<span class="badge ${n <= 7 ? "c" : ""}">${IC.gift} ${txt}</span>`;
+}
 /* piezas comunes del panel: resumen, tiras de cifras y tarjetas de fila */
 function tsum(l, v, sub, l2, v2, chips, cls=""){
   return `<section class="tsum ${cls}"><div class="tsum-top"><div><small>${l}</small><b class="tsum-v">${v}</b>${sub ? `<span>${sub}</span>` : ""}</div>${l2 ? `<div class="tsum-side"><small>${l2}</small><b>${v2}</b></div>` : ""}</div>${chips ? `<div class="tsum-chips">${chips}</div>` : ""}</section>`;
@@ -2689,7 +2843,7 @@ function irTab(k){
   pintarTab();
 }
 function hojaMas(){
-  openSheet(`<h3>Más secciones</h3><p class="sub">Todo lo demás de tu negocio.</p>
+  openSheet(`<h3>Más secciones</h3>
     <div class="mas-grid">${NAV_MAS.map(([k,l,ic])=>`<button data-gotab="${k}">${IC[ic]}<span>${l}</span></button>`).join("")}</div>
     <div class="mas-extra"><button data-masn>${IC.bell}<span>Notificaciones y app</span></button><button data-masw>${IC.eye}<span>Ver la página</span></button></div>`, sh=>{
     sh.addEventListener("click", e=>{
@@ -2742,8 +2896,28 @@ function renderLogin(app){
 
 /* ---------------- citas: datos y acciones ---------------- */
 async function citasDelDia(fecha){
-  const {data} = await sb.from("citas").select("*, clientes(id,nombre,telefono,notas,puntos_actuales), servicios(nombre,precio,duracion_minutos), estilos_corte(nombre)").eq("fecha", fecha).order("hora_inicio");
-  return data || [];
+  const base = "*, servicios(nombre,precio,duracion_minutos), estilos_corte(nombre)";
+  let r = await sb.from("citas").select(`${base}, clientes(id,nombre,telefono,notas,puntos_actuales,preferencias,temas_conversacion,forma_trabajo)`).eq("fecha", fecha).order("hora_inicio");
+  if(r.error) r = await sb.from("citas").select(`${base}, clientes(id,nombre,telefono,notas,puntos_actuales)`).eq("fecha", fecha).order("hora_inicio");
+  return r.data || [];
+}
+/* cuántas fotos de referencia tiene cada cita del día */
+async function adjuntarFotos(grupos){
+  const ids = [...new Set(grupos.map(g=> g.key))]; if(!ids.length) return;
+  try{
+    const {data} = await sb.from("cita_fotos").select("visita_id").in("visita_id", ids);
+    const cnt = {}; (data||[]).forEach(f=> cnt[f.visita_id] = (cnt[f.visita_id]||0) + 1);
+    grupos.forEach(g=> g.nFotos = cnt[g.key] || 0);
+  }catch(e){}
+}
+async function hojaFotos(g){
+  const {data} = await sb.from("cita_fotos").select("ruta").eq("visita_id", g.key);
+  const rutas = (data||[]).map(f=> f.ruta);
+  if(!rutas.length) return toast("Esta cita no tiene fotos");
+  const {data:firmadas, error} = await sb.storage.from("referencias").createSignedUrls(rutas, 3600);
+  if(error || !firmadas) return toast("No se pudieron cargar las fotos");
+  openSheet(`<h3>Fotos de ${esc((g.cliente||{}).nombre || "cliente")}</h3>
+    <div class="ref-grid">${firmadas.filter(f=> f.signedUrl).map(f=>`<a href="${f.signedUrl}" target="_blank" rel="noopener"><img src="${f.signedUrl}" alt="Foto de referencia" loading="lazy"></a>`).join("")}</div>`);
 }
 function linkRecordatorio(g){
   const cl = g.cliente || {}, enlace = urlBase() + "#mis-citas";
@@ -2759,9 +2933,12 @@ function ordHtml(g, i, opt={}){
     activa ? (g.confirmo ? `<span class="badge ok">${IC.check} Confirmó</span>` : `<span class="badge pend">Sin confirmar</span>`) : `<span class="badge ${cls}">${txt}</span>`,
     opt.next ? `<span class="badge c">Siguiente</span>` : "",
     riesgo ? `<span class="badge risk">En riesgo</span>` : "",
+    g.nFotos ? `<span class="badge">${IC.image} ${g.nFotos} ${g.nFotos === 1 ? "foto" : "fotos"}</span>` : "",
   ].join("");
+  const ficha = [["Corte", cl.preferencias], ["Charla", cl.temas_conversacion], ["Trabajo", cl.forma_trabajo]].filter(x=> x[1]);
   const acciones = activa ? `<div class="ord-acts">
       ${cl.telefono ? `<a class="oa wa" href="${linkRecordatorio(g)}" target="_blank" rel="noopener">${IC.wa}<span>Recordar</span></a>` : ""}
+      ${g.nFotos ? `<button class="oa" data-act="fotos" data-id="${g.key}">${IC.image}<span>Fotos ${g.nFotos}</span></button>` : ""}
       <button class="oa ok" data-act="done" data-id="${g.key}">${IC.check}<span>Listo</span></button>
       ${g.confirmo ? "" : `<button class="oa" data-act="confirm" data-id="${g.key}">${IC.cal}<span>Confirmó</span></button>`}
       <button class="oa" data-act="noshow" data-id="${g.key}">${IC.x}<span>No vino</span></button>
@@ -2776,6 +2953,7 @@ function ordHtml(g, i, opt={}){
       <div class="ord-tags">${tags}</div>
       ${opt.full && cl.telefono ? `<span class="ord-tel">${IC.phone} ${esc(cl.telefono)}</span>` : ""}
       ${g.notas ? `<span class="ord-note">${esc(g.notas)}</span>` : ""}
+      ${ficha.length ? `<div class="ord-ficha">${ficha.map(([k,v])=>`<span><b>${k}</b>${esc(v)}</span>`).join("")}</div>` : ""}
       ${acciones}
     </div>
   </div>`;
@@ -2784,6 +2962,7 @@ function cablearOrd(root, grupos){
   root.addEventListener("click", async e=>{
     const b = e.target.closest("[data-act]"); if(!b) return;
     const g = grupos.find(x=> x.key === b.dataset.id); if(!g) return;
+    if(b.dataset.act === "fotos") return hojaFotos(g);
     if(b.dataset.act === "done"){
       b.disabled = true;
       await sb.from("citas").update({estado:"completada"}).in("id", g.ids);
@@ -2824,7 +3003,7 @@ function hojaFinalizarVisita(g){
     Object.entries(cant).filter(([,n])=> n>0).forEach(([id,n])=>{ const p = S.productos.find(x=> String(x.id)===id); if(p) lineas.push(`${p.nombre} ×${n} — ${money(p.precio*n)}`); });
     return `${DEF_RECIBO_TITULO} — ${S.config.nombre||"Imperio Store Barber"}\nCliente: ${(g.cliente||{}).nombre||""}\nFecha: ${fmtFechaLarga(g.fecha)}\n\n${lineas.join("\n")}\n\nTotal: ${money(total())}\n¡Gracias por tu visita!`;
   };
-  const sh = openSheet(`<h3>Visita completada</h3><p class="sub">¿Vendiste algún producto? Todo aquí es opcional.</p>
+  const sh = openSheet(`<h3>Visita completada</h3>
     <div id="fvProds">${S.productos.filter(p=> p.activo).map(p=> prodStepperRow(p, 0)).join("")}</div>
     <p class="lbl" style="margin-top:18px">Vista previa del recibo</p>
     <div class="recibo-box" id="fvRecibo">${esc(textoRecibo())}</div>
@@ -2866,7 +3045,7 @@ async function pintarLateral(){
   const side = $("#admSide"); if(!side || window.innerWidth < 1150) return;
   const hoy = isoDate(new Date()), citas = await citasDelDia(hoy);
   await calcularRiesgo();
-  const grupos = agruparCitas(citas);
+  const grupos = agruparCitas(citas); await adjuntarFotos(grupos);
   side.innerHTML = lateralHtml(grupos);
   cablearOrd(side, grupos);
   $("#sideAg", side).onclick = ()=>{ S.agFecha = hoy; irTab("agenda"); };
@@ -2886,13 +3065,19 @@ function lateralHtml(grupos){
 /* ---------------- HOY ---------------- */
 async function tabHoy(box){
   const hoy = isoDate(new Date());
-  const [citas, cls, esp] = await Promise.all([
+  const [citas, cls, esp, cum] = await Promise.all([
     citasDelDia(hoy),
     sb.from("clientes").select("*", {count:"exact", head:true}),
     sb.from("waitlist").select("*", {count:"exact", head:true}).eq("estado","esperando"),
+    sb.from("clientes").select("id,nombre,telefono,cumple_dia,cumple_mes").not("cumple_mes","is",null),
   ]);
+  const cumSemana = (cum.data||[]).filter(c=> diasParaCumple(c.cumple_dia, c.cumple_mes) <= 7).length;
+  const proxCum = (cum.data||[]).map(c=> ({...c, n: diasParaCumple(c.cumple_dia, c.cumple_mes)})).filter(c=> c.n <= 30).sort((a,b)=> a.n - b.n).slice(0,4);
+  const cumSec = proxCum.length ? `<section class="grp">${grpHd("Próximos cumpleaños", `<button class="link-btn" id="verCum">Ver todos</button>`)}
+    ${proxCum.map((c,i)=>`<div class="rc" style="--i:${i}"><span class="av">${IC.gift}</span><div class="rc-b"><b>${esc(c.nombre)}</b><span>${cumpleTxt(c.cumple_dia, c.cumple_mes)} · ${c.n === 0 ? "hoy" : c.n === 1 ? "mañana" : "en " + c.n + " días"}</span></div>
+      ${c.telefono && c.n <= 7 ? `<a class="circ rc-wa" href="${waLink(c.telefono, plantilla(DEF_CUMPLE, {nombre: primerNombre(c.nombre), negocio: S.config.nombre||""}))}" target="_blank" rel="noopener" aria-label="Felicitar por WhatsApp">${IC.wa}</a>` : ""}</div>`).join("")}</section>` : "";
   await calcularRiesgo();
-  const grupos = agruparCitas(citas);
+  const grupos = agruparCitas(citas); await adjuntarFotos(grupos);
   const act = grupos.filter(g=> g.estado !== "cancelada" && g.estado !== "no_asistio");
   const pend = grupos.filter(g=> g.estado === "confirmada");
   const hechas = grupos.filter(g=> g.estado === "completada").length;
@@ -2907,6 +3092,7 @@ async function tabHoy(box){
   const alertas = [
     sinConf ? `<button class="alert-pill warn" id="alConf">${IC.clock} ${sinConf} sin confirmar</button>` : "",
     esp.count ? `<button class="alert-pill" id="alEsp">${IC.users} ${esp.count} en lista de espera</button>` : "",
+    cumSemana ? `<button class="alert-pill" id="alCum">${IC.gift} ${cumSemana} ${cumSemana===1?"cumpleaños":"cumpleaños"} esta semana</button>` : "",
     enRiesgo ? `<button class="alert-pill" id="alRies">${IC.block} ${enRiesgo} en riesgo de perderse</button>` : "",
   ].join("");
   box.innerHTML = `
@@ -2924,6 +3110,7 @@ async function tabHoy(box){
       <div><b>${esc((next.cliente||{}).nombre || "Cliente")}</b><span>${esc(nombresGrupo(next))}</span>${next.notas ? `<span style="color:#8a5a1f;margin-top:6px">${esc(next.notas)}</span>` : ""}</div>
       <div class="acts">${(next.cliente||{}).telefono ? `<a class="pill pill-black pill-sm" href="${linkRecordatorio(next)}" target="_blank" rel="noopener">${IC.wa} Recordar</a>` : ""}<button class="pill pill-ghost pill-sm" style="color:#111;box-shadow:inset 0 0 0 1px #bbb" data-act="done" data-id="${next.key}">${IC.check} Marcar listo</button></div>
     </div>` : ""}
+    ${cumSec}
     <div class="only-mobile" id="miDia"><h3 class="side-h" style="margin-top:8px">Tu día</h3><p class="side-sub">${act.length} ${act.length===1?"cita":"citas"} para hoy</p>
       <div class="side-list">${grupos.length ? grupos.map((g,i)=> ordHtml(g, i, {next: next && next.key === g.key})).join("") : `<div class="adm-empty">Sin citas para hoy.</div>`}</div></div>
     <h3 class="side-h" style="margin:22px 0 12px;font-size:19px">Accesos rápidos</h3>
@@ -2940,6 +3127,8 @@ async function tabHoy(box){
   if(al("#alConf")) al("#alConf").onclick = ()=>{ const m = $("#miDia"); if(m) m.scrollIntoView({behavior:"smooth", block:"start"}); };
   if(al("#alEsp")) al("#alEsp").onclick = ()=> irTab("espera");
   if(al("#alRies")) al("#alRies").onclick = ()=> irTab("clientes");
+  if(al("#verCum")) al("#verCum").onclick = ()=>{ S.clientesFiltro = "cumple"; irTab("clientes"); };
+  if(al("#alCum")) al("#alCum").onclick = ()=>{ S.clientesFiltro = "cumple"; irTab("clientes"); };
   $("#qkCita").onclick = ()=> hojaNuevaCita({fecha: hoy});
   $("#qkVenta").onclick = ()=> irTab("productos");
   $("#qkGasto").onclick = ()=> irTab("finanzas");
@@ -2952,7 +3141,7 @@ async function tabHoy(box){
 async function tabAgenda(box){
   const f = S.agFecha, citas = await citasDelDia(f);
   await calcularRiesgo();
-  const grupos = agruparCitas(citas);
+  const grupos = agruparCitas(citas); await adjuntarFotos(grupos);
   const act = grupos.filter(g=> g.estado !== "cancelada");
   const baseD = new Date(); baseD.setDate(baseD.getDate() - 2);
   const tira = Array.from({length:21}, (_,i)=>{ const d = new Date(baseD.getFullYear(), baseD.getMonth(), baseD.getDate()+i); return {iso:isoDate(d), dia:d.getDate(), dow:d.getDay()}; });
@@ -2979,7 +3168,7 @@ async function hojaNuevaCita(pre={}){
   const {data:servs} = await sb.from("servicios").select("*").eq("activo", true).order("orden");
   if(!servs || !servs.length) return toast("Primero crea un servicio");
   const items = [{clave:uid(), servId: servs[0].id, etiqueta:""}];
-  const sh = openSheet(`<h3>Nueva cita</h3><p class="sub">Para clientes que te escriben o llegan sin cita. Puedes agregar más de un servicio.</p>
+  const sh = openSheet(`<h3>Nueva cita</h3>
     <div id="ncItems"></div>
     <button class="pill pill-ghost pill-sm" id="ncAddItem" style="margin-bottom:16px">${IC.plus} Agregar otro servicio</button>
     <div class="grid2">
@@ -3045,13 +3234,15 @@ async function hojaNuevaCita(pre={}){
 /* ---------------- CLIENTES (relación barbero-cliente) ---------------- */
 async function tabClientes(box){
   await calcularRiesgo();
-  const {count} = await sb.from("clientes").select("*", {count:"exact", head:true});
+  const [{count}, {data:conCumple}] = await Promise.all([sb.from("clientes").select("*", {count:"exact", head:true}), sb.from("clientes").select("id,cumple_dia,cumple_mes").not("cumple_mes","is",null)]);
   const nRies = Object.values(S.churn||{}).filter(x=> x.riesgo).length, fid = !!S.config.fidelidad_activa;
-  box.innerHTML = `${tsum("Tus clientes", count || 0, "registrados en total", "En riesgo", nRies, "", nRies ? "" : "")}
+  const prox = (conCumple||[]).filter(c=> diasParaCumple(c.cumple_dia, c.cumple_mes) <= 30), semana = prox.filter(c=> diasParaCumple(c.cumple_dia, c.cumple_mes) <= 7).length;
+  let filtro = S.clientesFiltro || "todos"; S.clientesFiltro = null;
+  box.innerHTML = `${tsum("Tus clientes", count || 0, "registrados en total", "En riesgo", nRies, semana ? `<span class="badge c">${IC.gift} ${semana} ${semana === 1 ? "cumpleaños" : "cumpleaños"} esta semana</span>` : "")}
     <label class="search" style="max-width:none;margin-bottom:12px">${IC.search}<input id="clQ" placeholder="Buscar por nombre o teléfono" aria-label="Buscar cliente"></label>
-    <div class="fchips" id="clF"><button class="chip on" data-f="todos">Todos</button><button class="chip" data-f="riesgo">En riesgo (${nRies})</button>${fid ? `<button class="chip" data-f="pts">Con puntos</button>` : ""}</div>
+    <div class="fchips" id="clF"><button class="chip ${filtro==="todos"?"on":""}" data-f="todos">Todos</button><button class="chip ${filtro==="riesgo"?"on":""}" data-f="riesgo">En riesgo (${nRies})</button><button class="chip ${filtro==="cumple"?"on":""}" data-f="cumple">Cumpleaños (${prox.length})</button>${fid ? `<button class="chip ${filtro==="pts"?"on":""}" data-f="pts">Con puntos</button>` : ""}</div>
     <p class="grp-h" id="clCount" style="margin-top:6px"></p><div id="clList"></div>`;
-  let t, filtro = "todos";
+  let t;
   const buscar = async ()=>{
     const q = $("#clQ").value.trim().replace(/[%,()]/g,"");
     let query = sb.from("clientes").select("*").order("creado_en", {ascending:false}).limit(200);
@@ -3060,13 +3251,14 @@ async function tabClientes(box){
     let lista = data || [];
     if(filtro === "riesgo") lista = lista.filter(c=> S.churn[c.id] && S.churn[c.id].riesgo);
     if(filtro === "pts") lista = lista.filter(c=> Number(c.puntos_actuales) > 0);
+    if(filtro === "cumple") lista = lista.filter(c=> c.cumple_mes && diasParaCumple(c.cumple_dia, c.cumple_mes) <= 30).sort((a,b)=> diasParaCumple(a.cumple_dia,a.cumple_mes) - diasParaCumple(b.cumple_dia,b.cumple_mes));
     $("#clCount").textContent = `${lista.length} ${lista.length === 1 ? "cliente" : "clientes"}`;
     $("#clList").innerHTML = lista.length ? lista.map((c,i)=>{
       const pref = S.estilos.find(e=> e.id === c.estilo_preferido_id);
       const r = S.churn && S.churn[c.id];
       return `<div class="rc btn" data-cl="${c.id}" style="--i:${Math.min(i,12)}" role="button" tabindex="0"><span class="av">${esc(iniciales(c.nombre))}</span>
         <div class="rc-b"><b>${esc(c.nombre)}</b><span>${esc(c.telefono)}${pref ? " · " + esc(pref.nombre) : ""}</span>${c.notas ? `<span class="rc-note">${esc(c.notas)}</span>` : ""}
-          ${(r && r.riesgo) || fid ? `<div class="rc-tags">${r && r.riesgo ? `<span class="badge risk">${r.diasDesde} d sin venir</span>` : ""}${fid ? `<span class="badge c">${Number(c.puntos_actuales)||0} pts</span>` : ""}</div>` : ""}</div>
+          ${(r && r.riesgo) || fid || c.cumple_mes ? `<div class="rc-tags">${r && r.riesgo ? `<span class="badge risk">${r.diasDesde} d sin venir</span>` : ""}${fid ? `<span class="badge c">${Number(c.puntos_actuales)||0} pts</span>` : ""}${cumpleBadge(c)}</div>` : ""}</div>
         ${c.telefono ? `<a class="circ rc-wa" href="${waLink(c.telefono)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">${IC.wa}</a>` : ""}</div>`; }).join("")
       : `<div class="adm-empty">${q || filtro !== "todos" ? "Sin resultados." : "Aún no hay clientes. Se crean solos cuando alguien agenda."}</div>`;
     $$("[data-cl]", box).forEach(b=> b.onclick = e=>{ if(e.target.closest("a")) return; hojaCliente(lista.find(x=> x.id === b.dataset.cl)); });
@@ -3082,23 +3274,44 @@ async function hojaCliente(c){
   const msgReact = plantilla(S.config.msg_reactivar || DEF_REACTIVAR, {nombre: primerNombre(c.nombre), negocio: S.config.nombre||""});
   openSheet(`<h3>${esc(c.nombre)}</h3><p class="sub">${esc(c.telefono)} · cliente desde ${c.creado_en ? fmtFecha(String(c.creado_en).slice(0,10)) : "—"}</p>
     ${r && r.riesgo ? `<div class="recibo-box" style="color:var(--danger);border-left:3px solid var(--danger)">Sin visitar hace ${r.diasDesde} días (suele volver cada ${r.promedioDias}). <a href="${waLink(c.telefono, msgReact)}" target="_blank" rel="noopener" style="color:var(--danger);text-decoration:underline">Enviar mensaje para reactivar →</a></div>` : ""}
+    ${(()=>{ const n = diasParaCumple(c.cumple_dia, c.cumple_mes); return n !== null && n <= 7 ? `<div class="recibo-box" style="color:var(--copper-2);border-left:3px solid var(--copper)">${IC.gift} ${n === 0 ? "¡Cumple años hoy!" : n === 1 ? "Cumple años mañana." : `Cumple años en ${n} días.`} <a href="${waLink(c.telefono, plantilla(DEF_CUMPLE, {nombre: primerNombre(c.nombre), negocio: S.config.nombre||""}))}" target="_blank" rel="noopener" style="color:var(--copper-2);text-decoration:underline">Enviar felicitación por WhatsApp</a></div>` : ""; })()}
     <div class="grid2">
       <div class="field"><label>Nombre</label><input id="hcNom" value="${esc(c.nombre)}"></div>
       <div class="field"><label>Estilo preferido</label><select id="hcEst"><option value="">Sin preferencia</option>${(todos||[]).map(e=>`<option value="${e.id}" ${e.id===c.estilo_preferido_id?"selected":""}>${esc(e.nombre)}</option>`).join("")}</select></div>
     </div>
-    <div class="field"><label>Notas del barbero</label><textarea id="hcNotas" placeholder="Ej. No muy corto atrás, número 2 a los lados, piel sensible">${esc(c.notas||"")}</textarea><small>Las verás junto a cada cita de este cliente.</small></div>
+    <div class="field"><label>Cumpleaños</label>${selectCumple("hcCumD","hcCumM",c.cumple_dia,c.cumple_mes)}</div>
+    <div class="field"><label>Preferencias del corte</label><textarea id="hcPref" style="min-height:76px" placeholder="Ej. Degradado bajo, número 1 a los lados, navaja en el contorno">${esc(c.preferencias||"")}</textarea></div>
+    <div class="field"><label>Temas de conversación</label><textarea id="hcTemas" style="min-height:76px" placeholder="Ej. Fútbol, su negocio, prefiere hablar poco">${esc(c.temas_conversacion||"")}</textarea></div>
+    <div class="field"><label>Cómo le gusta que se trabaje</label><textarea id="hcForma" style="min-height:76px" placeholder="Ej. Con calma, máquina primero, sin toalla caliente">${esc(c.forma_trabajo||"")}</textarea></div>
+    <div class="field"><label>Notas del barbero</label><textarea id="hcNotas" placeholder="Ej. No muy corto atrás, número 2 a los lados, piel sensible">${esc(c.notas||"")}</textarea></div>
     ${S.config.fidelidad_activa ? `<div class="field"><label>Puntos de fidelidad</label><input id="hcPts" type="number" min="0" value="${Number(c.puntos_actuales)||0}"></div>` : ""}
     ${hist && hist.length ? `<p class="lbl" style="margin-top:6px">Últimas visitas</p><div class="hist" style="margin-bottom:16px">${hist.map(h=>`<span>${fmtFecha(h.fecha)} · ${esc((h.servicios||{}).nombre||"")} · ${(ESTADOS[h.estado]||[h.estado])[0]}</span>`).join("")}</div>` : ""}
     <div class="sh-actions">
       <a class="pill pill-ghost" href="${waLink(c.telefono)}" target="_blank" rel="noopener">${IC.wa} WhatsApp</a>
       <button class="pill pill-ghost" id="hcCita">${IC.plus} Cita</button>
     </div>
-    <button class="pill pill-white pill-block" id="hcOk" style="margin-top:10px">Guardar cambios</button>`, sh=>{
+    <button class="pill pill-white pill-block" id="hcOk" style="margin-top:10px">Guardar cambios</button>
+    <button class="pill pill-ghost pill-block danger-txt" id="hcDel" style="margin-top:10px">${IC.trash} Eliminar cliente</button>`, sh=>{
+    $("#hcDel",sh).onclick = async ()=>{
+      const [{count:nc}, {count:nh}] = await Promise.all([
+        sb.from("citas").select("*", {count:"exact", head:true}).eq("cliente_id", c.id),
+        sb.from("citas").select("*", {count:"exact", head:true}).eq("cliente_id", c.id).eq("estado","completada")]);
+      closeSheet();
+      setTimeout(()=> confirmar(`¿Eliminar a ${c.nombre}?`,
+        `Se borrarán también sus ${nc||0} ${nc===1?"cita":"citas"}${nh ? ` (${nh} completada${nh===1?"":"s"}: ese ingreso dejará de contarse en Finanzas)` : ""}, su lista de espera y su historial. Las ventas de productos se conservan como ventas de mostrador. No se puede deshacer.`,
+        "Sí, eliminar", async ()=>{
+          const {error} = await sb.rpc("eliminar_cliente", {p_id: c.id});
+          if(error){ toast(/function|rpc|schema cache/i.test(error.message||"") ? "Falta el SQL para eliminar clientes (sql-cumpleanos.sql)" : "No se pudo eliminar al cliente"); return; }
+          toast("Cliente eliminado"); S.citasAt = 0; S.churn = null; pintarTab();
+        }), 420);
+    };
     $("#hcCita",sh).onclick = ()=>{ closeSheet(); setTimeout(()=> hojaNuevaCita({nombre:c.nombre, telefono:c.telefono, fecha:S.agFecha}), 400); };
     $("#hcOk",sh).onclick = async ()=>{
-      const upd = {nombre: $("#hcNom",sh).value.trim() || c.nombre, estilo_preferido_id: $("#hcEst",sh).value ? Number($("#hcEst",sh).value) : null, notas: $("#hcNotas",sh).value.trim()};
+      const cu = leerCumple("hcCumD","hcCumM"); if(!cu.ok) return toast(cu.msg);
+      const upd = {nombre: $("#hcNom",sh).value.trim() || c.nombre, estilo_preferido_id: $("#hcEst",sh).value ? Number($("#hcEst",sh).value) : null, notas: $("#hcNotas",sh).value.trim(), cumple_dia: cu.d, cumple_mes: cu.m, preferencias: $("#hcPref",sh).value.trim(), temas_conversacion: $("#hcTemas",sh).value.trim(), forma_trabajo: $("#hcForma",sh).value.trim()};
       if($("#hcPts",sh)) upd.puntos_actuales = Math.max(0, Number($("#hcPts",sh).value)||0);
-      const {error} = await sb.from("clientes").update(upd).eq("id", c.id);
+      let {error} = await sb.from("clientes").update(upd).eq("id", c.id);
+      if(error && /cumple|preferencias|temas|forma/.test(error.message||"")){ ["cumple_dia","cumple_mes","preferencias","temas_conversacion","forma_trabajo"].forEach(k=> delete upd[k]); ({error} = await sb.from("clientes").update(upd).eq("id", c.id)); if(!error) toast("Guardado, pero falta el SQL de cumpleaños y ficha (sql-clientes.sql)"); }
       if(error) return toast("No se pudo guardar");
       closeSheet(); toast("Cliente actualizado"); pintarTab();
     };
@@ -3130,7 +3343,7 @@ function hojaServicio(s, cats=[]){
   const nuevo = !s;
   s = s || {nombre:"", descripcion:"", categoria:"", precio:"", precio_desde:false, duracion_minutos:30, foto_url:"", activo:true, orden:S.servicios.length};
   const durs = [...new Set([15,20,30,40,45,60,75,90,120,150,180, Number(s.duracion_minutos)||30])].sort((a,b)=> a-b);
-  openSheet(`<h3>${nuevo ? "Nuevo servicio" : "Editar servicio"}</h3><p class="sub">Así aparece en la página y al agendar.</p>
+  openSheet(`<h3>${nuevo ? "Nuevo servicio" : "Editar servicio"}</h3>
     <div class="field"><label>Nombre</label><input id="fsNom" value="${esc(s.nombre)}" placeholder="Ej. Corte + barba"></div>
     <div class="field"><label>Descripción corta</label><input id="fsDes" value="${esc(s.descripcion||"")}" placeholder="Ej. Incluye toalla caliente"></div>
     <div class="grid2">
@@ -3140,8 +3353,8 @@ function hojaServicio(s, cats=[]){
       <div class="field"><label>Orden en la lista</label><input id="fsOrd" type="number" value="${Number(s.orden)||0}"></div>
     </div>
     ${imgField("fsFoto", "Foto (opcional)", s.foto_url)}
-    <div class="sw-row"><div>Precio "desde"<small>Muestra "Desde Q…" porque el precio final puede subir con extras.</small></div><label class="sw"><input type="checkbox" id="fsDesde" ${s.precio_desde?"checked":""}><span></span></label></div>
-    <div class="sw-row"><div>Visible para clientes<small>Si lo apagas, se oculta sin borrarlo.</small></div><label class="sw"><input type="checkbox" id="fsAct" ${s.activo?"checked":""}><span></span></label></div>
+    <div class="sw-row"><div>Precio "desde"</div><label class="sw"><input type="checkbox" id="fsDesde" ${s.precio_desde?"checked":""}><span></span></label></div>
+    <div class="sw-row"><div>Visible para clientes</div><label class="sw"><input type="checkbox" id="fsAct" ${s.activo?"checked":""}><span></span></label></div>
     <div class="sh-actions">${nuevo ? "" : `<button class="pill pill-ghost danger-txt" id="fsDel">${IC.trash} Eliminar</button>`}<button class="pill pill-white" id="fsOk">Guardar</button></div>`, sh=>{
     cablearFotos(sh);
     $("#fsOk",sh).onclick = async ()=>{
@@ -3169,7 +3382,6 @@ async function tabEstilos(box){
   const {data} = await sb.from("estilos_corte").select("*").order("orden");
   const todos = data || [];
   box.innerHTML = `${sbar([["Estilos", todos.length], ["Visibles", todos.filter(e=> e.activo).length, "ok"], ["Categorías", new Set(todos.map(e=> (e.categoria||"").trim()).filter(Boolean)).size]])}
-    <p class="side-sub" style="margin-bottom:14px">Catálogo que ve el cliente al agendar. Su elección se guarda como su estilo preferido.</p>
     <div class="port-grid" id="aeGrid">
       <button class="port-item tile add" id="aeNew" style="aspect-ratio:3/4">${IC.plus}Nuevo estilo</button>
       ${todos.map((e,i)=>`<button class="port-item" data-est="${e.id}" style="--i:${i+1};${e.activo?"":"opacity:.45"}">
@@ -3182,7 +3394,7 @@ async function tabEstilos(box){
 }
 function hojaEstilo(e){
   const nuevo = !e; e = e || {nombre:"", categoria:"", foto_url:"", activo:true, orden:S.estilos.length};
-  openSheet(`<h3>${nuevo ? "Nuevo estilo" : "Editar estilo"}</h3><p class="sub">Una buena foto de referencia vale más que mil explicaciones.</p>
+  openSheet(`<h3>${nuevo ? "Nuevo estilo" : "Editar estilo"}</h3>
     <div class="grid2">
       <div class="field"><label>Nombre</label><input id="feNom" value="${esc(e.nombre)}" placeholder="Ej. Low fade"></div>
       <div class="field"><label>Categoría</label><input id="feCat" value="${esc(e.categoria||"")}" placeholder="Ej. Fade"></div>
@@ -3210,7 +3422,6 @@ async function tabProductos(box){
   const todos = data || [];
   const bajos = todos.filter(p=> p.stock != null && Number(p.stock) <= 3).length, valor = todos.reduce((a,p)=> a + (p.stock != null ? Number(p.stock) * Number(p.precio) : 0), 0);
   box.innerHTML = `${sbar([["Productos", todos.length], ["Stock bajo", bajos, bajos ? "bad" : ""], ["En inventario", money(valor), "warn"]])}
-    <p class="side-sub" style="margin-bottom:14px">Toca un producto para registrar una venta, editarlo o ajustar su stock.</p>
     <div class="tiles stg" id="prTiles"></div>`;
   const pintar = ()=>{
     $("#prTiles").innerHTML = `<button class="tile add" id="prNew" style="--i:0">${IC.plus}Nuevo producto</button>` +
@@ -3259,14 +3470,14 @@ function hojaVentaMostrador(p){
 }
 function hojaProducto(p){
   const nuevo = !p; p = p || {nombre:"", precio:"", stock:"", foto_url:"", activo:true, orden:S.productos.length};
-  openSheet(`<h3>${nuevo ? "Nuevo producto" : "Editar producto"}</h3><p class="sub">Pomadas, ceras, máquinas — cualquier cosa que vendas.</p>
+  openSheet(`<h3>${nuevo ? "Nuevo producto" : "Editar producto"}</h3>
     <div class="field"><label>Nombre</label><input id="fpNom" value="${esc(p.nombre)}" placeholder="Ej. Pomada mate 100g"></div>
     <div class="grid2">
       <div class="field"><label>Precio (Q)</label><input id="fpPre" type="number" min="0" step="0.01" value="${esc(p.precio)}"></div>
       <div class="field"><label>Stock (opcional)</label><input id="fpStock" type="number" min="0" value="${p.stock==null?"":p.stock}" placeholder="Vacío = sin control"></div>
     </div>
     ${imgField("fpFoto", "Foto (opcional)", p.foto_url)}
-    <div class="sw-row"><div>Visible en el panel<small>Si lo apagas, no aparece para vender.</small></div><label class="sw"><input type="checkbox" id="fpAct" ${p.activo?"checked":""}><span></span></label></div>
+    <div class="sw-row"><div>Visible en el panel</div><label class="sw"><input type="checkbox" id="fpAct" ${p.activo?"checked":""}><span></span></label></div>
     <div class="sh-actions">${nuevo ? "" : `<button class="pill pill-ghost danger-txt" id="fpDel">${IC.trash} Eliminar</button>`}<button class="pill pill-white" id="fpOk">Guardar</button></div>`, sh=>{
     cablearFotos(sh);
     $("#fpOk",sh).onclick = async ()=>{
@@ -3287,7 +3498,7 @@ async function tabHorario(box){
   const [{data:hor}, {data:bl}] = await Promise.all([sb.from("horarios").select("*").order("dia_semana"), sb.from("bloqueos").select("*").gte("fecha", isoDate(new Date())).order("fecha")]);
   const abiertos = (hor||[]).filter(h=> h.activo), horasSem = abiertos.reduce((a,h)=> a + Math.max(0, toMin(h.hora_fin) - toMin(h.hora_inicio)) / 60, 0);
   box.innerHTML = `${sbar([["Días abiertos", abiertos.length + " de 7", "ok"], ["Horas / semana", Math.round(horasSem) + " h"], ["Bloqueos", (bl||[]).length, (bl||[]).length ? "warn" : ""]])}
-    <div class="fcard"><h3>Días y horas de atención</h3><p>El intervalo define cada cuánto aparecen horarios para agendar. La duración real de la cita la pone cada servicio.</p>
+    <div class="fcard"><h3>Días y horas de atención</h3>
     ${[1,2,3,4,5,6,0].map(d=>{ const h = (hor||[]).find(x=> x.dia_semana === d) || {activo:false, hora_inicio:"09:00", hora_fin:"18:00", intervalo_minutos:30}; const iv = Number(h.intervalo_minutos)||30;
       return `<div class="dr ${h.activo?"":"off"}" data-dia="${d}" style="background:var(--card-2)">
         <label class="sw"><input type="checkbox" class="dAct" ${h.activo?"checked":""} aria-label="${DIAS[d]} abierto"><span></span></label>
@@ -3297,7 +3508,7 @@ async function tabHorario(box){
       </div>`; }).join("")}
     <div class="hr-actions"><button class="pill pill-ghost pill-sm" id="hrCopy" type="button">${IC.copy} Copiar el lunes a los demás días abiertos</button><button class="pill pill-white" id="hrOk">Guardar horario</button></div></div>
 
-    <div class="fcard"><h3>Bloqueos</h3><p>Vacaciones, feriados o un rato libre. Esos horarios dejan de ofrecerse.</p>
+    <div class="fcard"><h3>Bloqueos</h3>
       <div class="grid2">
         <div class="field"><label>Fecha</label><input type="date" id="blF" min="${isoDate(new Date())}"></div>
         <div class="field"><label>Motivo</label><input id="blM" placeholder="Ej. Vacaciones"></div>
@@ -3339,11 +3550,11 @@ async function tabHorario(box){
 function tabPagina(box){
   const c = S.config, v = k=> esc(c[k] || "");
   box.innerHTML = `
-    <div class="fcard"><h3>Portada</h3><p>Escribe una palabra entre asteriscos, por ejemplo <b style="color:var(--copper-2)">*Barber*</b>, para resaltarla en cobre.</p>
-      <div class="field"><label>Título gigante (un renglón por línea)</label><textarea id="pgTit" style="min-height:84px" placeholder="Imperio&#10;Store Barber">${v("hero_titulo")}</textarea><small>El 1er renglón va a la izquierda y el 2º a la derecha, como en revista.</small></div>
+    <div class="fcard"><h3>Portada</h3>
+      <div class="field"><label>Título gigante (un renglón por línea)</label><textarea id="pgTit" style="min-height:84px" placeholder="Imperio&#10;Store Barber">${v("hero_titulo")}</textarea></div>
       <div class="field"><label>Texto bajo el título</label><textarea id="pgSub">${v("hero_subtitulo")}</textarea></div>
       ${imgField("pgImg", "Foto de portada", c.hero_imagen_url)}
-      <div class="sw-row"><div>La foto es un recorte sin fondo (PNG)<small>Actívalo si subes tu foto sin fondo: se coloca encima del título, como en revista.</small></div><label class="sw"><input type="checkbox" id="pgRec" ${c.hero_recorte?"checked":""}><span></span></label></div>
+      <div class="sw-row"><div>La foto es un recorte sin fondo (PNG)</div><label class="sw"><input type="checkbox" id="pgRec" ${c.hero_recorte?"checked":""}><span></span></label></div>
     </div>
     <div class="fcard"><h3>El barbero</h3>
       <div class="grid2">
@@ -3359,7 +3570,7 @@ function tabPagina(box){
       </div>
     </div>
     <div class="fcard"><h3>Mapa y redes</h3>
-      <div class="field"><label>Mapa incrustado</label><input id="pgMap" value="${v("maps_embed_url")}" placeholder="https://www.google.com/maps/embed?pb=..."><small>En Google Maps: Compartir → Insertar un mapa → copia solo lo que va dentro de src="…".</small></div>
+      <div class="field"><label>Mapa incrustado</label><input id="pgMap" value="${v("maps_embed_url")}" placeholder="https://www.google.com/maps/embed?pb=..."></div>
       <div class="field"><label>Instagram</label><input id="pgIg" value="${v("instagram")}" placeholder="https://instagram.com/..."></div>
       <div class="grid2">
         <div class="field"><label>TikTok</label><input id="pgTt" value="${v("tiktok")}"></div>
@@ -3368,7 +3579,7 @@ function tabPagina(box){
     </div>
     <div class="fcard"><h3>Secciones</h3>
       <div class="sw-row"><div>Mostrar pestaña de estilos</div><label class="sw"><input type="checkbox" id="pgGal" ${c.mostrar_galeria!==false?"checked":""}><span></span></label></div>
-      <div class="sw-row"><div>Mostrar reseñas<small>Solo las de 4★ o más con comentario.</small></div><label class="sw"><input type="checkbox" id="pgRes" ${c.mostrar_resenas!==false?"checked":""}><span></span></label></div>
+      <div class="sw-row"><div>Mostrar reseñas</div><label class="sw"><input type="checkbox" id="pgRes" ${c.mostrar_resenas!==false?"checked":""}><span></span></label></div>
       <div class="field" style="margin-top:14px"><label>Frase final</label><textarea id="pgCie" style="min-height:70px" placeholder="Tu próximo corte&#10;*empieza aquí*">${v("frase_cierre")}</textarea></div>
     </div>
     <div class="save-bar"><button class="pill pill-ghost" data-go="inicio" style="background:var(--bg-2);margin-right:8px">${IC.eye} Ver página</button><button class="pill pill-white" id="pgOk">Guardar página</button></div>`;
@@ -3393,7 +3604,6 @@ async function tabEspera(box){
   const grupos = {}; lista.forEach(w=> (grupos[w.fecha_deseada] = grupos[w.fecha_deseada] || []).push(w));
   const avisados = lista.filter(w=> w.estado === "notificado").length;
   box.innerHTML = `${tsum("En lista de espera", lista.length, lista.length === 1 ? "persona esperando un espacio" : "personas esperando un espacio", "Ya avisados", avisados)}
-    <p class="side-sub" style="margin:0 0 6px">Cuando se libere un espacio, avisa al primero de la lista del día. Si no responde, pasa al siguiente.</p>
     ${lista.length ? Object.keys(grupos).map(f=>`<p class="grp-h">${fmtFechaLarga(f)} · ${grupos[f].length}</p>${grupos[f].map((w,i)=>{ const cl = w.clientes || {};
       const msg = plantilla(S.config.msg_espera || DEF_ESPERA, {nombre: primerNombre(cl.nombre), fecha: fmtFechaLarga(w.fecha_deseada), negocio: S.config.nombre || ""});
       return `<div class="rc wrap" style="--i:${Math.min(i,8)}"><span class="av">${i+1}</span>
@@ -3413,7 +3623,7 @@ async function tabResenas(box){
   const link = urlBase() + "#resena";
   const conteo = [5,4,3,2,1].map(n=> [n, l.filter(r=> r.calificacion === n).length]).filter(x=> x[1]);
   box.innerHTML = `${tsum("Calificación promedio", prom, `${l.length} ${l.length === 1 ? "reseña" : "reseñas"}`, "", "", conteo.map(([n,c])=>`<span class="badge c">${n}★ · ${c}</span>`).join(""))}
-    <div class="qr-card"><img src="${qrUrl(link)}" alt="QR de reseñas"><div><b>QR de reseña rápida</b><p>Imprímelo y pégalo en el espejo. El cliente lo escanea al terminar y califica en 10 segundos.</p><a class="pill pill-ghost pill-sm" href="${qrUrl(link, 900)}" target="_blank" rel="noopener">Abrir para imprimir</a></div></div>
+    <div class="qr-card"><img src="${qrUrl(link)}" alt="QR de reseñas"><div><b>QR de reseña rápida</b><a class="pill pill-ghost pill-sm" href="${qrUrl(link, 900)}" target="_blank" rel="noopener">Abrir para imprimir</a></div></div>
     ${l.length ? `<p class="grp-h">Lo que dicen tus clientes</p>` : ""}
     ${l.map((r,i)=>`<div class="rc top" style="--i:${Math.min(i,10)}"><span class="av">${esc(iniciales(r.nombre || "C"))}</span>
       <div class="rc-b"><b>${esc(r.nombre || "Cliente")}</b>${starsHtml(r.calificacion)}<p class="rc-txt">${esc(r.comentario) || "Sin comentario"}</p></div>
@@ -3439,7 +3649,7 @@ function rangoFechas(){
   return {desde: isoDate(desde), hasta: isoDate(hoy), dias: n};
 }
 function hojaGasto(){
-  openSheet(`<h3>Nuevo gasto</h3><p class="sub">Insumos, renta, una máquina nueva, lo que sea.</p>
+  openSheet(`<h3>Nuevo gasto</h3>
     <div class="field"><label>Concepto</label><input id="gaCon" placeholder="Ej. Máquina de corte nueva"></div>
     <div class="grid2">
       <div class="field"><label>Categoría</label><input id="gaCat" list="gaCats" placeholder="Ej. Equipo"><datalist id="gaCats"><option>Insumos</option><option>Equipo</option><option>Renta</option><option>Servicios</option><option>Otro</option></datalist></div>
@@ -3511,16 +3721,16 @@ function tabAjustes(box){
       <div class="field"><label>Dirección</label><input id="ajDir" value="${v("direccion")}"></div>
       <div class="grid2">
         <div class="field"><label>Link de "Cómo llegar"</label><input id="ajMaps" value="${v("maps_link")}" placeholder="https://maps.app.goo.gl/..."></div>
-        <div class="field"><label>WhatsApp del negocio</label><input id="ajWa" value="${v("whatsapp")}" placeholder="502 5512 3456" inputmode="tel"><small>Con código de país.</small></div>
+        <div class="field"><label>WhatsApp del negocio</label><input id="ajWa" value="${v("whatsapp")}" placeholder="502 5512 3456" inputmode="tel"></div>
       </div>
     </div>
-    <div class="fcard"><h3>Mensajes de WhatsApp</h3><p>Puedes usar {nombre}, {servicio}, {fecha}, {hora} y {negocio}.</p>
+    <div class="fcard"><h3>Mensajes de WhatsApp</h3>
       <div class="field"><label>Recordatorio de cita</label><textarea id="ajMR">${esc(c.msg_recordatorio || DEF_RECORD)}</textarea></div>
       <div class="field"><label>Aviso de lista de espera</label><textarea id="ajME">${esc(c.msg_espera || DEF_ESPERA)}</textarea></div>
       <div class="field"><label>Reactivar cliente perdido</label><textarea id="ajMX">${esc(c.msg_reactivar || DEF_REACTIVAR)}</textarea></div>
     </div>
     <div class="fcard"><h3>Fidelidad y referidos</h3>
-      <div class="sw-row"><div>Puntos de fidelidad<small>Se suman al marcar una cita como “Listo”.</small></div><label class="sw"><input type="checkbox" id="ajFid" ${c.fidelidad_activa?"checked":""}><span></span></label></div>
+      <div class="sw-row"><div>Puntos de fidelidad</div><label class="sw"><input type="checkbox" id="ajFid" ${c.fidelidad_activa?"checked":""}><span></span></label></div>
       <div class="grid2" style="margin-top:14px">
         <div class="field"><label>Puntos por visita</label><input id="ajPV" type="number" min="1" value="${Number(c.puntos_por_visita)||1}"></div>
         <div class="field"><label>Puntos para el premio</label><input id="ajPP" type="number" min="1" value="${Number(c.puntos_para_premio)||10}"></div>
@@ -3528,11 +3738,11 @@ function tabAjustes(box){
       <div class="field"><label>Premio</label><input id="ajPr" value="${v("premio_texto")}" placeholder="Ej. Corte gratis"></div>
       <div class="sw-row" style="border:0"><div>Códigos de referido</div><label class="sw"><input type="checkbox" id="ajRef" ${c.referidos_activo?"checked":""}><span></span></label></div>
     </div>
-    <div class="fcard"><h3>Productos al agendar</h3><p>Agrega un paso opcional al final de la reserva para que el cliente pueda sumar productos. Si no tienes productos activos, este paso no aparece aunque lo actives.</p>
-      <div class="sw-row" style="border:0"><div>Mostrar este paso<small>${productosActivos().length ? productosActivos().length + " producto(s) activo(s)" : "No tienes productos activos todavía — ve a la pestaña Productos"}</small></div><label class="sw"><input type="checkbox" id="ajPasoProd" ${c.mostrar_paso_productos?"checked":""}><span></span></label></div>
+    <div class="fcard"><h3>Productos al agendar</h3>
+      <div class="sw-row" style="border:0"><div>Mostrar este paso<small>${productosActivos().length ? productosActivos().length + " producto(s) activo(s)" : ""}</small></div><label class="sw"><input type="checkbox" id="ajPasoProd" ${c.mostrar_paso_productos?"checked":""}><span></span></label></div>
       <div class="field" style="margin-top:14px"><label>Pregunta que ve el cliente</label><input id="ajTxtProd" value="${v("texto_paso_productos")}" placeholder="¿Te interesa alguno de nuestros productos?"></div>
     </div>
-    <div class="qr-card"><img src="${qrUrl(link)}" alt="QR para agendar"><div><b>QR para agendar</b><p>Para tu vitrina, tarjetas o redes: abre directo la reserva.</p><a class="pill pill-ghost pill-sm" href="${qrUrl(link, 900)}" target="_blank" rel="noopener">Abrir para imprimir</a></div></div>
+    <div class="qr-card"><img src="${qrUrl(link)}" alt="QR para agendar"><div><b>QR para agendar</b><a class="pill pill-ghost pill-sm" href="${qrUrl(link, 900)}" target="_blank" rel="noopener">Abrir para imprimir</a></div></div>
     <div class="save-bar"><button class="pill pill-white" id="ajOk">Guardar ajustes</button></div>`;
   $("#ajOk").onclick = async ()=>{
     const base = {nombre: $("#ajNom").value.trim() || "Imperio Store Barber", direccion: $("#ajDir").value.trim(), maps_link: $("#ajMaps").value.trim(), whatsapp: soloDigitos($("#ajWa").value),
@@ -3651,9 +3861,8 @@ async function hojaNotificaciones(){
     est === "denied" ? `<p class="nt-tip"><b>Están bloqueadas.</b> Toca el candado junto a la dirección del sitio, entra a <i>Permisos</i> y vuelve a permitir las notificaciones.</p>` : "",
     (!esApp() && !PUSH.instalar) ? `<p class="nt-tip"><b>Instalar la app:</b> menú del navegador (⋮) → <i>Añadir a pantalla de inicio</i> o <i>Instalar app</i>. Así abre a pantalla completa, como una app.</p>` : "",
     huawei ? `<p class="nt-tip"><b>Huawei:</b> con Google Chrome los avisos funcionan igual. Si tu teléfono no tiene servicios de Google, el navegador de Huawei avisa con el panel abierto, pero con la app cerrada no está garantizado.</p>` : "",
-    `<p class="nt-tip">Con el panel abierto siempre suena y vibra al llegar, cancelar, reprogramar o confirmar una cita. Para recibirlos también con la app cerrada hace falta una configuración única del servidor.</p>`,
   ].join("");
-  openSheet(`<h3>Avisos y app</h3><p class="sub">Entérate de cada cita al instante y ten el panel como una app.</p>
+  openSheet(`<h3>Avisos y app</h3>
     <div class="nt-list">${filas}</div><div class="nt-btns">${botones}</div>${ayuda}`, sh=>{
     const reabrir = ()=>{ closeSheet(); setTimeout(hojaNotificaciones, 420); };
     const on = $("#ntOn", sh); if(on) on.onclick = async ()=>{
