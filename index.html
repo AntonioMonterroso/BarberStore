@@ -1419,6 +1419,21 @@ body[data-route=admin] .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px)
 .tk-tear{height:12px;margin:0 10px;opacity:0;transition:opacity .4s;background:linear-gradient(135deg,#f4eee2 50%,transparent 50%) 0 0/12px 12px repeat-x,linear-gradient(225deg,#f4eee2 50%,transparent 50%) 0 0/12px 12px repeat-x}
 .tk-wrap.done .tk-tear,.tk-wrap.static .tk-tear{opacity:1}
 @media (prefers-reduced-motion:reduce){.tk-wrap.printing.run .tk-paper{animation-duration:.01s}.tk-led{animation:none}}
+
+/* confirmación: barbero, líneas, botones y mapa */
+.cf-zona{margin:0 0 18px;font-size:17px;font-weight:700}
+.cf-zona small{display:block;margin-top:4px;font-size:12.5px;font-weight:500;color:var(--text-2)}
+.cf-barbero{display:flex;align-items:center;gap:14px;text-align:left;padding:14px 16px;margin:0 0 14px;border-radius:20px;background:var(--card)}
+.cf-barbero .av{width:48px;height:48px;border-radius:50%;background:var(--card-2,#262c33);display:grid;place-items:center;font-weight:800}
+.cf-barbero b{display:block;font-size:16px}.cf-barbero span:not(.av){font-size:13px;color:var(--text-2)}
+.tk-lines{padding:0 22px 18px}
+.tk-lines div{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:14.5px}
+.tk-lines b{font-weight:700;white-space:nowrap}
+.cf-btns{display:grid;gap:8px;margin:0 0 14px}
+.cf-btns .pill{justify-content:center;width:100%}
+.cf-mapa{margin:6px 0 18px;text-align:center}
+.cf-mapa p{margin:0 0 10px;font-size:14.5px;color:var(--text-2)}
+.cf-mapa iframe{width:100%;height:230px;border:0;border-radius:18px;margin-bottom:10px;background:var(--card)}
 </style>
 </head>
 <body data-route="inicio">
@@ -2588,13 +2603,16 @@ function renderConfirmacion(app){
     `<a class="act" href="${gcalLink(c, nombresTxt)}" target="_blank" rel="noopener" style="--i:0"><span class="act-ic">${IC.cal}</span><span><b>Google Calendar</b><small>Agregar a tu calendario</small></span>${IC.chevR}</a>`,
     `<a class="act" href="${icsHref(c, nombresTxt)}" download="cita-imperio.ics" style="--i:1"><span class="act-ic">${IC.apple}</span><span><b>Apple Calendar</b><small>Con recordatorio 2 horas antes</small></span>${IC.chevR}</a>`,
     wa ? `<a class="act" href="${wa}" target="_blank" rel="noopener" style="--i:2"><span class="act-ic">${IC.wa}</span><span><b>Avisar por WhatsApp</b><small>Envía tu confirmación al barbero</small></span>${IC.chevR}</a>` : "",
-    `<button class="act" data-go="mis-citas" style="--i:3"><span class="act-ic">${IC.check}</span><span><b>Confirmar, reprogramar o cancelar</b><small>Desde “Mis citas”, cuando lo necesites</small></span>${IC.chevR}</button>`,
-    cfg.maps_link ? `<a class="act" href="${esc(cfg.maps_link)}" target="_blank" rel="noopener" style="--i:3"><span class="act-ic">${IC.pin}</span><span><b>Cómo llegar</b><small>${esc(cfg.direccion || "Abrir en Maps")}</small></span>${IC.chevR}</a>` : "",
   ].join("");
+  const mapsAbrir = cfg.maps_link || (cfg.direccion ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(cfg.direccion) : "");
+  const nombreBarbero = cfg.barbero_nombre || cfg.nombre || "Imperio Store Barber";
+  const confirmo = !!c.confirmo;
   app.innerHTML = `<div class="appv center">
     <div class="ok-anim"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36"/><path d="M24 41l11 11 21-23"/></svg></div>
     <h1 class="app-title">¡Listo, ${esc(primerNombre(c.cliente.nombre))}!</h1>
-    <p class="app-sub">Tu cita quedó confirmada. Te esperamos.</p>
+    <p class="app-sub">Tu cita quedó reservada. Te esperamos.</p>
+    <p class="cf-zona">${fmtFechaLarga(c.fecha)}, ${hhmm(c.hora_inicio)}<small>Zona horaria: hora de Guatemala (GMT-6)</small></p>
+    <div class="cf-barbero"><span class="av">${esc(iniciales(nombreBarbero))}</span><div><b>${esc(nombreBarbero)}</b><span>${esc(cfg.barbero_titulo || "Maestro barbero")}</span></div></div>
     <div class="ticket">
       <div class="tk-top"><span class="tk-logo"><img src="${LOGO}" alt=""></span><div><span>${c.items.length>1?c.items.length+" servicios":"Servicio"}</span><b>${esc(c.items.map(it=>it.servicio.nombre).join(" + "))}</b></div></div>
       <div class="tk-grid">
@@ -2604,13 +2622,39 @@ function renderConfirmacion(app){
         ${c.productos && c.productos.length ? `<div><span>Productos</span><b>${esc(c.productos.map(it=> it.producto.nombre + " ×" + it.cantidad).join(", "))}</b></div>` : ""}
         <div><span>Total</span><b class="big">${totalTxt(c.items, total)}</b></div>
       </div>
+      <div class="tk-lines">${c.items.map(it=>`<div><span>${esc(it.servicio.nombre)}${it.etiqueta ? ` (${esc(it.etiqueta)})` : ""}</span><b>${precioHtml(it.servicio)}</b></div>`).join("")}${(c.productos||[]).map(it=>`<div><span>${esc(it.producto.nombre)} ×${it.cantidad}</span><b>${money(Number(it.producto.precio) * it.cantidad)}</b></div>`).join("")}</div>
       <div class="tk-cut"></div>
       <div class="tk-bot">${IC.pin}<span>${esc(cfg.direccion || cfg.nombre || "")}</span></div>
     </div>
+    <div class="cf-btns">
+      <button class="pill ${confirmo ? "pill-ghost" : "pill-white"}" id="cfOk" ${confirmo ? "disabled" : ""}>${IC.check} ${confirmo ? "Asistencia confirmada" : "Confirmar"}</button>
+      <button class="pill pill-ghost" id="cfResch">${IC.cal} Reprogramar</button>
+      <button class="pill pill-ghost danger-txt" id="cfCancel">${IC.x} Cancelar</button>
+    </div>
     <div class="act-list">${acts}</div>
+    ${cfg.direccion ? `<div class="cf-mapa"><p>${esc(cfg.direccion)}</p><iframe title="Mapa de ${esc(cfg.nombre || "la barbería")}" src="https://www.google.com/maps?q=${encodeURIComponent(cfg.direccion)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>${mapsAbrir ? `<a class="pill pill-ghost pill-sm" href="${esc(mapsAbrir)}" target="_blank" rel="noopener">${IC.pin} Abrir en Maps</a>` : ""}</div>` : ""}
     ${cfg.referidos_activo && c.cliente.codigo_referido ? `<div class="ref-card"><div><span>Invita a un amigo con tu código</span><b>${esc(c.cliente.codigo_referido)}</b></div><button class="pill pill-ghost pill-sm" id="copyRef">${IC.copy} Copiar</button></div>` : ""}
     <button class="pill pill-ghost pill-block" data-go="inicio">Volver al inicio</button>
   </div>`;
+  const gC = {key: c.visita && c.visita.id, fecha: c.fecha, hora_inicio: c.hora_inicio, hora_fin: c.hora_fin, items: c.items.map(it=> ({nombre: it.servicio.nombre, etiqueta: it.etiqueta}))};
+  $("#cfOk").onclick = async ()=>{
+    const b = $("#cfOk"); b.disabled = true;
+    const {data:rc, error} = await sb.rpc("cita_accion", {p_telefono: c.cliente.telefono, p_visita: gC.key, p_accion: "confirmar"});
+    if(error || !rc || rc.error){ b.disabled = false; return toast("No se pudo confirmar. Avísale al barbero por WhatsApp."); }
+    c.confirmo = true; S.citasAt = 0; toast("¡Gracias! Tu asistencia quedó confirmada"); renderConfirmacion(app);
+  };
+  $("#cfResch").onclick = ()=>{
+    if(!puedeCambiar(gC)) return toast("Faltan pocas horas: escríbele al barbero");
+    hojaReprogramar(gC, c.cliente, n=>{ c.fecha = n.fecha; c.hora_inicio = n.hora_inicio; c.hora_fin = n.hora_fin; c.confirmo = false; renderConfirmacion(app); });
+  };
+  $("#cfCancel").onclick = ()=>{
+    if(!puedeCambiar(gC)) return toast("Faltan pocas horas: escríbele al barbero");
+    confirmar("¿Cancelar esta cita?", `${nombresGrupo(gC)} · ${fmtFechaLarga(gC.fecha)} a las ${hhmm(gC.hora_inicio)}. El espacio se liberará para otro cliente.`, "Sí, cancelar", async ()=>{
+      const {data:rx, error:ex} = await sb.rpc("cita_accion", {p_telefono: c.cliente.telefono, p_visita: gC.key, p_accion: "cancelar"});
+      if(ex || !rx || rx.error) return toast(mensajeReserva(rx && rx.error));
+      S.citasAt = 0; S.lastCita = null; toast("Cita cancelada"); go("mis-citas");
+    });
+  };
   const cp = $("#copyRef"); if(cp) cp.onclick = ()=>{ (navigator.clipboard ? navigator.clipboard.writeText(c.cliente.codigo_referido) : Promise.reject()).then(()=> toast("Código copiado"), ()=> toast(c.cliente.codigo_referido)); };
 }
 
@@ -2745,7 +2789,7 @@ function renderMisCitas(app){
 function horasCambio(){ const h = Number(S.config.horas_cambio); return Number.isFinite(h) && h >= 0 ? h : 2; }
 function puedeCambiar(g){ return (new Date(g.fecha + "T" + hhmm(g.hora_inicio) + ":00").getTime() - Date.now()) >= horasCambio() * 3600000; }
 
-async function hojaReprogramar(g, cl){
+async function hojaReprogramar(g, cl, alTerminar){
   let mapa = await cargarCitasRango(true, g.key);
   const dur = toMin(g.hora_fin) - toMin(g.hora_inicio);
   const dias = diasVentana().filter(d=> d.disponible);
@@ -2783,6 +2827,7 @@ async function hojaReprogramar(g, cl){
       }
       S.citasAt = 0; await buscarCliente(cl.telefono, true);
       const nuevaG = {...g, fecha: st.fecha, hora_inicio: st.hora, hora_fin: addMin(st.hora, dur)};
+      if(alTerminar) alTerminar(nuevaG);
       const wa = waLink(S.config.whatsapp, `Hola, soy ${cl.nombre}. Reprogramé mi cita: ahora es el ${fmtFechaLarga(st.fecha)} a las ${st.hora}.`);
       closeSheet();
       setTimeout(()=> openSheet(`<h3>Cita reprogramada</h3><p class="sub">${fmtFechaLarga(st.fecha)} a las ${st.hora}. Si quieres, avísale al barbero.</p>
@@ -3119,7 +3164,13 @@ const PROMO_PLANTILLAS = {
   marfil:{n:"Marfil", c1:"#f4eee2", c2:"#e5dccb", acento:"#8a5a1f", texto:"#17130e"},
   foto:{n:"Con foto", c1:"#0e1114", c2:"#0e1114", acento:"#e1a95f", texto:"#ffffff"},
 };
-function promoNuevo(){ const c = S.config; return {formato:"status", plantilla:"clasico", ...PROMO_PLANTILLAS.clasico, titulo:"Esta semana\n20% en tu corte", sub:"Agenda tu cita antes del sábado", precio:"", cta:"Reserva en línea", foto:"", qr:false, fuente:"Anton", nombre:"Promo"}; }
+const PROMO_TIPOS = {
+  promo:{n:"Promoción", titulo:"Esta semana\n20% en tu corte", sub:"Agenda tu cita antes del sábado", cta:"Reserva en línea", mensaje:"Promo de la semana. Reserva tu cita aquí:"},
+  recordatorio:{n:"Recordar citas", titulo:"¿Ya agendaste\ntu cita?", sub:"Reserva tu espacio en línea, sin esperas", cta:"Agenda tu cita", mensaje:"Reserva tu cita en línea en menos de un minuto:"},
+  espacios:{n:"Espacios libres", titulo:"Espacios\ndisponibles", sub:"", cta:"Reserva tu hora", mensaje:"Tengo espacios disponibles. Reserva el tuyo aquí:"},
+  aviso:{n:"Aviso", titulo:"Aviso\nimportante", sub:"Escribe aquí tu mensaje", cta:"Más información", mensaje:"Más información y citas aquí:"},
+};
+function promoNuevo(){ const c = S.config; return {formato:"status", plantilla:"clasico", ...PROMO_PLANTILLAS.clasico, titulo:"Esta semana\n20% en tu corte", sub:"Agenda tu cita antes del sábado", precio:"", cta:"Reserva en línea", foto:"", qr:false, fuente:"Anton", nombre:"Promo", tipo:"promo", mensaje:PROMO_TIPOS.promo.mensaje}; }
 let QR_LISTO = null;
 function cargarQR(){
   if(window.qrcode) return Promise.resolve();
@@ -3178,7 +3229,7 @@ async function dibujarPromo(cv, st){
   ctx.textAlign = "left"; ctx.fillStyle = st.texto; ctx.globalAlpha = .75; ctx.font = `600 34px ${cuerpo}`; ctx.fillText(urlBase().replace(/^https?:\/\//, "").replace(/\/$/, ""), m, base + 20 + 20);
   ctx.globalAlpha = 1;
 }
-function textoPromo(st){ return `${String(st.titulo||"").replace(/\n/g, " ")}\n${st.sub}\n\nAgenda aquí: ${urlBase()}#agendar`; }
+function textoPromo(st){ const cab = String(st.mensaje || "").trim() || "Agenda tu cita aquí:"; return `${String(st.titulo||"").replace(/\n/g, " ")}${st.sub ? "\n" + st.sub : ""}\n\n${cab} ${urlBase()}#agendar`; }
 function blobCanvas(cv, tipo="image/png"){ return new Promise(r=> cv.toBlob(r, tipo, .92)); }
 async function compartirImagen(cv, nombre, texto){
   const blob = await blobCanvas(cv), file = new File([blob], nombre, {type: blob.type});
@@ -3195,6 +3246,11 @@ async function tabPromos(box){
   let st = S.promoEd || (S.promoEd = promoNuevo()), idCarga = S.promoId || null;
   box.innerHTML = `
     <div class="promo-prev"><canvas id="prCv"></canvas></div>
+    <div class="fcard"><h3>Qué quieres publicar</h3>
+      <div class="fin-tabs" id="prTipo" style="flex-wrap:wrap">${Object.entries(PROMO_TIPOS).map(([k,t])=>`<button data-t="${k}" class="${(st.tipo||"promo")===k?"on":""}">${t.n}</button>`).join("")}</div>
+      ${(st.tipo||"promo") === "espacios" ? `<button class="pill pill-ghost pill-sm" id="prLibres" style="margin-top:12px">${IC.clock} Llenar con las horas libres</button>` : ""}
+      <div class="field" style="margin-top:14px"><label>Mensaje al compartir (el link se agrega solo)</label><input id="prMsg" value="${esc(st.mensaje||"")}"></div>
+    </div>
     <div class="fcard"><h3>Diseño</h3>
       <div class="fin-tabs" id="prFmt">${Object.entries(PROMO_FORMATOS).map(([k,f])=>`<button data-f="${k}" class="${st.formato===k?"on":""}">${f.n}</button>`).join("")}</div>
       <div class="fin-tabs" id="prPla" style="margin-top:8px">${Object.entries(PROMO_PLANTILLAS).map(([k,f])=>`<button data-p="${k}" class="${st.plantilla===k?"on":""}">${f.n}</button>`).join("")}</div>
@@ -3216,8 +3272,27 @@ async function tabPromos(box){
       <button class="circ" data-up="${d.id}" style="width:36px;height:36px" aria-label="Subir" ${i===0?"disabled":""}>↑</button><button class="circ danger" data-del="${d.id}" style="width:36px;height:36px" aria-label="Eliminar diseño">${IC.x}</button></div>`).join("") : `<div class="adm-empty">Aún no guardas ningún diseño.</div>`}</section>`;
   const cv = $("#prCv"); let tk = 0;
   const pintar = ()=>{ const t = ++tk; setTimeout(()=>{ if(t === tk) dibujarPromo(cv, st); }, 120); };
-  const leer = ()=>{ Object.assign(st, {titulo: $("#prTit").value, sub: $("#prSub").value, precio: $("#prPre").value, cta: $("#prCta").value || "Reserva en línea", foto: $("#prFoto").value.trim(), c1: $("#prC1").value, c2: $("#prC2").value, acento: $("#prAc").value, texto: $("#prTx").value, fuente: $("#prFu").checked ? "Anton" : "Jakarta", qr: $("#prQr").checked, nombre: $("#prNom").value}); pintar(); };
-  $$("#prTit,#prSub,#prPre,#prCta,#prFoto,#prC1,#prC2,#prAc,#prTx,#prFu,#prQr,#prNom").forEach(i=>{ i.oninput = leer; i.onchange = leer; });
+  const leer = ()=>{ Object.assign(st, {titulo: $("#prTit").value, sub: $("#prSub").value, precio: $("#prPre").value, cta: $("#prCta").value || "Reserva en línea", foto: $("#prFoto").value.trim(), c1: $("#prC1").value, c2: $("#prC2").value, acento: $("#prAc").value, texto: $("#prTx").value, mensaje: $("#prMsg").value, fuente: $("#prFu").checked ? "Anton" : "Jakarta", qr: $("#prQr").checked, nombre: $("#prNom").value}); pintar(); };
+  $$("#prMsg,#prTit,#prSub,#prPre,#prCta,#prFoto,#prC1,#prC2,#prAc,#prTx,#prFu,#prQr,#prNom").forEach(i=>{ i.oninput = leer; i.onchange = leer; });
+  $("#prTipo").onclick = e=>{ const b = e.target.closest("[data-t]"); if(!b) return; const t = PROMO_TIPOS[b.dataset.t]; Object.assign(st, {tipo: b.dataset.t, titulo: t.titulo, sub: t.sub, cta: t.cta, mensaje: t.mensaje, precio: ""}); S.promoEd = st; pintarTab(); };
+  const libres = $("#prLibres");
+  if(libres) libres.onclick = async ()=>{
+    libres.disabled = true;
+    try{
+      const mapa = await cargarCitasRango(true), ahora = new Date(), hoyIso = isoDate(ahora);
+      const dias = diasVentana().filter(d=> d.disponible).slice(0, 3);
+      for(const d of dias){
+        const hs = calcularSlots(d.iso, 30, mapa).filter(x=> !x.ocupado).map(x=> x.hora);
+        if(hs.length){
+          const corte = hs.length > 8 ? hs.filter((_,i)=> i % Math.ceil(hs.length/8) === 0) : hs;
+          st.titulo = (d.iso === hoyIso ? "Hoy" : fmtFechaLarga(d.iso).split(",")[0] + " " + parseIso(d.iso).getDate()) + "\nhay espacio";
+          st.sub = corte.join(" · "); S.promoEd = st; pintarTab(); return;
+        }
+      }
+      toast("No hay horas libres en los próximos días");
+    }catch(e){ toast("No se pudo consultar la agenda"); }
+    libres.disabled = false;
+  };
   $("#prFmt").onclick = e=>{ const b = e.target.closest("[data-f]"); if(!b) return; st.formato = b.dataset.f; $$("#prFmt button").forEach(x=> x.classList.toggle("on", x === b)); pintar(); };
   $("#prPla").onclick = e=>{ const b = e.target.closest("[data-p]"); if(!b) return; leer(); const pl = PROMO_PLANTILLAS[b.dataset.p]; Object.assign(st, {plantilla: b.dataset.p, c1: pl.c1, c2: pl.c2, acento: pl.acento, texto: pl.texto}); S.promoEd = st; pintarTab(); };
   const nombreArchivo = ()=> "promo-" + (st.nombre||"imperio").toLowerCase().replace(/[^a-z0-9]+/g, "-") + ".png";
