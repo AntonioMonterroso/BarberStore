@@ -3159,18 +3159,26 @@ function hojaTrabajo(t){
 /* ---------- estudio de promociones (imágenes para estados de WhatsApp) ---------- */
 const PROMO_FORMATOS = {status:{w:1080,h:1920,n:"Estado"}, cuadrado:{w:1080,h:1080,n:"Cuadrado"}, vertical:{w:1080,h:1350,n:"Vertical"}};
 const PROMO_PLANTILLAS = {
-  clasico:{n:"Clásico", c1:"#0e1114", c2:"#1b1f24", acento:"#e1a95f", texto:"#f3efe7"},
-  cobre:{n:"Cobre", c1:"#c98a3e", c2:"#8a5a1f", acento:"#140d05", texto:"#140d05"},
-  marfil:{n:"Marfil", c1:"#f4eee2", c2:"#e5dccb", acento:"#8a5a1f", texto:"#17130e"},
+  clasico:{n:"Clásico", c1:"#0e1114", c2:"#1d2228", acento:"#e1a95f", texto:"#f3efe7"},
+  cobre:{n:"Cobre", c1:"#d79a4c", c2:"#8f5c22", acento:"#140d05", texto:"#140d05"},
+  marfil:{n:"Marfil", c1:"#f6f0e4", c2:"#e3d8c4", acento:"#9a6422", texto:"#17130e"},
+  medianoche:{n:"Medianoche", c1:"#0a1322", c2:"#18294a", acento:"#e8b86b", texto:"#f4f1ea"},
+  vino:{n:"Vino", c1:"#2a0f14", c2:"#521c27", acento:"#f0c987", texto:"#fbf3e6"},
+  esmeralda:{n:"Esmeralda", c1:"#06201a", c2:"#0f4033", acento:"#dcb870", texto:"#f3f0e6"},
+  carbon:{n:"Carbón", c1:"#141618", c2:"#2c3035", acento:"#ffffff", texto:"#f1f1f1"},
+  rubi:{n:"Rubí", c1:"#1c0709", c2:"#4a0f17", acento:"#ff7a66", texto:"#fff1ec"},
+  arena:{n:"Arena", c1:"#efe6d5", c2:"#d6c6a8", acento:"#5a3913", texto:"#1d160c"},
+  bronce:{n:"Bronce", c1:"#26190d", c2:"#5a3a1a", acento:"#f2c47a", texto:"#fdf3e1"},
   foto:{n:"Con foto", c1:"#0e1114", c2:"#0e1114", acento:"#e1a95f", texto:"#ffffff"},
 };
+const PROMO_FORMAS = {marco:"Marco", diagonal:"Diagonal", circulo:"Círculos", barbero:"Barbero", minimo:"Mínimo", puntos:"Puntos", rayas:"Rayas", esquinas:"Esquinas", tijeras:"Tijeras", sello:"Sello"};
 const PROMO_TIPOS = {
   promo:{n:"Promoción", titulo:"Esta semana\n20% en tu corte", sub:"Agenda tu cita antes del sábado", cta:"Reserva en línea", mensaje:"Promo de la semana. Reserva tu cita aquí:"},
   recordatorio:{n:"Recordar citas", titulo:"¿Ya agendaste\ntu cita?", sub:"Reserva tu espacio en línea, sin esperas", cta:"Agenda tu cita", mensaje:"Reserva tu cita en línea en menos de un minuto:"},
   espacios:{n:"Espacios libres", titulo:"Espacios\ndisponibles", sub:"", cta:"Reserva tu hora", mensaje:"Tengo espacios disponibles. Reserva el tuyo aquí:"},
   aviso:{n:"Aviso", titulo:"Aviso\nimportante", sub:"Escribe aquí tu mensaje", cta:"Más información", mensaje:"Más información y citas aquí:"},
 };
-function promoNuevo(){ const c = S.config; return {formato:"status", plantilla:"clasico", ...PROMO_PLANTILLAS.clasico, titulo:"Esta semana\n20% en tu corte", sub:"Agenda tu cita antes del sábado", precio:"", cta:"Reserva en línea", foto:"", qr:false, fuente:"Anton", nombre:"Promo", tipo:"promo", mensaje:PROMO_TIPOS.promo.mensaje}; }
+function promoNuevo(){ const c = S.config; return {formato:"status", plantilla:"clasico", ...PROMO_PLANTILLAS.clasico, titulo:"Esta semana\n20% en tu corte", sub:"Agenda tu cita antes del sábado", precio:"", cta:"Reserva en línea", foto:"", qr:false, fuente:"Anton", nombre:"Promo", tipo:"promo", forma:"marco", mensaje:PROMO_TIPOS.promo.mensaje}; }
 let QR_LISTO = null;
 function cargarQR(){
   if(window.qrcode) return Promise.resolve();
@@ -3186,50 +3194,133 @@ function lineasTexto(ctx, txt, maxW){
   });
   return out;
 }
+function trazoRect(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
+function decorPromo(ctx, W, H, st){
+  const ac = st.acento, f = st.forma || "marco";
+  ctx.save();
+  if(f === "marco"){
+    ctx.strokeStyle = ac; ctx.globalAlpha = .35; ctx.lineWidth = 2; ctx.strokeRect(36, 36, W - 72, H - 72);
+    ctx.globalAlpha = 1; ctx.lineWidth = 8; const L = 90, o = 36;
+    [[o, o, 1, 1], [W - o, o, -1, 1], [o, H - o, 1, -1], [W - o, H - o, -1, -1]].forEach(([x, y, sx, sy])=>{ ctx.beginPath(); ctx.moveTo(x, y + sy * L); ctx.lineTo(x, y); ctx.lineTo(x + sx * L, y); ctx.stroke(); });
+  } else if(f === "diagonal"){
+    ctx.fillStyle = ac; ctx.globalAlpha = .95; ctx.beginPath(); ctx.moveTo(0, H * .78); ctx.lineTo(W, H * .66); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath(); ctx.fill();
+    ctx.globalAlpha = .35; ctx.lineWidth = 4; ctx.strokeStyle = ac; ctx.beginPath(); ctx.moveTo(0, H * .74); ctx.lineTo(W, H * .62); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, H * .71); ctx.lineTo(W, H * .59); ctx.stroke();
+  } else if(f === "circulo"){
+    ctx.strokeStyle = ac; ctx.lineWidth = 3;
+    [[W * .92, H * .18, 360, .55], [W * .92, H * .18, 470, .3], [W * .92, H * .18, 580, .16]].forEach(([x, y, r, al])=>{ ctx.globalAlpha = al; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.stroke(); });
+    ctx.globalAlpha = .14; ctx.fillStyle = ac; ctx.beginPath(); ctx.arc(W * .05, H * .9, 330, 0, Math.PI * 2); ctx.fill();
+  } else if(f === "barbero"){
+    const w = 44; ctx.save(); ctx.beginPath(); ctx.rect(0, 0, w, H); ctx.clip(); ctx.fillStyle = st.texto; ctx.globalAlpha = .9; ctx.fillRect(0, 0, w, H);
+    ctx.fillStyle = ac; ctx.globalAlpha = 1; for(let y = -w * 2; y < H + w * 2; y += w * 2){ ctx.beginPath(); ctx.moveTo(0, y + w); ctx.lineTo(w, y); ctx.lineTo(w, y + w); ctx.lineTo(0, y + w * 2); ctx.closePath(); ctx.fill(); }
+    ctx.restore(); ctx.globalAlpha = .9; ctx.fillStyle = ac; ctx.fillRect(w + 14, 0, 6, H);
+  } else if(f === "puntos"){
+    ctx.fillStyle = ac; ctx.globalAlpha = .28; for(let x = 60; x < W; x += 54) for(let y = 60; y < H * .42; y += 54){ const k = 1 - y / (H * .42); ctx.beginPath(); ctx.arc(x, y, 3 + 4 * k, 0, Math.PI * 2); ctx.fill(); }
+    ctx.globalAlpha = 1; ctx.fillRect(0, H - 20, W, 20);
+  } else if(f === "rayas"){
+    ctx.strokeStyle = ac; ctx.globalAlpha = .1; ctx.lineWidth = 18; for(let x = -H; x < W + H; x += 70){ ctx.beginPath(); ctx.moveTo(x, H); ctx.lineTo(x + H, 0); ctx.stroke(); }
+    ctx.globalAlpha = 1; ctx.fillStyle = ac; ctx.fillRect(0, 0, W, 22); ctx.fillRect(0, H - 22, W, 22);
+  } else if(f === "esquinas"){
+    ctx.fillStyle = ac; ctx.globalAlpha = .92; ctx.beginPath(); ctx.moveTo(W, 0); ctx.lineTo(W - 360, 0); ctx.lineTo(W, 360); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(0, H); ctx.lineTo(300, H); ctx.lineTo(0, H - 300); ctx.closePath(); ctx.fill();
+    ctx.globalAlpha = .3; ctx.lineWidth = 4; ctx.strokeStyle = ac; ctx.beginPath(); ctx.moveTo(W - 430, 0); ctx.lineTo(W, 430); ctx.stroke();
+  } else if(f === "tijeras"){
+    ctx.strokeStyle = ac; ctx.globalAlpha = .13; ctx.lineWidth = 22; ctx.lineCap = "round"; ctx.save(); ctx.translate(W * .72, H * .3); ctx.rotate(-.5);
+    ctx.beginPath(); ctx.arc(-70, 330, 90, 0, Math.PI * 2); ctx.stroke(); ctx.beginPath(); ctx.arc(70, 330, 90, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-40, 255); ctx.lineTo(120, -330); ctx.moveTo(40, 255); ctx.lineTo(-120, -330); ctx.stroke(); ctx.restore();
+    ctx.globalAlpha = 1; ctx.fillStyle = ac; ctx.fillRect(0, H - 16, W, 16);
+  } else if(f === "sello"){
+    const R = H > 1500 ? 150 : 88, cx = W - 96 - R - 10, cy = H > 1500 ? 330 : 150; ctx.save(); ctx.translate(cx, cy); ctx.rotate(-.2);
+    ctx.strokeStyle = ac; ctx.lineWidth = 4; ctx.globalAlpha = .9; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 0, R - R * .47, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = ac; ctx.font = `800 ${Math.round(R * .227)}px 'Plus Jakarta Sans', sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    const t = "CORTES ✦ FADES ✦ BARBA ✦ ", n = t.length; for(let i = 0; i < n; i++){ ctx.save(); ctx.rotate(i / n * Math.PI * 2); ctx.translate(0, -(R - R * .23)); ctx.fillText(t[i], 0, 0); ctx.restore(); }
+    ctx.font = `400 ${Math.round(R * .47)}px Anton, Impact, sans-serif`; ctx.fillText("✂", 0, 4); ctx.restore(); ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = ac; ctx.fillRect(0, H - 14, W, 14);
+  } else if(f === "minimo"){
+    ctx.fillStyle = ac; ctx.fillRect(96, 0, 220, 18); ctx.fillRect(0, H - 14, W, 14);
+  }
+  ctx.restore();
+}
 async function dibujarPromo(cv, st){
   const F = PROMO_FORMATOS[st.formato] || PROMO_FORMATOS.status, W = F.w, H = F.h;
   cv.width = W; cv.height = H; const ctx = cv.getContext("2d");
   try{ await Promise.all([document.fonts.load("120px Anton"), document.fonts.load("700 40px 'Plus Jakarta Sans'")]); }catch(e){}
   const disp = st.fuente === "Anton" ? "Anton, Impact, sans-serif" : "'Plus Jakarta Sans', system-ui, sans-serif", cuerpo = "'Plus Jakarta Sans', system-ui, sans-serif";
-  const g = ctx.createLinearGradient(0, 0, W*.4, H); g.addColorStop(0, st.c1); g.addColorStop(1, st.c2); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-  const img = await cargarImg(st.foto);
+  const forma = st.forma || "marco", mizq = forma === "barbero" ? 120 : 96, m = 96, ancho = W - mizq - m, S2 = H / 1920;
+  const g = ctx.createLinearGradient(0, 0, W * .5, H); g.addColorStop(0, st.c1); g.addColorStop(1, st.c2); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  const rg = ctx.createRadialGradient(W * .85, H * .08, 0, W * .85, H * .08, W * .9); rg.addColorStop(0, st.acento + "30"); rg.addColorStop(1, st.acento + "00"); ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
+  const [img, logo] = await Promise.all([cargarImg(st.foto), cargarImg(LOGO)]);
   if(img){
     const k = Math.max(W / img.width, H / img.height), w = img.width * k, h = img.height * k; ctx.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
-    const ov = ctx.createLinearGradient(0, 0, 0, H); ov.addColorStop(0, "rgba(0,0,0,.55)"); ov.addColorStop(.45, "rgba(0,0,0,.35)"); ov.addColorStop(1, "rgba(0,0,0,.85)"); ctx.fillStyle = ov; ctx.fillRect(0, 0, W, H);
+    const ov = ctx.createLinearGradient(0, 0, 0, H); ov.addColorStop(0, "rgba(0,0,0,.6)"); ov.addColorStop(.4, "rgba(0,0,0,.35)"); ov.addColorStop(1, "rgba(0,0,0,.88)"); ctx.fillStyle = ov; ctx.fillRect(0, 0, W, H);
   }
-  const m = 90, ancho = W - m * 2, alto = H / 1920;
-  // marco fino
-  ctx.strokeStyle = st.acento; ctx.globalAlpha = .55; ctx.lineWidth = 3; ctx.strokeRect(m/2, m/2, W - m, H - m); ctx.globalAlpha = 1;
-  // negocio
-  ctx.textBaseline = "alphabetic"; ctx.textAlign = "left"; ctx.fillStyle = st.acento; ctx.font = `400 ${52}px ${disp}`;
-  ctx.fillText(String(S.config.nombre || "Imperio Store Barber").toUpperCase(), m, m + 70);
-  // título
-  const tam = st.formato === "status" ? 190 : st.formato === "vertical" ? 160 : 140;
-  ctx.fillStyle = st.texto; ctx.font = `400 ${tam}px ${disp}`;
-  let lin = lineasTexto(ctx, String(st.titulo||"").toUpperCase(), ancho), lh = tam * 1.0;
-  let y = st.formato === "status" ? H * .3 : H * .27;
-  lin.forEach(l=>{ ctx.fillText(l, m, y); y += lh; });
+  decorPromo(ctx, W, H, st);
+  ctx.textBaseline = "alphabetic"; ctx.textAlign = "left";
+  // encabezado: logo + nombre + etiqueta del tipo
+  const top = 120;
+  if(logo){ ctx.save(); ctx.beginPath(); ctx.arc(mizq + 44, top, 44, 0, Math.PI * 2); ctx.closePath(); ctx.fillStyle = "#101316"; ctx.fill(); ctx.clip(); ctx.drawImage(logo, mizq, top - 44, 88, 88); ctx.restore(); ctx.strokeStyle = st.acento; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(mizq + 44, top, 44, 0, Math.PI * 2); ctx.stroke(); }
+  ctx.fillStyle = st.acento; ctx.font = `400 46px ${disp}`; ctx.fillText(String(S.config.nombre || "Imperio Store Barber").toUpperCase(), mizq + (logo ? 112 : 0), top + 16);
+  const kick = String((PROMO_TIPOS[st.tipo] || {}).n || "").toUpperCase();
+  if(kick){ ctx.font = `800 28px ${cuerpo}`; const kw = ctx.measureText(kick).width + 52, ky = top + 90; ctx.fillStyle = st.acento; trazoRect(ctx, mizq, ky, kw, 56, 28); ctx.fill();
+    ctx.fillStyle = st.plantilla === "cobre" || st.plantilla === "marfil" ? "#fff" : "#140d05"; if(st.acento.toLowerCase() === "#140d05") ctx.fillStyle = "#fff"; ctx.fillText(kick, mizq + 26, ky + 38); }
+  // título: se ajusta para que todo quepa antes del botón; la última línea va en acento
+  const base = H - (forma === "diagonal" ? 120 : 130), tope = base - 110 - 60, y0 = st.formato === "status" ? 470 : st.formato === "vertical" ? 430 : 400;
+  ctx.font = `600 ${st.formato === "status" ? 54 : 46}px ${cuerpo}`; const subL = lineasTexto(ctx, st.sub, ancho).filter(Boolean).length;
+  const hay = st.tipo === "espacios" && (st.horas||[]).length, cols = st.formato === "cuadrado" ? 4 : 3, chH = st.formato === "cuadrado" ? 92 : 116;
+  const filasMax = st.formato === "status" ? 6 : st.formato === "vertical" ? 5 : 3; let nHoras = hay ? Math.min(st.horas.length, cols * filasMax) : 0;
+  const hayPrecio = !!String(st.precio||"").trim();
+  let tam = st.formato === "status" ? 200 : st.formato === "vertical" ? 170 : 150, lin, ps = st.formato === "status" ? 230 : 180;
+  for(;;){
+    ctx.font = `400 ${tam}px ${disp}`; lin = lineasTexto(ctx, String(st.titulo||"").toUpperCase(), ancho);
+    const ancha = lin.every(l=> ctx.measureText(l).width <= ancho);
+    const need = lin.length * tam + 28 + (subL ? 44 + subL * 68 : 0) + (nHoras ? 10 + Math.ceil(nHoras / cols) * (chH + 22) : 0) + (hayPrecio ? 30 + ps : 0);
+    const cabe = y0 + need <= tope;
+    if((ancha && cabe) || tam <= 72){ if(!cabe && nHoras > cols){ nHoras -= cols; continue; } if(!cabe && ps > 110){ ps -= 20; continue; } break; }
+    tam -= 6; if(hayPrecio && ps > 120) ps -= 3;
+  }
+  let y = y0; const cen = st.alin === "centro", xT = cen ? mizq + ancho / 2 : mizq; ctx.textAlign = cen ? "center" : "left";
+  lin.forEach((l, i)=>{ ctx.fillStyle = i === lin.length - 1 && lin.length > 1 ? st.acento : st.texto; ctx.fillText(l, xT, y); y += tam * 1.0; });
+  ctx.fillStyle = st.acento; trazoRect(ctx, cen ? xT - 85 : mizq, y - tam * .55, 170, 12, 6); ctx.fill(); y += 28;
   // subtítulo
-  ctx.fillStyle = st.texto; ctx.globalAlpha = .85; ctx.font = `600 ${st.formato === "status" ? 54 : 46}px ${cuerpo}`;
-  y += 20; lineasTexto(ctx, st.sub, ancho).forEach(l=>{ ctx.fillText(l, m, y); y += 70; }); ctx.globalAlpha = 1;
+  ctx.fillStyle = st.texto; ctx.globalAlpha = .9; ctx.font = `600 ${st.formato === "status" ? 54 : 46}px ${cuerpo}`;
+  y += 44; lineasTexto(ctx, st.sub, ancho).filter(Boolean).forEach(l=>{ ctx.fillText(l, xT, y); y += 68; }); ctx.globalAlpha = 1; ctx.textAlign = "left";
+  // horas libres
+  if(st.tipo === "espacios" && (st.horas||[]).length){
+    const gap = 22, cw = (ancho - gap * (cols - 1)) / cols, ch = chH;
+    const hs = st.horas.slice(0, nHoras); y += 10;
+    ctx.font = `800 ${st.formato === "cuadrado" ? 36 : 44}px ${cuerpo}`; ctx.textAlign = "center";
+    hs.forEach((h, i)=>{
+      const cx = mizq + (i % cols) * (cw + gap), cy = y + Math.floor(i / cols) * (ch + gap);
+      ctx.fillStyle = st.acento; ctx.globalAlpha = .16; trazoRect(ctx, cx, cy, cw, ch, 28); ctx.fill(); ctx.globalAlpha = 1;
+      ctx.strokeStyle = st.acento; ctx.lineWidth = 3; ctx.stroke();
+      ctx.fillStyle = st.texto; ctx.fillText(horaBonita(h), cx + cw / 2, cy + ch / 2 + 14);
+    });
+    ctx.textAlign = "left"; y += Math.ceil(hs.length / cols) * (ch + gap);
+  }
   // precio
   if(String(st.precio||"").trim()){
-    ctx.font = `400 ${st.formato === "status" ? 230 : 180}px ${disp}`; ctx.fillStyle = st.acento; y += 40; ctx.fillText(String(st.precio).toUpperCase(), m, y + (st.formato === "status" ? 180 : 140));
+    ctx.font = `400 ${ps}px ${disp}`; ctx.fillStyle = st.acento; y += 30; ctx.textAlign = cen ? "center" : "left"; ctx.fillText(String(st.precio).toUpperCase(), xT, y + ps * .85); ctx.textAlign = "left";
   }
-  // pie: botón + link + QR
-  const base = H - m - 20; let xq = W - m;
+  // pie: botón con flecha, link y QR
+  let xq = W - m;
+  const sobreBanda = forma === "diagonal";
   if(st.qr){
-    try{ await cargarQR(); const q = qrcode(0, "M"); q.addData(urlBase() + "#agendar"); q.make(); const n = q.getModuleCount(), T = 250, c = T / (n + 4);
-      const qx = W - m - T, qy = base - T; ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.roundRect(qx, qy, T, T, 18); ctx.fill(); ctx.fillStyle = "#111";
+    try{ await cargarQR(); const q = qrcode(0, "M"); q.addData(urlBase() + "#agendar"); q.make(); const n = q.getModuleCount(), T = 240, c = T / (n + 4);
+      const qx = W - m - T, qy = base - T + 10; ctx.fillStyle = "#fff"; trazoRect(ctx, qx, qy, T, T, 22); ctx.fill(); ctx.fillStyle = "#111";
       for(let r = 0; r < n; r++) for(let k = 0; k < n; k++) if(q.isDark(r, k)) ctx.fillRect(qx + (k + 2) * c, qy + (r + 2) * c, Math.ceil(c), Math.ceil(c)); xq = qx - 40; }catch(e){}
   }
-  const bw = Math.min(xq - m, 640), by = base - 120;
-  ctx.fillStyle = st.acento; ctx.beginPath(); ctx.roundRect(m, by, bw, 110, 55); ctx.fill();
-  ctx.fillStyle = st.plantilla === "cobre" ? "#f4eee2" : (st.acento.toLowerCase() === "#140d05" ? "#fff" : "#111"); ctx.font = `800 44px ${cuerpo}`; ctx.textAlign = "center"; ctx.fillText(st.cta, m + bw / 2, by + 71);
-  ctx.textAlign = "left"; ctx.fillStyle = st.texto; ctx.globalAlpha = .75; ctx.font = `600 34px ${cuerpo}`; ctx.fillText(urlBase().replace(/^https?:\/\//, "").replace(/\/$/, ""), m, base + 20 + 20);
-  ctx.globalAlpha = 1;
+  const bw = Math.min(xq - mizq, 700), by = base - 110;
+  ctx.fillStyle = sobreBanda ? st.c1 : st.acento; trazoRect(ctx, mizq, by, bw, 110, 55); ctx.fill();
+  const txtBtn = sobreBanda ? st.acento : (st.acento.toLowerCase() === "#140d05" ? "#fff" : (st.plantilla === "marfil" || st.plantilla === "cobre" ? "#fff" : "#140d05"));
+  ctx.fillStyle = txtBtn; ctx.font = `800 42px ${cuerpo}`; ctx.textAlign = "left"; ctx.fillText(st.cta, mizq + 44, by + 71);
+  ctx.textAlign = "right"; ctx.font = `800 52px ${cuerpo}`; ctx.fillText("→", mizq + bw - 40, by + 74);
+  ctx.textAlign = "left"; ctx.fillStyle = sobreBanda ? st.c1 : st.texto; ctx.globalAlpha = sobreBanda ? 1 : .8; ctx.font = `700 32px ${cuerpo}`;
+  ctx.fillText(urlBase().replace(/^https?:\/\//, "").replace(/\/$/, ""), mizq, base + 52); ctx.globalAlpha = 1;
 }
-function textoPromo(st){ const cab = String(st.mensaje || "").trim() || "Agenda tu cita aquí:"; return `${String(st.titulo||"").replace(/\n/g, " ")}${st.sub ? "\n" + st.sub : ""}\n\n${cab} ${urlBase()}#agendar`; }
+function horaBonita(h){ const [hh, mm] = String(h).split(":").map(Number); return `${hh % 12 || 12}:${pad(mm)} ${hh >= 12 ? "pm" : "am"}`; }
+function etiquetaDia(iso){ const hoy = isoDate(new Date()), man = new Date(); man.setDate(man.getDate() + 1); return iso === hoy ? "Hoy" : iso === isoDate(man) ? "Mañana" : fmtFechaLarga(iso).split(",")[0] + " " + parseIso(iso).getDate(); }
+function textoPromo(st){ const cab = String(st.mensaje || "").trim() || "Agenda tu cita aquí:"; const hrs = st.tipo === "espacios" && (st.horas||[]).length ? "\n" + st.horas.map(horaBonita).join(" · ") : "";
+  return `${String(st.titulo||"").replace(/\n/g, " ")}${st.sub ? "\n" + st.sub : ""}${hrs}\n\n${cab} ${urlBase()}#agendar`; }
 function blobCanvas(cv, tipo="image/png"){ return new Promise(r=> cv.toBlob(r, tipo, .92)); }
 async function compartirImagen(cv, nombre, texto){
   const blob = await blobCanvas(cv), file = new File([blob], nombre, {type: blob.type});
@@ -3248,12 +3339,15 @@ async function tabPromos(box){
     <div class="promo-prev"><canvas id="prCv"></canvas></div>
     <div class="fcard"><h3>Qué quieres publicar</h3>
       <div class="fin-tabs" id="prTipo" style="flex-wrap:wrap">${Object.entries(PROMO_TIPOS).map(([k,t])=>`<button data-t="${k}" class="${(st.tipo||"promo")===k?"on":""}">${t.n}</button>`).join("")}</div>
-      ${(st.tipo||"promo") === "espacios" ? `<button class="pill pill-ghost pill-sm" id="prLibres" style="margin-top:12px">${IC.clock} Llenar con las horas libres</button>` : ""}
+      ${(st.tipo||"promo") === "espacios" ? `<p class="lbl" style="margin-top:16px">Día</p><div class="date-row" id="prDias"><span class="empty-note">Buscando horas libres…</span></div>
+        <p class="lbl">Horas que quieres mostrar</p><div class="time-row" id="prHoras"></div>` : ""}
       <div class="field" style="margin-top:14px"><label>Mensaje al compartir (el link se agrega solo)</label><input id="prMsg" value="${esc(st.mensaje||"")}"></div>
     </div>
     <div class="fcard"><h3>Diseño</h3>
       <div class="fin-tabs" id="prFmt">${Object.entries(PROMO_FORMATOS).map(([k,f])=>`<button data-f="${k}" class="${st.formato===k?"on":""}">${f.n}</button>`).join("")}</div>
-      <div class="fin-tabs" id="prPla" style="margin-top:8px">${Object.entries(PROMO_PLANTILLAS).map(([k,f])=>`<button data-p="${k}" class="${st.plantilla===k?"on":""}">${f.n}</button>`).join("")}</div>
+      <div class="fin-tabs" id="prFor" style="margin-top:8px;flex-wrap:wrap">${Object.entries(PROMO_FORMAS).map(([k,n])=>`<button data-fo="${k}" class="${(st.forma||"marco")===k?"on":""}">${n}</button>`).join("")}</div>
+      <div class="fin-tabs" id="prAli" style="margin-top:8px"><button data-al="izq" class="${st.alin==="centro"?"":"on"}">Texto a la izquierda</button><button data-al="centro" class="${st.alin==="centro"?"on":""}">Texto centrado</button></div>
+      <div class="fin-tabs" id="prPla" style="margin-top:8px;flex-wrap:wrap">${Object.entries(PROMO_PLANTILLAS).map(([k,f])=>`<button data-p="${k}" class="${st.plantilla===k?"on":""}">${f.n}</button>`).join("")}</div>
       <div class="field" style="margin-top:14px"><label>Título (una línea por renglón)</label><textarea id="prTit">${esc(st.titulo)}</textarea></div>
       <div class="field"><label>Texto de apoyo</label><input id="prSub" value="${esc(st.sub)}"></div>
       <div class="grid2"><div class="field"><label>Precio u oferta</label><input id="prPre" value="${esc(st.precio)}" placeholder="Ej. Q50"></div><div class="field"><label>Botón</label><input id="prCta" value="${esc(st.cta)}"></div></div>
@@ -3274,26 +3368,28 @@ async function tabPromos(box){
   const pintar = ()=>{ const t = ++tk; setTimeout(()=>{ if(t === tk) dibujarPromo(cv, st); }, 120); };
   const leer = ()=>{ Object.assign(st, {titulo: $("#prTit").value, sub: $("#prSub").value, precio: $("#prPre").value, cta: $("#prCta").value || "Reserva en línea", foto: $("#prFoto").value.trim(), c1: $("#prC1").value, c2: $("#prC2").value, acento: $("#prAc").value, texto: $("#prTx").value, mensaje: $("#prMsg").value, fuente: $("#prFu").checked ? "Anton" : "Jakarta", qr: $("#prQr").checked, nombre: $("#prNom").value}); pintar(); };
   $$("#prMsg,#prTit,#prSub,#prPre,#prCta,#prFoto,#prC1,#prC2,#prAc,#prTx,#prFu,#prQr,#prNom").forEach(i=>{ i.oninput = leer; i.onchange = leer; });
-  $("#prTipo").onclick = e=>{ const b = e.target.closest("[data-t]"); if(!b) return; const t = PROMO_TIPOS[b.dataset.t]; Object.assign(st, {tipo: b.dataset.t, titulo: t.titulo, sub: t.sub, cta: t.cta, mensaje: t.mensaje, precio: ""}); S.promoEd = st; pintarTab(); };
-  const libres = $("#prLibres");
-  if(libres) libres.onclick = async ()=>{
-    libres.disabled = true;
-    try{
-      const mapa = await cargarCitasRango(true), ahora = new Date(), hoyIso = isoDate(ahora);
-      const dias = diasVentana().filter(d=> d.disponible).slice(0, 3);
-      for(const d of dias){
-        const hs = calcularSlots(d.iso, 30, mapa).filter(x=> !x.ocupado).map(x=> x.hora);
-        if(hs.length){
-          const corte = hs.length > 8 ? hs.filter((_,i)=> i % Math.ceil(hs.length/8) === 0) : hs;
-          st.titulo = (d.iso === hoyIso ? "Hoy" : fmtFechaLarga(d.iso).split(",")[0] + " " + parseIso(d.iso).getDate()) + "\nhay espacio";
-          st.sub = corte.join(" · "); S.promoEd = st; pintarTab(); return;
-        }
-      }
-      toast("No hay horas libres en los próximos días");
-    }catch(e){ toast("No se pudo consultar la agenda"); }
-    libres.disabled = false;
-  };
+  $("#prTipo").onclick = e=>{ const b = e.target.closest("[data-t]"); if(!b) return; const t = PROMO_TIPOS[b.dataset.t]; Object.assign(st, {tipo: b.dataset.t, titulo: t.titulo, sub: t.sub, cta: t.cta, mensaje: t.mensaje, precio: "", horas: null, diaIso: null}); S.promoEd = st; pintarTab(); };
+  if(st.tipo === "espacios") (async ()=>{
+    let mapa; try{ mapa = await cargarCitasRango(true); }catch(e){ $("#prDias").innerHTML = `<span class="empty-note">No se pudo consultar la agenda</span>`; return; }
+    const dias = diasVentana().filter(d=> d.disponible).map(d=> ({...d, hs: calcularSlots(d.iso, 30, mapa).filter(x=> !x.ocupado).map(x=> x.hora)})).filter(d=> d.hs.length).slice(0, 7);
+    if(!dias.length){ $("#prDias").innerHTML = `<span class="empty-note">No hay horas libres en los próximos días</span>`; return; }
+    if(!st.diaIso || !dias.some(d=> d.iso === st.diaIso)){ st.diaIso = dias[0].iso; st.horas = null; }
+    const pintarEsp = ()=>{
+      const d = dias.find(x=> x.iso === st.diaIso);
+      if(!st.horas) st.horas = d.hs.length > 9 ? d.hs.filter((_,i)=> i % Math.ceil(d.hs.length / 9) === 0) : [...d.hs];
+      st.titulo = etiquetaDia(d.iso) + "\nhay espacio"; st.sub = "";
+      const t = $("#prTit"); if(t) t.value = st.titulo; const sb_ = $("#prSub"); if(sb_) sb_.value = "";
+      $("#prDias").innerHTML = dias.map(x=>`<button class="dchip ${x.iso===st.diaIso?"on":""}" data-pd="${x.iso}"><b>${x.dia}</b><span>${DIAS_C[x.dow]}</span></button>`).join("");
+      $("#prHoras").innerHTML = d.hs.map(h=>`<button class="tpill ${st.horas.includes(h)?"on":""}" data-ph="${h}">${horaBonita(h)}</button>`).join("");
+      pintar();
+    };
+    $("#prDias").onclick = e=>{ const b = e.target.closest("[data-pd]"); if(!b) return; st.diaIso = b.dataset.pd; st.horas = null; pintarEsp(); };
+    $("#prHoras").onclick = e=>{ const b = e.target.closest("[data-ph]"); if(!b) return; const h = b.dataset.ph; st.horas = st.horas.includes(h) ? st.horas.filter(x=> x !== h) : [...st.horas, h].sort(); pintarEsp(); };
+    pintarEsp();
+  })();
   $("#prFmt").onclick = e=>{ const b = e.target.closest("[data-f]"); if(!b) return; st.formato = b.dataset.f; $$("#prFmt button").forEach(x=> x.classList.toggle("on", x === b)); pintar(); };
+  $("#prFor").onclick = e=>{ const b = e.target.closest("[data-fo]"); if(!b) return; st.forma = b.dataset.fo; $$("#prFor button").forEach(x=> x.classList.toggle("on", x === b)); pintar(); };
+  $("#prAli").onclick = e=>{ const b = e.target.closest("[data-al]"); if(!b) return; st.alin = b.dataset.al; $$("#prAli button").forEach(x=> x.classList.toggle("on", x === b)); pintar(); };
   $("#prPla").onclick = e=>{ const b = e.target.closest("[data-p]"); if(!b) return; leer(); const pl = PROMO_PLANTILLAS[b.dataset.p]; Object.assign(st, {plantilla: b.dataset.p, c1: pl.c1, c2: pl.c2, acento: pl.acento, texto: pl.texto}); S.promoEd = st; pintarTab(); };
   const nombreArchivo = ()=> "promo-" + (st.nombre||"imperio").toLowerCase().replace(/[^a-z0-9]+/g, "-") + ".png";
   $("#prShare").onclick = async ()=>{ await dibujarPromo(cv, st); await compartirImagen(cv, nombreArchivo(), textoPromo(st)); };
